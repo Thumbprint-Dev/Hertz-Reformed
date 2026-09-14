@@ -1142,3 +1142,39 @@ contentmodal2 a:hover{
   white-space: nowrap;
   border: 0;
 }
+
+/* ------------------- Uniform Allocation: call to action ------------------- */
+/*
+   The page told an employee what they had and gave them nowhere to go. Uses the theme's
+   own yellow on navy rather than introducing another accent.
+*/
+.hz-alloc-cta {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 11px 22px;
+  background: #fc0;
+  color: #11172b;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 3px;
+  text-decoration: none;
+  border: 1px solid #e8b800;
+}
+
+.hz-alloc-cta:hover,
+.hz-alloc-cta:focus {
+  background: #e8b800;
+  color: #11172b;
+  text-decoration: none;
+}
+
+/* Keyboard focus must stay visible — the hover colour alone is not a focus indicator. */
+.hz-alloc-cta:focus {
+  outline: 2px solid #11172b;
+  outline-offset: 2px;
+}
+
+.hz-alloc-footnote {
+  margin-top: 22px;
+  margin-bottom: 18px;
+}

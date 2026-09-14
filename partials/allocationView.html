@@ -49,7 +49,7 @@
 
         <p class="hz-alloc-muted">
           {{alloc.view.groupName}}
-          &middot; allocation year ends {{alloc.view.cycleEnd}}
+          &middot; your allocation year ends {{alloc.view.cycleEnd | hzDate}}
         </p>
 
         <table class="hz-alloc-table">
@@ -57,14 +57,14 @@
             <tr>
               <th>Item</th>
               <th class="hz-alloc-num">Remaining</th>
-              <th class="hz-alloc-num">In cart</th>
+              <th class="hz-alloc-num" ng-if="alloc.anyReserved">In cart</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="pool in alloc.view.pools">
               <td>{{pool.name}}</td>
               <td class="hz-alloc-num">{{pool.remaining}}</td>
-              <td class="hz-alloc-num">{{pool.reserved}}</td>
+              <td class="hz-alloc-num" ng-if="alloc.anyReserved">{{pool.reserved}}</td>
             </tr>
           </tbody>
         </table>
@@ -75,12 +75,16 @@
              item at a warm location — and saying a date there would be a lie. -->
         <div ng-if="alloc.view.seasonalClosed.length">
           <h2 class="hz-alloc-subtitle">Not available right now</h2>
+          <p class="hz-alloc-muted">
+            These are seasonal items. You still have this allocation &mdash; it simply
+            cannot be ordered outside its season.
+          </p>
           <table class="hz-alloc-table">
             <tbody>
               <tr ng-repeat="item in alloc.view.seasonalClosed">
                 <td>{{item.categoryName || item.poolName}}</td>
                 <td class="hz-alloc-num">
-                  <span ng-if="item.opensOn">Available from {{item.opensOn}}</span>
+                  <span ng-if="item.opensOn">Available from {{item.opensOn | hzDate:false}}</span>
                   <span ng-if="!item.opensOn">Not available at your location</span>
                 </td>
               </tr>
@@ -88,10 +92,14 @@
           </table>
         </div>
 
-        <p class="hz-alloc-muted hz-alloc-footnote">
-          Quantities are ceilings, not requirements. You may order fewer now and the rest
-          later.
+        <p class="hz-alloc-footnote hz-alloc-muted">
+          Quantities are limits, not requirements &mdash; order fewer now and the rest
+          whenever you need them.
         </p>
+
+        <!-- The page was a dead end: it told an employee what they had and gave them no
+             way to act on it. -->
+        <a class="hz-alloc-cta" href="catalog">Shop uniforms</a>
 
       </div>
     </div>
