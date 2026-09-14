@@ -1,0 +1,84 @@
+<style>
+  .cart-title {
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: -0.74px;
+    line-height: 63px;
+  }
+  .order-details-container {
+    padding: 10px;
+    min-width: 400px;
+    border-radius: 5px;
+    margin-bottom: 100px;
+ }
+ .contactus-text {
+   color: #e55800;
+    margin-bottom: 0;
+    font-weight: 400;
+    font-size: 30px;
+ }
+ .search-item {
+     border:none;
+ }
+   @media screen and (max-width: 1250px) {
+  .order-details-container {
+    width: 400px;
+ }
+}
+   @media screen and (max-width: 1110px) {
+  .order-details-container {
+    width: 350px;
+ }
+}
+   @media screen and (max-width: 950px) {
+  .order-details-container {
+    width: unset;
+ }
+}
+</style>
+<loadingindicator ng-show="searchLoading" title="{{'Please wait while we fetch all products' | r}}" />
+<section class="">
+    <div class="order-details-container panel-search">
+        <!--<div class="panel-heading">
+            <h3 class="panel-title">
+                {{'Search' | r | xlat}}
+            </h3>
+        </div>-->
+        <!--<p class="cart-title" style="border-bottom: 1px solid #979797;">Search</p>-->
+        <div class="panel-body">
+            <form role="search">
+                <div class="view-form-icon">
+                    <div class="input-group">
+                        <input type="text" ng-model="searchTerm"  class="form-control" placeholder="{{('Search' | r) + ' ' + ('Products' | r) | xlat}}" autocomplete="off" />
+                        <i class="fa fa-search"></i>
+                        <div class="input-group-btn">
+                            <button type="submit" ng-click="search()" class="btn btn-default">{{'Search' | r | xlat}}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div ng-show="productCount == 0" class="panel-product-list">
+            <p class="alert alert-info">
+                {{'Your search resulted in no records. Please refine your search.' | r | xlat}}
+            </p>
+        </div>
+        <div class="panel-footer" ng-show="productCount > settings.pageSize">
+            <pagination page="settings.currentPage" max-size="10" rotate="false" boundary-links="true" total-items="productCount"
+                        items-per-page="settings.pageSize" direction-links="true" previous-text="{{'Previous' | xlat}}" next-text="{{'Next' | xlat}}" first-text="{{'First' | xlat}}" last-text="{{'Last' | xlat}}"></pagination>
+        </div>
+        <div ng-show="productCount > 0" class="panel-product-list">
+            <nav class="nav">
+                <ul>
+                    <li class="well search-item" ng-repeat="product in products | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize">
+                        <shortproductview p="product" user="user" />
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="panel-footer" ng-show="productCount > settings.pageSize">
+            <pagination page="settings.currentPage" max-size="10" rotate="false" boundary-links="true" total-items="productCount"
+                        items-per-page="settings.pageSize" direction-links="true" previous-text="{{'Previous' | xlat}}" next-text="{{'Next' | xlat}}" first-text="{{'First' | xlat}}" last-text="{{'Last' | xlat}}"></pagination>
+        </div>
+    </div>
+</section>

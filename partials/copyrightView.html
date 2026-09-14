@@ -1,0 +1,145 @@
+<style>
+    .footer {
+      background: #f3f4f8;
+      padding: 50px 15% 30px;
+      font-family: Arial, sans-serif;
+      color: #333;
+      position: relative;
+      z-index: 1;
+      margin-top: 60px;
+      clear: both;
+    }
+    
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-column {
+      flex: 0 1 45%;
+      min-width: 250px;
+      margin-bottom: 30px;
+    }
+    
+    .footer-column h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #000;
+      letter-spacing: 0.5px;
+    }
+    
+    .footer-column p {
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+      color: #666;
+    }
+    
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .footer-column ul li {
+      font-size: 14px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    
+    .footer-column ul li a {
+      text-decoration: none;
+      color: #555;
+      transition: color 0.2s ease;
+      display: inline-block;
+    }
+    
+    .footer-column ul li a:hover {
+      color: #000;
+      text-decoration: none;
+    }
+    
+    .footer-bottom-wrapper {
+      padding: 0 15%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-bottom {
+      margin-top: 40px;
+      border-top: 1px solid #d0d0d0;
+      padding-top: 25px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .footer {
+        padding: 40px 5% 25px;
+      }
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+      .footer-column {
+        flex: 1 1 100%;
+        margin-bottom: 35px;
+        text-align: center;
+      }
+      .footer-bottom {
+        text-align: center;
+      }
+    }
+    </style>
+    
+    <footer class="footer">
+      <div class="footer-container">
+        <!-- Column 1 -->
+        <div class="footer-column">
+          <h3>Hertz Official Marketplace</h3>
+          <p>Go wherever the road may lead.</p>
+        </div>
+    
+        <!-- Column 2 -->
+        <div class="footer-column">
+          <h3>Helpful Links</h3>
+          <ul>
+            <li>
+              <a href="https://www.hertz.com/rentacar/privacypolicy/index.jsp?targetPage=privacyPolicyView.jsp" target="_blank" rel="noopener noreferrer">
+                Privacy Policy
+              </a>
+            </li>
+            <li ng-show="(hertzChampionUser || dollarChampionUser || thriftyChampionUser)">
+              <a href="/shop/faq">
+                FAQ
+              </a>
+            </li>
+            <li>
+              <a href="/shop/returns">
+                Returns & Exchanges
+              </a>
+            </li>
+            <li>
+              <a href="/shop/contactus">
+                Contact Us
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    
+      <div class="footer-bottom-wrapper">
+        <div class="footer-bottom">
+          © {{year}}, Hertz Shop Powered By Thumbprint
+        </div>
+      </div>
+    </footer>
+    

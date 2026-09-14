@@ -1,0 +1,25 @@
+<div class="panel-category-list no-panels" ng-show="currentCategory.SubCategories.length">
+    <loadingindicator ng-show="categoryLoadingIndicator" title="{{'Please wait while we fetch all categories' | r}}" />
+    <div class="categoryList">
+    <nav class="nav 451_lbl_subcatlist">
+        <ul class="cate" style="text-align: center;">
+            <li class="col-lg-4 col-md-6 col-sm-12 col-xs-12 category-space" ng-repeat="c in currentCategory.SubCategories">
+                <div class="hvrbox">
+                    <a class="shellAnchor" ng-href="{{c.InteropID == 'adt_app' ? 'catalog/adt_apparel' : 'catalog/' + c.InteropID }}">
+                        <figure ng-show="c.Image.URL">
+                        <div class="categoryImages img-hover-zoom">
+                            <img class="img-responsive shell shellColor" ng-src="{{c.Image.URL}}"/>
+                        </figure>
+                        <div class="empty" ng-show="!c.Image.URL">
+                            <span class="fa empty"><i class="fa fa-camera"></i></span>
+                        </div>
+                        <div class="hvrbox-layer_top">
+                        <!--<h5 class="catName" ng-bind-html="c.Name" style="" />-->
+                      </div>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    </div>
+</div>

@@ -1,0 +1,271 @@
+<style>
+    #hertz-allofaq-page {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      line-height: 1.6;
+      background-color: transparent;
+      color: #333;
+      padding: 20px;
+      margin: 0 !important;
+      margin-bottom: 60px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    #hertz-allofaq-page section {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    #hertz-allofaq-page h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #2c3e50;
+      font-size: 2.2em;
+      font-weight: 600;
+    }
+    #hertz-allofaq-page details {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 2px solid #e1e8ed;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    #hertz-allofaq-page details[open] {
+      border-color: #fc0;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.15);
+    }
+    #hertz-allofaq-page summary {
+      font-weight: 600;
+      font-size: 1.15em;
+      outline: none;
+      padding: 20px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #2c3e50;
+      user-select: none;
+      position: relative;
+    }
+    #hertz-allofaq-page summary::-webkit-details-marker {
+      display: none;
+    }
+    #hertz-allofaq-page summary::after {
+      content: '+';
+      font-size: 1.8em;
+      font-weight: 300;
+      color: #666;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 15px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      border-radius: 50%;
+      line-height: 1;
+    }
+    #hertz-allofaq-page details[open] summary::after {
+      content: '−';
+      transform: rotate(180deg);
+      background: #fc0;
+      color: #fff;
+    }
+    #hertz-allofaq-page summary:hover::after {
+      background: #fc0;
+      color: #fff;
+    }
+    #hertz-allofaq-page summary::before {
+      content: 'Click to expand';
+      font-size: 0.75em;
+      font-weight: 400;
+      color: #7f8c8d;
+      position: absolute;
+      right: 60px;
+      font-style: italic;
+      opacity: 0.7;
+    }
+    #hertz-allofaq-page details[open] summary::before {
+      content: 'Click to collapse';
+    }
+    #hertz-allofaq-page details p {
+      padding: 0 25px 25px 25px;
+      margin: 0;
+      color: #555;
+      line-height: 1.7;
+      animation: hertzAllofaqFadeIn 0.3s ease;
+    }
+    @keyframes hertzAllofaqFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    #hertz-allofaq-page summary:hover {
+      color: #2c3e50;
+    }
+    #hertz-allofaq-page h2 {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #fc0;
+    }
+    #hertz-allofaq-page h2:first-of-type {
+      margin-top: 20px;
+    }
+    #hertz-allofaq-page details p a {
+      color: #fc0;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+    #hertz-allofaq-page details p a:hover {
+      color: #e6b800;
+      border-bottom-color: #e6b800;
+    }
+    
+    /* Hide "Click to expand" text on mobile */
+    @media screen and (max-width: 768px) {
+      #hertz-allofaq-page summary::before {
+        display: none;
+      }
+    }
+    
+    /* Hide "enlarged view" element that appears from global scripts */
+    #hertz-allofaq-page [class*="enlarged"], 
+    #hertz-allofaq-page [id*="enlarged"],
+    #hertz-allofaq-page [class*="Enlarged"],
+    #hertz-allofaq-page [id*="Enlarged"],
+    #hertz-allofaq-page [title*="enlarged"],
+    #hertz-allofaq-page [title*="Enlarged"],
+    [class*="enlarged"],
+    [id*="enlarged"],
+    [class*="Enlarged"],
+    [id*="Enlarged"],
+    [title*="enlarged"],
+    [title*="Enlarged"] {
+      display: none !important;
+    }
+  </style>
+<div id="hertz-allofaq-page">
+<section>
+  <h1>Frequently Asked Questions</h1>
+
+  <h2>Your Uniform Allocation Order</h2>
+
+  <details>
+    <summary>How do I place my order?</summary>
+    <p>Click <a href="#" target="_blank">[HERE]</a> for step by step instructions on how to place your order online.</p>
+  </details>
+
+  <details>
+    <summary>Not sure which size to choose?</summary>
+    <p>Please be sure you are referring to the correct size charts - measurements are listed in both inches and centimeters.<br>
+    All measurements are taken flat, not around the body. For example, when measuring hips, measure from side to side rather than around the full circumference.<br>
+    Reference <a href="https://drive.google.com/file/d/156chi4sZtTDjn-x-LTvrwvi6RBhUGUFB/view" target="_blank">[THIS]</a> "how to measure" guide for instructions on how to measure yourself.<br>
+    If you're between sizes, we recommend selecting the larger size for a more comfortable fit.</p>
+  </details>
+
+  <details>
+    <summary>What is the material of the uniform pieces?</summary>
+    <p>Please click <a href="https://drive.google.com/file/d/1Ymxe5czJH0fbaBGvtmML5s0FMWIW4KcN/view" target="_blank">[HERE]</a> to view the material content for each garment.</p>
+  </details>
+
+  <details>
+    <summary>Am I eligible to order?</summary>
+    <p>Uniforms are allocated based on specific roles at Hertz, Dollar, and Thrifty, and become available for ordering once an employee has completed 90 days of employment. If you have any questions please reach out to your Uniform Champion to see if you are eligible.</p>
+  </details>
+
+  <details>
+    <summary>What is my allocation?</summary>
+    <p>Your uniform allocation is based on:<br>
+    • Your role<br>
+    • Your employment status (full-time or part-time)<br>
+    • Your work location (warm or cold weather)<br>
+    Please reach out to your Uniform Champion or review your uniform guidelines to see what your allocation should be.</p>
+  </details>
+
+  <details>
+    <summary>How do I get my name badge?</summary>
+    <p>Name badges will be ordered by the Uniform Champion. Contact your Uniform Champion to make sure your order is included.</p>
+  </details>
+
+  <details>
+    <summary>How do I get a replacement name badge?</summary>
+    <p>All name badges are being ordered by the Uniform Champion. If you need a replacement, please contact your Uniform Champion.</p>
+  </details>
+
+  <details>
+    <summary>Why doesn't my name badge have a title?</summary>
+    <p>Name badge titles are only included for managers and higher roles.</p>
+  </details>
+
+  <details>
+    <summary>Where is my order shipping to?</summary>
+    <p>Your orders are being shipped to the location that you are associated with in Oracle.</p>
+  </details>
+
+  <details>
+    <summary>How can I find my tracking for my order?</summary>
+    <p>Log into your account and click on "orders" at the top and you'll be able to click into your order to get the status - if your order has shipped you'll find the tracking information there.</p>
+  </details>
+
+  <details>
+    <summary>What if my size is out of stock?</summary>
+    <p>If your size is out of stock, we recommend selecting a different size or style. If you need that specific size that is out of stock and you place your order it will go into backorder status.</p>
+  </details>
+
+  <h2>Returns & Exchanges</h2>
+
+  <details>
+    <summary>How long do I have to request a return or exchange?</summary>
+    <p>You must submit your request within 30 days of receiving your uniform.</p>
+  </details>
+
+  <details>
+    <summary>Are all items eligible for return?</summary>
+    <p>No. Worn, washed, altered, or damaged items (outside of shipping defects) are not eligible. Name tags cannot be returned.</p>
+  </details>
+
+  <details>
+    <summary>What condition must returned items be in?</summary>
+    <p>Items must be new, unworn, & unwashed.</p>
+  </details>
+
+  <details>
+    <summary>How do I start a return or exchange?</summary>
+    <p>Contact your Uniform Champion and provide them with:<br>
+    • Your Order#<br>
+    • What item is being returned<br>
+    • Reason for return</p>
+  </details>
+
+  <details>
+    <summary>How do I get a replacement item?</summary>
+    <p>Contact your Uniform Champion, they will be able to help process an order for replacement items.</p>
+  </details>
+
+  <details>
+    <summary>What if my item arrives damaged?</summary>
+    <p>Contact your Uniform Champion and provide them with:<br>
+    • Your Order#<br>
+    • What item was damaged<br>
+    • Any images you can share of the damage</p>
+  </details>
+</section>
+</div>

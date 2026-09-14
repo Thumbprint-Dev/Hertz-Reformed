@@ -1,0 +1,137 @@
+<style>
+.approvalBtn {
+    margin-left: 0 !important;
+    margin-right: 0;
+}
+.approval-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+.approval-actions.btn-group {
+    float: none !important;
+}
+.approval-actions .btn {
+    border-radius: 8px !important;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.2;
+    min-height: 44px;
+    min-width: 128px;
+    padding: 11px 22px;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+.approval-actions .btn-default {
+    background: #fff;
+    border: 1px solid #c9d4dc;
+    color: #3b3e41;
+}
+.approval-actions .btn-action {
+    background: #22863a;
+    border: 1px solid #22863a;
+    color: #fff;
+}
+.approval-actions .btn-danger {
+    background: #c43d3d;
+    border: 1px solid #c43d3d;
+    color: #fff;
+}
+.approval-actions .btn:hover,
+.approval-actions .btn:focus {
+    box-shadow: 0 2px 6px rgba(36, 38, 41, 0.14);
+}
+.approval-actions .btn-default:hover,
+.approval-actions .btn-default:focus {
+    background: #f7fafc;
+    border-color: #9fb0bd;
+}
+.approval-actions .btn-action:hover,
+.approval-actions .btn-action:focus {
+    background: #1b6f31;
+    border-color: #1b6f31;
+    color: #fff;
+}
+.approval-actions .btn-danger:hover,
+.approval-actions .btn-danger:focus {
+    background: #a92b2b;
+    border-color: #a92b2b;
+    color: #fff;
+}
+.approval-actions .btn[disabled] {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+.approval-order-fields {
+    background: #f7fafc;
+    border: 1px solid #d8e2e8;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 18px 20px;
+}
+.approval-order-fields h4 {
+    color: #242629;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 14px;
+}
+.approval-order-field {
+    color: #3b3e41;
+    font-size: 14px;
+    line-height: 1.45;
+    margin-top: 14px;
+}
+.approval-order-field:first-of-type {
+    margin-top: 0;
+}
+.approval-order-field-label {
+    color: #242629;
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 4px;
+}
+.approval-order-field-value {
+    color: #4d4f52;
+    display: block;
+    font-size: 15px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+  @media screen and (max-width: 767px) {
+    .approval-actions {
+        display: grid;
+        float: none !important;
+        grid-template-columns: 1fr;
+        margin-top: 14px;
+        width: 100%;
+    }
+    .approval-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+<div>
+    <loadingindicator ng-show="loadingIndicator" title="Please wait while we process your request."></loadingindicator>
+    <div class="approval-order-fields" ng-show="order.OrderFields && order.OrderFields.length" ng-init="fieldLabelOverrides = {'CG_IntegrationField1': 'Employee Number', 'CG_IntegrationField2': 'If placing an order on behalf of an employee for an exchange, please include the RMA number you were', 'CG_IntegrationField5': 'Please provide a brief reason for placing this order on behalf of this employee.'}">
+        <h4>Order Details</h4>
+        <div class="approval-order-field" ng-repeat="field in order.OrderFields" ng-if="field.Value !== undefined && field.Value !== null && field.Value !== ''">
+            <span class="approval-order-field-label">{{fieldLabelOverrides[field.Name] || field.Label || field.Name}}</span>
+            <span class="approval-order-field-value">{{field.Value}}</span>
+        </div>
+    </div>
+    <textarea class="form-control" ng-model="order.ApprovalComment" ng-attr-placeholder="{{('Approval' | r) + ' ' +  ('Comments' | r) | xlat}}"></textarea><br />
+    <div class="pull-right btn-group approval-actions">
+        <button class="btn btn-small btn-default" ng-click="editOrder()" ng-if="user.Permissions.contains('EditApprovalOrder')">{{'Edit' | r | xlat}}</button>
+        <button class="btn btn-small btn-action approvalBtn" ng-click="approveOrder()" ng-disabled="approveClicked">{{'Approve' | r | xlat}}</button>
+        <button class="btn btn-small btn-danger approvalDecline" ng-click="declineOrder()">{{'Decline' | r | xlat}}</button>
+    </div>
+    <div class="view-error-message" ng-show="error">{{error}}</div>
+</div>
+<hr/>

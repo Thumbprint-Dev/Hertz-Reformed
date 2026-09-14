@@ -1,0 +1,89 @@
+<!--
+  My Uniform Allocation.
+
+  Every custom element below uses an explicit closing tag. A self-closed custom tag
+  (<loadingindicator />) is parsed by the browser as an unclosed opener, and every sibling
+  after it becomes a silently swallowed hidden child until the parser meets a real close —
+  which is how an entire table can vanish with no error anywhere.
+
+  Deliberately plain markup: one heading, one table, one note. Nothing here needs to be
+  decorative, and an allocation an employee cannot read at a glance is a support call.
+-->
+<section class="hz-alloc">
+  <div class="hz-alloc-inner">
+
+    <h1 class="hz-alloc-title">My Uniform Allocation</h1>
+
+    <!-- Turned off until the API is reachable from a browser and Four51 credentials
+         exist. Says which, rather than rendering an empty page. -->
+    <div class="hz-alloc-note" ng-if="!alloc.enabled">
+      <p>Live allocation is not switched on for this environment yet.</p>
+    </div>
+
+    <div ng-if="alloc.enabled">
+
+      <p class="hz-alloc-muted" ng-show="alloc.loading">Loading your allocation&hellip;</p>
+
+      <div class="hz-alloc-error" ng-show="alloc.error">
+        <p>{{alloc.error}}</p>
+      </div>
+
+      <!-- Not eligible yet. Scenarios 3 and 4: two distinct messages, and always the
+           exact date rather than a shrug. -->
+      <div class="hz-alloc-note"
+           ng-show="!alloc.loading && !alloc.error && alloc.eligibility && alloc.eligibility.status !== 'eligible'">
+        <p>{{alloc.eligibility.message}}</p>
+      </div>
+
+      <div ng-show="!alloc.loading && !alloc.error && alloc.view">
+
+        <p class="hz-alloc-muted">
+          {{alloc.view.groupName}}
+          &middot; allocation year ends {{alloc.view.cycleEnd}}
+        </p>
+
+        <table class="hz-alloc-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="hz-alloc-num">Remaining</th>
+              <th class="hz-alloc-num">In cart</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="pool in alloc.view.pools">
+              <td>{{pool.name}}</td>
+              <td class="hz-alloc-num">{{pool.remaining}}</td>
+              <td class="hz-alloc-num">{{pool.reserved}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Withheld by a seasonal window, not by allocation. Shown rather than hidden so
+             the employee is told when it returns instead of wondering where it went.
+             `opensOn` is null when nothing will ever open it for them — a cold-weather
+             item at a warm location — and saying a date there would be a lie. -->
+        <div ng-if="alloc.view.seasonalClosed.length">
+          <h2 class="hz-alloc-subtitle">Not available right now</h2>
+          <table class="hz-alloc-table">
+            <tbody>
+              <tr ng-repeat="item in alloc.view.seasonalClosed">
+                <td>{{item.categoryName || item.poolName}}</td>
+                <td class="hz-alloc-num">
+                  <span ng-if="item.opensOn">Available from {{item.opensOn}}</span>
+                  <span ng-if="!item.opensOn">Not available at your location</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="hz-alloc-muted hz-alloc-footnote">
+          Quantities are ceilings, not requirements. You may order fewer now and the rest
+          later.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>

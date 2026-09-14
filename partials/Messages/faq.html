@@ -1,0 +1,267 @@
+<style>
+    #hertz-faq-page {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      line-height: 1.6;
+      background-color: transparent;
+      color: #333;
+      padding: 20px;
+      margin: 0 !important;
+      margin-bottom: 60px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+    }
+    #hertz-faq-page section {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    #hertz-faq-page h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #2c3e50;
+      font-size: 2.2em;
+      font-weight: 600;
+    }
+    #hertz-faq-page details {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 2px solid #e1e8ed;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    #hertz-faq-page details[open] {
+      border-color: #fc0;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.15);
+    }
+    #hertz-faq-page summary {
+      font-weight: 600;
+      font-size: 1.15em;
+      outline: none;
+      padding: 20px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #2c3e50;
+      user-select: none;
+      position: relative;
+    }
+    #hertz-faq-page summary::-webkit-details-marker {
+      display: none;
+    }
+    #hertz-faq-page summary::after {
+      content: '+';
+      font-size: 1.8em;
+      font-weight: 300;
+      color: #666;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 15px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      border-radius: 50%;
+      line-height: 1;
+    }
+    #hertz-faq-page details[open] summary::after {
+      content: '−';
+      transform: rotate(180deg);
+      background: #fc0;
+      color: #fff;
+    }
+    #hertz-faq-page summary:hover::after {
+      background: #fc0;
+      color: #fff;
+    }
+    #hertz-faq-page summary::before {
+      content: 'Click to expand';
+      font-size: 0.75em;
+      font-weight: 400;
+      color: #7f8c8d;
+      position: absolute;
+      right: 60px;
+      font-style: italic;
+      opacity: 0.7;
+    }
+    #hertz-faq-page details[open] summary::before {
+      content: 'Click to collapse';
+    }
+    #hertz-faq-page details p {
+      padding: 0 25px 25px 25px;
+      margin: 0;
+      color: #555;
+      line-height: 1.7;
+      animation: hertzFaqFadeIn 0.3s ease;
+    }
+    @keyframes hertzFaqFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    #hertz-faq-page summary:hover {
+      color: #2c3e50;
+    }
+    #hertz-faq-page h2 {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #fc0;
+    }
+    #hertz-faq-page h2:first-of-type {
+      margin-top: 20px;
+    }
+    #hertz-faq-page details p a {
+      color: #fc0;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+    #hertz-faq-page details p a:hover {
+      color: #e6b800;
+      border-bottom-color: #e6b800;
+    }
+    
+    /* Hide "Click to expand" text on mobile */
+    @media screen and (max-width: 768px) {
+      #hertz-faq-page summary::before {
+        display: none;
+      }
+    }
+    
+    /* Hide "enlarged view" element that appears from global scripts */
+    #hertz-faq-page [class*="enlarged"], 
+    #hertz-faq-page [id*="enlarged"],
+    #hertz-faq-page [class*="Enlarged"],
+    #hertz-faq-page [id*="Enlarged"],
+    #hertz-faq-page [title*="enlarged"],
+    #hertz-faq-page [title*="Enlarged"] {
+      display: none !important;
+    }
+  </style>
+<div id="hertz-faq-page">
+<section>
+  <h1>Frequently Asked Questions</h1>
+
+  <h2>Ordering on Behalf of Employees</h2>
+
+  <details>
+    <summary>How to place orders on behalf of an employee?</summary>
+    <p>Each order must be placed separately for each employee to ensure that their employee ID is being referenced at checkout for reporting purposes.<br>
+    You can then add the items that are needed into the cart and checkout as normal.<br>
+    Please click <a href="#" target="_blank">[HERE]</a> for step by step instructions.</p>
+  </details>
+
+  <details>
+    <summary>What should I do if an employee reaches out to place their uniform order on their behalf because their size is out of stock?</summary>
+    <p>If the size is out of stock we recommend selecting a different size or style. If they need that specific size that is out of stock and you place their order it will go into backorder status.</p>
+  </details>
+
+  <details>
+    <summary>What is the location# and where do I find it?</summary>
+    <p>The Location# is your 4 digit area number. You will need to use the Location# at checkout to find the location you want to ship to.<br>
+    <strong>NOTE:</strong> some Dollar and Thrifty locations are 3 digits but they start with a zero - you will need to reference that zero (EX: 0567).</p>
+  </details>
+
+  <details>
+    <summary>What happens if an employee should be getting uniforms but they are not a part of the current allocation?</summary>
+    <p>Please reach out to <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a> with the title of the employee that you believe should be getting uniforms.</p>
+  </details>
+
+  <details>
+    <summary>How do I order name tags?</summary>
+    <p>Please click <a href="#" target="_blank">[HERE]</a> for step by step instructions on ordering name tags.</p>
+  </details>
+
+  <details>
+    <summary>What happens if a title is not listed for the Leadership Name Tags?</summary>
+    <p>Please reach out to <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a></p>
+  </details>
+
+  <details>
+    <summary>Not sure which size to choose?</summary>
+    <p>Please be sure you are referencing the correct size charts - measurements are listed in both inches and centimeters.<br>
+    All measurements are taken flat, not around the body. For example, when measuring hips, measure from side to side rather than around the full circumference.<br>
+    Reference <a href="https://drive.google.com/file/d/156chi4sZtTDjn-x-LTvrwvi6RBhUGUFB/view" target="_blank">[THIS]</a> "how to measure" guide for instructions on how to measure yourself.<br>
+    If you're between sizes, we recommend selecting the larger size for a more comfortable fit.</p>
+  </details>
+
+  <details>
+    <summary>Where is my order shipping to?</summary>
+    <p>Your orders are being shipped to the location that you select at checkout.</p>
+  </details>
+
+  <details>
+    <summary>Where is the order shipping to for employees who order via their allocation?</summary>
+    <p>Orders placed during the initial launch will ship in bulk to Uniform Champions for distribution, per the included packing slips.<br>
+    Orders placed after the initial launch will ship directly to the employees location, addressed to them.<br>
+    To update a shipping address for a location contact <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a></p>
+  </details>
+
+  <details>
+    <summary>How can I find my tracking for my order?</summary>
+    <p>Log into your account and click on "orders" at the top and you'll be able to click into your order to get the status - if shipped you'll find tracking there.</p>
+  </details>
+
+  <h2>Returns & Exchanges</h2>
+
+  <details>
+    <summary>How long do I have to request a return or exchange?</summary>
+    <p>You must submit your request within 30 days of receiving your uniform.</p>
+  </details>
+
+  <details>
+    <summary>Are all items eligible for return?</summary>
+    <p>No. Worn, washed, altered, or damaged items (outside of shipping defects) are not eligible. Also name badges cannot be returned.</p>
+  </details>
+
+  <details>
+    <summary>What condition must returned items be in?</summary>
+    <p>Items must be new, unworn, & unwashed.</p>
+  </details>
+
+  <details>
+    <summary>How do I start a return or exchange?</summary>
+    <p>Uniform Champions will submit on behalf of the employee via the online return & exchange request form and provide:<br>
+    • The Order#<br>
+    • What item was damaged<br>
+    • Any images you can share of the damage</p>
+  </details>
+
+  <details>
+    <summary>Who provides the return shipping label?</summary>
+    <p>When you submit your return/exchange form - Thumbprint Customer Service team will send a return label that can be used for the return.<br>
+    These returns will be charged to Hertz.</p>
+  </details>
+
+  <details>
+    <summary>How do I get a replacement item?</summary>
+    <p>Uniform Champions will place replacement item orders on behalf of the employees.</p>
+  </details>
+
+  <details>
+    <summary>What if my item arrives damaged?</summary>
+    <p>Uniform Champions will submit the damage via the online return & exchange request form and provide:<br>
+    • Your Order#<br>
+    • What item was damaged<br>
+    • Any images you can share of the damage</p>
+  </details>
+</section>
+</div>

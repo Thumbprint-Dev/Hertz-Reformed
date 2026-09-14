@@ -1,0 +1,126 @@
+<style media="screen">
+  .product-list-area {
+    box-shadow: rgb(0 0 0 / 19%) 0px 10px 20px, rgb(0 0 0 / 23%) 0px 6px 6px;
+    border-radius: 20px;
+  }
+
+  .promo-thumbnail img {
+    width: 70%;
+  }
+
+  .promo-thumbnail-container {
+    box-shadow: -2px 2px 1px -1px rgb(0 0 0 / 20%), 1px 1px 1px 0px rgb(0 0 0 / 14%), 0px 0px 3px 1px rgb(0 0 0 / 12%);
+    border-radius: 20px;
+    margin-bottom: 25px;
+  }
+
+  .promo-thumbnail {
+    text-decoration: none;
+    min-height: 250px;
+  }
+
+  .product-name {
+    font-size: 16px;
+    height: 35px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .img-hover-wrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .img-hover-wrapper img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .img-hover-wrapper .img-hover {
+    display: none;
+  }
+
+  .img-hover-wrapper:hover .img-hover {
+    display: block;
+  }
+
+  .img-hover-wrapper:hover .img-default {
+    display: none;
+  }
+
+  .modal-close-x {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    color: #081B24;
+  }
+
+  .modal-close-x:hover {
+    cursor: pointer;
+  }
+</style>
+
+<!-- GENERAL PRODUCT TEMPLATE -->
+<div class="451qa_prod_item row product" ng-hide="$parent.currentCategory.InteropID === 'tth_floormats' || $parent.currentCategory.InteropID === 'tth_banners' || $parent.currentCategory.InteropID === 'tth_magnets'">
+  <div class="col-xs-12 text-center product-list-area">
+    <a class="productFig" href="product/{{LineItem.Product.InteropID}}">
+      <figure ng-show="LineItem.Variant.SmallImageUrl || LineItem.Product.SmallImageUrl">
+        <div class="img-hover-wrapper">
+          <img class="img-default" ng-src="{{LineItem.Variant.SmallImageUrl || LineItem.Product.SmallImageUrl}}" />
+          <img class="img-hover" ng-src="{{LineItem.Variant.LargeImageUrl || LineItem.Product.LargeImageUrl}}" />
+        </div>
+      </figure>
+      <div class="empty" ng-hide="LineItem.Variant.SmallImageUrl || LineItem.Product.SmallImageUrl">
+        <span class="fa empty"><i class="fa fa-camera"></i></span>
+      </div>
+      <p class="text-center ng-binding productListImage" ng-bind-html="LineItem.Product.Name"></p>
+      <div ng-hide="$parent.currentCategory.InteropID === 'adt_top10' || $parent.currentCategory.InteropID === 'adt_bk'">
+        <span>{{LineItem.PriceSchedule.PriceBreaks[0].Price | culturecurrency}}</span>
+      </div>
+      <p ng-show="LineItem.Product.DisplayInventory && inventoryDisplay(LineItem.Product, LineItem.Variant) != undefined && ($parent.currentCategory.InteropID === 'adt_welcome' || $parent.currentCategory.InteropID === 'adt_top10' || $parent.currentCategory.InteropID === 'adt_bk')" style="margin: 0; padding-top: 10px;">
+        <span class="text-info">{{'Quantity Available' | r | xlat}}:</span> {{inventoryDisplay(LineItem.Product, LineItem.Variant)}}
+      </p>
+    </a>
+
+    <a href="product/{{LineItem.Product.InteropID}}" style="min-height: 0; padding: 0;" ng-show="$parent.currentCategory.InteropID === 'tts_print'">
+      <button class="btn btn-info btn-block btn-md text-center add-to-cart-button" style="margin-bottom: 20px;">Start Creating</button>
+    </a>
+
+    <a href="product/{{LineItem.Product.InteropID}}" style="min-height: 0; padding: 0;" ng-show="true">
+      <button class="btn btn-info btn-block btn-md text-center add-to-cart-button" style="margin-bottom: 20px;">Click Here</button>
+    </a>
+  </div>
+</div>
+
+<!-- SPECIAL CASE PRODUCT TEMPLATE -->
+<div class="451qa_prod_item row product" ng-show="$parent.currentCategory.InteropID === 'tth_floormats' || $parent.currentCategory.InteropID === 'tth_banners' || $parent.currentCategory.InteropID === 'tth_magnets'" style="width: fit-content;">
+  <div class="col-xs-12 text-center product-list-area">
+    <a class="productFig" href="product/{{LineItem.Product.InteropID}}">
+      <figure ng-show="LineItem.Variant.SmallImageUrl || LineItem.Product.SmallImageUrl">
+        <img ng-src="{{LineItem.Variant.SmallImageUrl || LineItem.Product.SmallImageUrl}}" />
+      </figure>
+      <div class="empty" ng-hide="LineItem.Variant.SmallImageUrl || LineItem.Product.SmallImageUrl">
+        <span class="fa empty"><i class="fa fa-camera"></i></span>
+      </div>
+      <p class="text-center ng-binding productListImage" ng-bind-html="LineItem.Product.Name"></p>
+      <div ng-hide="$parent.currentCategory.InteropID === 'adt_top10' || $parent.currentCategory.InteropID === 'adt_bk'">
+        <span>{{LineItem.PriceSchedule.PriceBreaks[0].Price | culturecurrency}}</span>
+      </div>
+      <p ng-show="LineItem.Product.DisplayInventory && inventoryDisplay(LineItem.Product, LineItem.Variant) != undefined && ($parent.currentCategory.InteropID === 'adt_welcome' || $parent.currentCategory.InteropID === 'adt_top10' || $parent.currentCategory.InteropID === 'adt_bk')" style="margin: 0; padding-top: 10px;">
+        <span class="text-info">{{'Quantity Available' | r | xlat}}:</span> {{inventoryDisplay(LineItem.Product, LineItem.Variant)}}
+      </p>
+    </a>
+
+    <a href="product/{{LineItem.Product.InteropID}}" style="min-height: 0; padding: 0;" ng-show="$parent.currentCategory.InteropID === 'tts_print'">
+      <button class="btn btn-info btn-block btn-md text-center add-to-cart-button" style="margin-bottom: 20px;">Start Creating</button>
+    </a>
+
+    <a href="product/{{LineItem.Product.InteropID}}" style="min-height: 0; padding: 0;" ng-show="true">
+      <button class="btn btn-info btn-block btn-md text-center add-to-cart-button" style="margin-bottom: 20px;">Click Here</button>
+    </a>
+  </div>
+</div>

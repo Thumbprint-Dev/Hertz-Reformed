@@ -1,0 +1,596 @@
+<style>
+	.cart-title {
+	  font-size: 40px;
+	  font-weight: bold;
+	  letter-spacing: -0.74px;
+	  line-height: 63px;
+	}
+	.headerPadding {
+		padding-top:20px;
+	}
+	.order-summary-container {
+	  background-color: #ededed;
+	  border-radius: 24px;
+	}
+	.order-summary-inner-container {
+	  padding: 30px;
+	}
+	.order-summary-header {
+	  color: #000000;
+	  font-size: 32px;
+	  font-weight: bold;
+	  letter-spacing: -0.59px;
+	  line-height: 63px;
+	}
+	.order-summary-body {
+	  color: #000000;
+	  font-size: 20px;
+	  letter-spacing: -0.37px;
+	  line-height: 24px;
+	  padding-bottom: 15px;
+	}
+	.order-summary-total {
+	  border-top: 1px solid black;
+	  padding-top: 30px;
+	  color: #000000;
+	  font-size: 25px;
+	  font-weight: 800;
+	  letter-spacing: -0.46px;
+	  line-height: 30px;
+	}
+	.checkoutBtn-cart {
+	  height: 61px;
+	  width: -webkit-fill-available;
+  
+	  font-size: 20px !important;
+	  font-weight: 800;
+	  letter-spacing: -0.31px;
+	  line-height: 20px;
+	  text-align: center;
+	  background: #80BC00;
+	  border: #80BC00;
+	  color: white;
+	}
+	.checkoutBtn-save {
+	  height: 61px;
+	  width: -webkit-fill-available;
+	  color: black;
+	  font-size: 20px !important;
+	  font-weight: 800;
+	  letter-spacing: -0.31px;
+	  line-height: 20px;
+	  text-align: center;
+	  background: white;
+	  border: white;
+	}
+	.checkoutBtn-save:hover {
+	  background:#e5e5e5;
+	  border: #e5e5e5;
+	  color:black;
+	}
+	.product-name {
+	  color: black;
+	  font-size: 22px;
+	  font-weight: bold;
+	  letter-spacing: -0.59px;
+  
+	}
+	.product-id {
+	  color: #000000;
+	  font-size: 14px;
+	  letter-spacing: -0.37px;
+	  line-height: 20px;
+	}
+  .remove-button {
+	 color: #818181;
+	 font-family: 'Open Sans', Arial, sans-serif !important;
+	 font-size: 14px;
+	 letter-spacing: -0.26px;
+	 line-height: 16px;
+	 text-align: right;
+	 background: White;
+	 border: White;
+	 border-radius: 24px
+  }
+  .remove-button:hover {
+	background: #FF6961;
+	border: #FF6961;
+	color: white;
+	border-radius: 5px;
+  }
+  .checkoutBtn-continue {
+	height: 61px;
+	width: -webkit-fill-available;
+	color: white;
+	font-size: 20px !important;
+	font-weight: 800;
+	letter-spacing: -0.31px;
+	line-height: 20px;
+	text-align: center;
+	background: black;
+	border: black;
+	margin-bottom: 15px;
+  }
+  .checkoutBtn-continue:hover {
+	background: black;
+	border: black;
+	color:white;
+  }
+  .checkoutBtn-cancel {
+	height: 61px;
+	width: -webkit-fill-available;
+	color: white;
+	font-size: 20px !important;
+	font-weight: 800;
+	letter-spacing: -0.31px;
+	line-height: 20px;
+	text-align: center;
+	background: #D43F3A;
+	border: #D43F3A;
+  }
+  .checkoutBtn-cancel:hover {
+	background:#A9322E;
+	border: #A9322E;
+	color: white;
+  }
+  .panel-lineitem .btn-danger {
+	  position: unset;
+  }
+  .cart-fields {
+	width: 70%;
+  }
+  .remove-btn {
+	text-align: center;
+  }
+  
+  .FloorPlanImage {
+		  min-height: 100px;
+		  max-height: 100px;
+		  margin-left: auto;
+		  margin-right: auto;
+	   }
+	   .FloorPlanImage[srcFull]{
+		   cursor:pointer;
+	   }
+  
+  @media screen and (max-width: 1199px) {
+	.panel-lineitem .btn-danger {
+	  margin-bottom: 10px;
+	  margin-top: 10px;
+	  float: left;
+	}
+	.remove-btn {
+	  float: left;
+	}
+  }
+	@media screen and (max-width: 1000px) {
+	  .order-summary-container {
+		width: unset;
+	  }
+	  .checkoutBtn-cart {
+		width: -webkit-fill-available;
+	  }
+	  .checkoutBtn-save {
+		width: -webkit-fill-available;
+	  }
+	}
+  
+  </style>
+  <section class="headerPadding">
+	<div ng-show="currentOrder" class="hidden-print">
+	  <nav class="nav">
+		<!--<ul>
+				  <li><span class="text-primary">{{'Cart' | r | xlat}}</span></li>
+				  <li class="pull-right" ng-click="onPrint()"><span><i class="fa fa-print text-primary" rel="tooltip" title="{{'Print' | r | xlat}}" ></i></span></li>
+			  </ul>-->
+	  </nav>
+  
+	  <!--<p class="cart-title">Your Cart</p>-->
+	  <form ng-submit="saveChanges()" name="cart" novalidate="">
+		<loadingindicator ng-show="displayLoadingIndicator" title="{{'Please wait while we save your order' | r | xlat}}" />
+		<div>
+		  <cartmessage />
+		</div>
+  
+		<!-- start of cart -->
+		<div class="row">
+  
+		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+			<div class="panel" style="border-top: 1px solid #979797;border-bottom: 1px solid #979797;">
+			  <!--<div class="panel-heading">
+					  <h3 class="panel-title">
+						  {{currentOrder.LineItems.length}} {{'item' + (currentOrder.LineItems.length > 1 ? 's' : '') | rl | xlat}} {{'in your' | rl | xlat:(currentOrder.LineItems.length)}} {{'cart' | rl | xlat}}
+					  </h3>
+				  </div>-->
+			  <div class="panel-lineitem" ng-repeat="item in currentOrder.LineItems">
+				<!--<button type="button" title="Remove Item" class="btn btn-danger" ng-click="removeItem(item)">
+				  <span class="fa fa-minus-circle fa-inverse"></span>
+				</button>-->
+				<div class="col-sm-4 col-md-4 col-lg-4">
+				  <div class="row">
+					<!--<div class="col-xs-6 col-sm-12 col-md-6">
+					  <div class="view-form-icon">
+						<quantityfield required="true" lineitem="item" class="quantity" />
+					  </div>
+					  <p class="quantity-total text-center">
+						<small>{{'Total Quantity' | r | xlat}} <span ng-show="item.Quantity * item.Product.QuantityMultiplier">{{item.Quantity * item.Product.QuantityMultiplier}}</span></small>
+					  </p>
+					</div>-->
+					<div class="col-xs-6 col-sm-12 col-md-6" ng-show="(item.Variant.LargeImageUrl || item.Product.SmallImageUrl) && item.Product.Type === 'Static'">
+					  <figure>
+						<img ng-src="{{item.Variant.LargeImageUrl || item.Product.SmallImageUrl}}" />
+					  </figure>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="width: 200px;height: 200px;" ng-show="item.Product.Type === 'VariableText'">
+					  <p style="text-align:center;margin-bottom:0;" ng-show="item.Product.Type === 'VariableText'"><strong>Click Image to Enlarge</strong></p>
+						<figure>
+						  <!-- <img id="451_img_prod_lg" class="product-image-large img-responsive" ng-show="item.Variant === null" ng-src="{{item.Variant.PreviewUrl || item.Variant.LargeImageUrl || item.Product.LargeImageUrl}}" imageonload /> -->
+						  <!-- <img ng-src="{{item.Product.LargeImageUrl}}" srcFull="{{item.Product.LargeImageUrl}}" class="FloorPlanImage" title="click to enlarge" ng-show="item.Variant === null"> -->
+						  <img ng-src="{{item.Variant.PreviewUrl}}" srcFull="{{item.Variant.PreviewUrl}}" class="FloorPlanImage img-responsive" title="click to enlarge" ng-show="item.Product.Type === 'VariableText'" style="width: 100%;">
+					  </figure>
+					</div>
+				  </div>
+				</div>
+				<div class="col-sm-8 col-md-8 col-lg-8" style="border:none;">
+				  <div class="row">
+					<div class="col-md-5" ng-if="currentOrder.Status != 'AwaitingApproval' || isEditforApproval" ng-hide="salesKit === true">
+					  <a class="line-item-link" ng-href="{{(item.Product.Type == 'Kit' ? 'kit' : 'cart') + '/' + (item.Product.InteropID) + '/' + (isEditforApproval ? (currentOrder.ID + '/') : '') + ($index)}}" style="pointer-events: none;cursor: default;text-decoration: none;">
+						<h3 class="text-primary product-name">
+						  <!--<i ng-show="!item.KitIsInvalid" class="fa fa-edit"></i>-->
+						  <i ng-show="item.KitIsInvalid" class="fa fa-exclamation-triangle"></i>
+						  {{item.Product.Name}}
+						</h3>
+						<p class="product-id">
+						  {{item.ProductIDText}}
+						</p>
+						<!-- Size display (derived from ProductIDText / SKU) -->
+						<p class="product-id" ng-if="item && item.ProductIDText">
+						  <span ng-if="item.ProductIDText.indexOf('HTZ-RFHAT-') === 0 || item.ProductIDText.indexOf('HTZ-BEANIE-') === 0"><strong>Size: OSFA (One Size Fits All)</strong></span>
+						  <span ng-if="!(item.ProductIDText.indexOf('HTZ-RFHAT-') === 0 || item.ProductIDText.indexOf('HTZ-BEANIE-') === 0)
+							&& item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]
+							&& ['HZ','DT','UV'].indexOf(item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]) === -1">
+							<strong>Size: {{item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]}}</strong>
+						  </span>
+						</p>
+					  </a>
+					</div>
+					<div class="col-md-5" ng-if="currentOrder.Status != 'AwaitingApproval' || isEditforApproval" ng-show="salesKit === true">
+					  <a class="line-item-link" ng-href="{{(item.Product.Type == 'Kit' ? 'kit' : 'cart') + '/' + (item.Product.InteropID) + '/' + (isEditforApproval ? (currentOrder.ID + '/') : '') + ($index)}}" style="pointer-events: none;cursor: default;text-decoration: none;">
+						<h3 class="text-primary product-name">
+						  <!--<i ng-show="!item.KitIsInvalid" class="fa fa-edit"></i>-->
+						  <i ng-show="item.KitIsInvalid" class="fa fa-exclamation-triangle"></i>
+						  {{item.Product.Name}}
+						</h3>
+						<p class="product-id">
+						  {{item.ProductIDText}}
+						</p>
+						<p class="product-id" ng-if="item && item.ProductIDText">
+						  <span ng-if="item.ProductIDText.indexOf('HTZ-RFHAT-') === 0 || item.ProductIDText.indexOf('HTZ-BEANIE-') === 0"><strong>Size: OSFA (One Size Fits All)</strong></span>
+						  <span ng-if="!(item.ProductIDText.indexOf('HTZ-RFHAT-') === 0 || item.ProductIDText.indexOf('HTZ-BEANIE-') === 0)
+							&& item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]
+							&& ['HZ','DT','UV'].indexOf(item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]) === -1">
+							<strong>Size: {{item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]}}</strong>
+						  </span>
+						</p>
+					  </a>
+					</div>
+					<div class="col-md-5" ng-if="currentOrder.Status == 'AwaitingApproval' && !isEditforApproval">
+					  <h3 class="text-primary product-name">
+						{{item.Product.Name}}
+					  </h3>
+					  <p class="product-id">
+						{{item.ProductIDText}}
+					  </p>
+					  <p class="product-id" ng-if="item && item.ProductIDText">
+						<span ng-if="item.ProductIDText.indexOf('HTZ-RFHAT-') === 0 || item.ProductIDText.indexOf('HTZ-BEANIE-') === 0"><strong>Size: OSFA (One Size Fits All)</strong></span>
+						<span ng-if="!(item.ProductIDText.indexOf('HTZ-RFHAT-') === 0 || item.ProductIDText.indexOf('HTZ-BEANIE-') === 0)
+						  && item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]
+						  && ['HZ','DT','UV'].indexOf(item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]) === -1">
+						  <strong>Size: {{item.ProductIDText.split('-')[item.ProductIDText.split('-').length - 1]}}</strong>
+						</span>
+					  </p>
+					</div>
+					<div class="col-md-7">
+					  <div class="row" ng-if="!(user.Permissions.contains('HidePricing'))">
+						<!--<div class="col-xs-6">
+						  <p ng-show="hidePrices == false">
+							<small>{{'Unit Price' | r | xlat}}</small>
+							<br />
+							{{item.UnitPrice | culturecurrency}}
+						  </p>
+						</div>-->
+						<div class="col-xs-7 pull-right">
+						  <div ng-show="hidePrices == false">
+							<!--<small>{{'Total' | r | xlat}}</small>-->
+							<h2 class="text-success" style="color: #000000;">
+							  {{item.LineTotal | culturecurrency}}
+							</h2>
+						  </div>
+						</div>
+					  </div>
+					  <div class="row" ng-if="(user.Permissions.contains('DateNeededRequired') || user.Permissions.contains('DateNeededOptional')) || user.Permissions.contains('CostCenterPerLine')">
+						<div class="col-xs-12 col-sm-6" ng-if="user.Permissions.contains('DateNeededRequired') || user.Permissions.contains('DateNeededOptional')">
+						  <div class="row view-form-icon">
+							<div class="col-xs-9">
+							  <label ng-class="{required: user.Permissions.contains('DateNeededRequired')}" ng-show="item.DateNeeded || user.Permissions.contains('DateNeededRequired')">{{'Date' | r | xlat}}</label>
+							  <!--Default Datepicker -->
+							  <div class="btn btn-default btn-block btn-date hidden-lg hidden-md" ng-click="$event.preventDefault();$event.stopPropagation();opened = !opened;" style="margin:0; height:40px; padding-top:8px;">
+								{{item.DateNeeded ? '' : ('Tap to set a date' | xlat)}}
+								<span class="text-info">{{item.DateNeeded | date:user.Culture.DateFormat.short}}</span>
+							  </div>
+							  <input name="dateneeded" placeholder="{{'Date' | xlat}}" ng-model="item.DateNeeded" ng-required="user.Permissions.contains('DateNeededRequired')" type="text" class="form-control" datepicker-popup="{{user.Culture.DateFormat.short}}"
+								is-open="opened" min="currentDate" />
+							  <i class="fa fa-calendar"></i>
+							</div>
+							<div class="col-xs-3">
+							  <button type="button" title="{{'copy to all' | r | xlat}}" class="btn btn-default pull-right" value="{{'copy to all' | r | xlat}}" ng-click="copyAddressToAll()" ng-show="item.DateNeeded" ng-if="$index == 0 && currentOrder.LineItems.length > 1 && user.CostCenters.length != 1">
+								<span class="fa fa-copy text-info"></span>
+							  </button>
+							</div>
+						  </div>
+						</div>
+						<div class="col-xs-12 col-sm-6" ng-if="user.Permissions.contains('CostCenterPerLine')">
+						  <div class="row view-form-icon">
+							<div class="col-xs-9">
+							  <label class="required" ng-if="user.CostCenters.length > 1 && !user.Permissions.contains('FreeFormCostCenter')">{{'Cost Center' | r | xlat}}</label>
+							  <select name="costcenter" class="form-control" style="padding-left: 25px;" required ng-if="user.CostCenters.length > 1 && !user.Permissions.contains('FreeFormCostCenter')" ng-options="center.Name as center.Name for center in user.CostCenters"
+								ng-model="item.CostCenter">
+								<option value=""></option>
+							  </select>
+							  <input name="costcenter" class="form-control" ng-if="user.Permissions.contains('FreeFormCostCenter')" ng-model="item.CostCenter" type='text' required placeholder="{{'Cost Center' | r | xlat}}" />
+							  <span ng-if="user.CostCenters.length == 1 && !user.Permissions.contains('FreeFormCostCenter')">{{item.CostCenter}}</span>
+							  <i ng-if="user.CostCenters.length > 1" class="fa fa-money"></i>
+							</div>
+							<div class="col-xs-3">
+							  <button type="button" title="{{'copy to all' | r | xlat}}" class="btn btn-default pull-right" value="{{'copy to all' | r | xlat}}" ng-click="copyCostCenterToAll()" ng-show="item.CostCenter" ng-hide="user.CostCenters.length == 1 && !user.Permissions.contains('FreeFormCostCenter')"
+								ng-if="$index == 0 && currentOrder.LineItems.length > 1">
+								<span class="fa fa-copy text-info"></span>
+							  </button>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					</div>
+  
+				  </div>
+				  <div class="row cart-fields" style="display: inline-block;">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+					<!--  <quantityfield required="true" lineitem="item" class="quantity" ng-hide="salesKit === true"/> -->
+                        <span>Quantity: <strong>{{item.Quantity}}</strong></span>
+					</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 remove-btn" ng-show="hertzChampionUser || dollarChampionUser || thriftyChampionUser">
+					  <button type="button" title="Remove Item" class="btn btn-danger remove-button" ng-click="removeItem(item)" style="border-radius: 4px;">REMOVE</button>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+					  <span class="btn btn-group" ng-if="item.Variant.IsMpowerVariant" style="padding: 0;">
+						<button type="button" title="{{'Download' | r | xlat}}" class="btn btn-primary" ng-click="downloadProof(item)">
+						  <span><i class="fa fa-download"></i> {{'Download' | r | xlat}}</span>
+						</button>
+					  </span>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="salesKit === true" style="padding-top: 20px">
+					  <p style="text-align:center;margin-bottom:0;" ng-show="item.Variant != null"><strong>Click Image to Enlarge</strong></p>
+						<figure>
+						  <!-- <img id="451_img_prod_lg" class="product-image-large img-responsive" ng-show="item.Variant === null" ng-src="{{item.Variant.PreviewUrl || item.Variant.LargeImageUrl || item.Product.LargeImageUrl}}" imageonload /> -->
+						  <!-- <img ng-src="{{item.Product.LargeImageUrl}}" srcFull="{{item.Product.LargeImageUrl}}" class="FloorPlanImage" title="click to enlarge" ng-show="item.Variant === null"> -->
+						  <img ng-src="{{item.Variant.PreviewUrl}}" srcFull="{{item.Variant.PreviewUrl}}" class="FloorPlanImage" title="click to enlarge" ng-show="item.Variant != null">
+					  </figure>
+					  <div ng-if="item.Product.InteropID === 'ADPT-NAM-001'" class="alert alert-danger text-center" style="margin-top:15px;border-radius:4px;"><span><input type="checkbox"
+						  required="required"
+						  ng-model="confirmTried.value1"
+						  name="Confirmed">
+						  By checking this box, I acknowledge I have reviewed and approved all text on <strong>Full Color Name Badge (ADPT-NAM-001)</strong>. This product is sent straight into production once the order is placed. No refunds will be given for spelling errors or mistakes.</span>
+					  </div>
+					</div>
+					  <!--<span class="fa fa-minus-circle fa-inverse"></span>-->
+				  </div>
+				  <div class="row hidden" ng-hide="item.Product.InteropID === 'ADT-BC-001' || item.Product.InteropID === 'ADT-BC-002' || item.Product.InteropID === 'ADT-BC-003' || item.Product.InteropID === 'ADT-BC-004'">
+					<div class="col-xs-12">
+					  <span class="btn btn-group" ng-if="item.Variant.IsMpowerVariant" style="padding: 0;">
+						<!-- <button type="button" title="{{'Download' | r | xlat}}" class="btn btn-primary" ng-click="downloadProof(item)">
+						  <span><i class="fa fa-download"></i> {{'Download' | r | xlat}}</span>
+						</button> -->
+						<button type="button" class="btn btn-default" ng-if="item.SpecsLength > 0" ng-click="item.toggleSpecs = !item.toggleSpecs">
+						  <span ng-show="!item.toggleSpecs"><i class="fa fa-plus-circle"></i> {{('Show' | r) + ' ' + ('Specification' | r) | xlat}}</span>
+						  <span ng-show="item.toggleSpecs"><i class="fa fa-minus-circle"></i> {{('Hide' | r) + ' ' + ('Specification' | r) | xlat}}</span>
+						</button>
+					  </span>
+					  <button ng-if="!item.Variant.IsMpowerVariant" type="button" class="btn btn-default" ng-show="item.SpecsLength > 0" ng-click="item.toggleSpecs = !item.toggleSpecs" style="padding: 10px;">
+						<span ng-show="!item.toggleSpecs"><i class="fa fa-plus-circle"></i> {{('Show' | r) + ' ' + ('Specification' | r) | xlat}}</span>
+						<span ng-show="item.toggleSpecs"><i class="fa fa-minus-circle"></i> {{('Hide' | r) + ' ' + ('Specification' | r) | xlat}}</span>
+					  </button>
+					  <ul ng-show="item.toggleSpecs == true" class="list-group">
+						<li ng-repeat="spec in item.Specs | filter:{'CanSetForLineItem':true} " class="list-group-item">
+						  <span class="text-info">{{spec.Label || spec.Name}}: </span>
+						  <span ng-if="spec.ControlType == 'File'"><a ng-href="{{spec.File.Url}}">{{spec.File.OriginalName + Extension}}</a></span>
+						  <span ng-if="spec.ControlType != 'File'">{{spec.Value || ('(unspecified)' | xlat)}}</span>
+						</li>
+					  </ul>
+					</div>
+				  </div>
+				</div>
+  
+			  </div>
+  
+			  <div class="">
+				<div class="row">
+				  <!-- <div class="col-md-4 col-lg-3">
+							  <giftcardredemption ng-if="user.Permissions.contains('ViewPromotions')" />
+						  </div> -->
+				  <!--<div class="col-md-3 col-md-offset-5 col-lg-4 text-right" ng-if="!(user.Permissions.contains('HidePricing')) && hidePrices == false">
+					<h4 class="text-primary">
+					  <strong>{{'Subtotal' | r | xlat}} <span class="text-success">{{currentOrder.Subtotal | culturecurrency}}</span></strong>
+					</h4>
+					<p ng-show="TaxMethod" ng-if="user.Company.TaxMethod != 'NoTax'">
+					  <span class="text-info">{{'Shipping, handling and tax may be added to this subtotal.' | r | xlat}}</span>
+					</p>
+					<button type="button" neworder ng-if="user.Permissions.contains('MultipleShoppingCart') && currentOrder" class="btn btn-default" ng-click="newOrderLoadingIndicator = true;startNewOrder()">
+					  <loadingindicator ng-show="newOrderLoadingIndicator" />
+					  <small>{{"Start" | r | xlat}} {{"New" | r | xlat}} {{"Order" | r | xlat}}</small>
+					</button>
+				  </div>-->
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  <!-- end of cart -->
+		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4" ng-if="!PunchoutUser">
+			<div class="order-summary-container">
+			  <div class="order-summary-inner-container">
+				<p class="order-summary-header">Order Summary</p>
+				<p>
+				  <p class="order-summary-body" ng-if="!(user.Permissions.contains('HidePricing'))">
+					<span class="text-info">{{'Subtotal' | r | xlat}}</span>
+					<span class="pull-right">{{currentOrder.Subtotal | culturecurrency}}</span>
+				  </p>
+				  <p class="order-summary-body" ng-if="!(user.Permissions.contains('HidePricing'))">
+					<span class="text-info">{{'Tax' | r | xlat}}</span>
+					<span class="pull-right">{{currentOrder.TaxCost || 0 | culturecurrency}}</span>
+				  </p>
+				  <p class="order-summary-body" ng-if="!(user.Permissions.contains('HidePricing'))">
+					<span class="text-info">{{('Shipping' | r) | xlat}}</span>
+					<span class="pull-right">TBD</span>
+				  </p>
+				  <h4 class="order-summary-total" ng-if="!(user.Permissions.contains('HidePricing'))">
+					<strong>{{'Total' | r | xlat}}</strong>
+					<span class="text-success pull-right" style="color: #000000;"><strong>{{currentOrder.Total | culturecurrency}}</strong></span>
+				  </h4>
+				  <ul>
+				  <div ng-if="!(user.Permissions.contains(\'HidePricing\'))" class="alert alert-danger text-center" style="margin-top:15px;border-radius:4px;"><span><input type="checkbox"
+                       required="required"
+                       ng-model="confirmTried.value1"
+                       name="Confirmed">
+        &nbsp;By checking this box, I confirm that my full allotment is in my cart before checking out.</span>
+        <br/>
+      </div>
+					<li style="padding-top: 15px;padding-bottom: 15px;">
+					  <button type="button" class="btn checkoutBtn-cart" ng-class="{'btn-warning': cart.$invalid, 'btn-success': !cart.$invalid }" ng-click="checkOut()" ng-disabled="cart.$invalid || kitValidation">
+						<i ng-show="cart.$invalid || kitValidation" class="fa fa-warning"></i>
+						<span>{{'Check Out' | r | xlat}} {{window.outerWidth}}</span>
+					  </button>
+					</li>
+					<li ng-if="continue">
+					  <button type="button" class="btn checkoutBtn-continue" redirect="catalog">
+						<span class="hidden-xs">{{'Continue Shopping' | r | xlat}}</span>
+						<span class="visible-xs">{{'Shop' | r | xlat}}</span>
+					  </button>
+					</li>
+					<li style="padding-bottom: 15px;">
+					  <button type="submit" class="btn checkoutBtn-save" ng-click="saveChanges()">
+						<loadingindicator ng-show="displayLoadingIndicator" />
+						<span>{{('Save' | r) + ' ' + ('Order' | r) | xlat}}</span>
+					  </button>
+					</li>
+					<li>
+					  <button class="btn checkoutBtn-cancel" ng-click="currentOrder.Status == 'AwaitingApproval' ? cancelEdit() : cancelOrder()">
+						<span class="hidden-xs" ng-show="currentOrder.Status != 'AwaitingApproval'" style="color:white;">{{('Cancel' | r) + ' ' + ('Order' | r) | xlat}}</span>
+						<span class="visible-xs" style="color:white;">{{'Cancel' | r | xlat}}</span>
+					  </button>
+					</li>
+				  </ul>
+			  </div>
+			</div>
+		  </div>
+  
+		</div>
+  
+		<div class="navbar-fixed-bottom">
+		  <div class="alert-warning text-center" style="padding: 10px;" ng-if="currentOrder.RepeatError">
+			{{'Some items were not added to your repeat order' | r | xlat}}: {{currentOrder.RepeatError}}
+		  </div>
+		  <div class="view-response-message alert-success text-center" alert-show="actionMessage">
+			<p>{{actionMessage | r | xlat}}</p>
+		  </div>
+		  <div class="view-response-message alert-success text-center" alert-show="errorMessage">
+			<p>{{errorMessage | r | xlat}}</p>
+		  </div>
+		  <div class="view-response-message alert-danger text-center" alert-show="gcMessage">{{gcMessage}}</div>
+		  <div class="view-error-message" ng-show="cart.$error.required.length > 0">
+			<ul class="alert-warning">
+			  <li class="text-center">
+				<span class="badge">
+				  <i class="fa fa-exclamation-circle fa-inverse"></i>
+				  {{cart.$error.required.length}}
+				</span>
+			  </li>
+			  <li class="text-center">
+				<ul ng-class="{'one': errorSection == 'open', 'two': errorSection == '' }">
+				  <li ng-if="cart.dateneeded.$invalid">{{('Date needed' | r) +  ' is ' +  ('Required' | rl) | xlat}}</li>
+				  <li ng-if="cart.costcenter.$invalid">{{('Cost Center' | r) + ' is ' + ('Required' | rl) | xlat}}</li>
+				  <li ng-if="cart.qtyInput.$invalid">{{'You have entered an invalid ' + ('Quantity' | rl) | xlat}}</li>
+				  <li ng-if="cart.kitValidation.$invalid">{{'The kit has unconfigured items. You must configure them before continuing.' | r | xlat}}</li>
+				</ul>
+			  </li>
+			  <li class="text-center">
+				<a ng-show="cart.$error.required.length + (errorMessage ? 1 : 0) > 1">
+				  <i class="fa fa-caret-down" ng-click="errorSection = 'open'" ng-hide="errorSection == 'open'"></i>
+				  <i class="fa fa-caret-up" ng-click="errorSection = ''" ng-show="errorSection == 'open'"></i>
+				</a>
+			  </li>
+			</ul>
+		  </div>
+		  <!--<orderbuttons view="cart" continue="true"></orderbuttons>-->
+				  <!--<orderbuttons ng-if="!PunchoutUser" view="cart" continue="true"></orderbuttons>-->
+				  <ul ng-if="PunchoutUser">
+					  <li>
+						  <button type="button" class="btn btn-danger" ng-click="currentOrder.Status == 'AwaitingApproval' ? cancelEdit() : cancelOrder()">
+							  <small ng-if="currentOrder.Status != 'AwaitingApproval'">{{('Cancel' | r) + ' ' + ('Order' | r) | xlat}}</small>
+							  <small ng-if="currentOrder.Status == 'AwaitingApproval'">{{('Cancel' | r) + ' ' + ('Edit' | r) | xlat}}</small>
+						  </button>
+					  </li>
+					  <li>
+						  <button type="submit" class="btn btn-primary" ng-click="saveChanges()">
+							  <loadingindicator  ng-show="displayLoadingIndicator" />
+							  <small>{{('Save' | r) + ' ' + ('Order' | r) | xlat}}</small>
+						  </button>
+					  </li>
+					  <li>
+						  <button class="btn" ng-class="{'btn-warning': cart.$invalid || submitClicked, 'btn-success': !cart.$invalid || !submitClicked }" ng-click="submitPunchoutOrder()" ng-disabled="cart.$invalid || submitClicked">
+							  <i ng-show="cart.$invalid" class="fa fa-warning"></i>
+							  <span>{{'Submit' | r | xlat}} {{window.outerWidth}}</span>
+						  </button>
+					  </li>
+				  </ul>
+		</div>
+	  </form>
+	  <!-- RELATED PRODUCTS! -->
+	  <relatedproducts ng-if="relatedID" relatedgroupid="relatedID" />
+	</div>
+	  <form id="punchoutForm" method="POST" action="{{punchouturl}}">
+		  <div ng-repeat="(key, val) in punchoutForm">
+			  <input type="hidden" name="{{key}}" value="{{val}}" />
+		  </div>
+	  </form>
+	<cartprint class="visible-print" />
+  </section>
+  <script>
+	  jQuery(function($) {
+		  var $img, $imgModal = $("<div />").css({
+			  display: "none",
+			  "z-index": "99999999",
+			  position: "fixed",
+			  top: "0px",
+			  left: "0px",
+			  bottom: "0px",
+			  right: "0px",
+			  "overflow-y": "auto",
+			  "background-color": "rgba(0,0,0,.75)"
+		  }).append(
+			  $img = $("<img />").css({
+				  margin: "100px auto",
+				  width: "500px",
+				  "background-color": "white"
+			  })
+		  ).appendTo("body").on("click", function() {
+			  $imgModal.hide();
+		  });
+	  
+		  $(document).on("click", ".FloorPlanImage", function() {
+			  var src;
+			  if (src = $(this).attr("ng-src")) {
+				  $img.attr("src", src);
+				  $imgModal.show();
+			  }
+		  });
+	  });
+	  </script>

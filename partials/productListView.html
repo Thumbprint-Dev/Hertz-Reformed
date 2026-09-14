@@ -1,0 +1,1919 @@
+<style media="screen">
+	.promo-cat {
+	  margin: 12px;
+	  font-size: 18px;
+	  margin-top: 36px;
+	  line-height: normal;
+	  margin-bottom: 10px;
+	}
+	.promo-label {
+	  display: flex;
+	}
+	.promo-img {
+	  padding-top: 5px;
+	}
+	.container-form {
+			  display: flex;
+		  }
+  
+		  .column {
+			  flex: 1;
+			  padding: 20px;
+		  }
+		  .kit_img {
+			position: relative;
+			display: inline-block;
+			width: 250px;
+			border-radius: 8px;
+			max-width: 100%;
+			height: auto;
+		  }
+		  
+		  .kit_txt {
+			  font-size: 15px;
+			  font-weight: 600;
+		  }
+		  
+		  .kit_list li {
+			  max-width: 150px;
+			   display: inline-block;
+		  }
+		  
+		  .kit_list li p {
+			  text-align: center;
+		  }
+		  
+		  .kit_list {
+			  display: flex;
+			  flex-wrap: wrap;
+			  justify-content: space-around;
+		  }
+	.promo-text {
+	  padding-left: 10px;
+	  padding-top: 10px;
+	  font-weight: 500;
+	}
+	.divider {
+	  height: 1px;
+	  background-color: rgba(0, 0, 0, 0.12);
+	  width: 100%;
+	  margin-bottom: 14px;
+	}
+	.promo-button {
+	  background: transparent;
+	  border: none;
+	  padding: 5px 10px;
+	  min-width: 197px;
+	}
+	.promo-img-blue-active {
+	  display: block !important;
+	  position: absolute;
+	  top: 10px;
+	  left: 10px;
+	  z-index: 99;
+	}
+	.promo-img-blue-inactive {
+	  display: none;
+	}
+	.promo-button:hover {
+	  background-color: rgba(0, 0, 0, 0.04);
+	}
+   
+	.promo-button-active {
+	  color: rgb(53, 119, 212) !important;
+	  opacity: 0.7 !important;
+	  font-weight: 400 !important;
+	}
+   
+	.cat-ul {
+	  display: flex;
+	}
+	.promo-text:active {
+	  opacity: 0.7 !important;
+  }
+  .promo-text:focus {
+	opacity: 0.7 !important;
+  }
+	@media screen and (max-width: 600px) {
+	  .cat-ul {
+		flex-wrap: wrap;
+	  }
+	}
+  
+   /* Chapter Office Kit */  
+   .margin-Top {
+	  display: flex;
+	  justify-content: center;
+  }
+	.CSZ {
+		display: inline-block;
+	}
+	#started {
+		font-size: 20px;
+	} 
+
+	.panel-heading {
+		border: none;
+	
+	}
+	  .user-view-title {
+		color: #4E2683;
+		font-size: 50px;
+		font-weight: 800;
+		letter-spacing: -0.92px;
+		line-height: 50px;
+		text-align: center;
+		padding-bottom: 30px;
+	}
+	.user-view-text-1 {
+		color: #242629;
+		font-size: 30px;
+		letter-spacing: 2.03px;
+		line-height: 20px;
+		text-align: center;
+		font-weight: 700;
+		margin: 0;
+		margin-bottom: 15px;
+	}
+	.user-view-text-2 {
+		color: #242629;
+		font-size: 14px;
+		line-height: 20px;
+		text-align: center;
+		padding-bottom: 10px;
+	}
+	.user-view-text-3 {
+	  color: #3B3E41;
+		font-size: 45px;
+		font-weight: bold;
+		line-height: 43px;
+		text-align: center;
+	}
+	.user-view {
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+	}
+	.save-button {
+		align-items: center;
+		background-color: #0BDA51;
+		border: 0px;
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+		border-radius: 8px;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+		box-sizing: border-box;
+		color: white;
+		display: flex;
+		font-family: 'Droid Sans', sans-serif;
+		font-size: 15px;
+		font-stretch: normal;
+		font-style: normal;
+		font-weight: bold;
+		justify-content: center;
+		letter-spacing: 1.35px;
+		line-height: normal;
+		margin-top: 1rem;
+		min-height: 48px;
+		padding: 16px 32px;
+		text-align: center;
+		text-decoration: none;
+		text-transform: uppercase;
+		vertical-align: middle;
+		width: 100%;
+		max-width: 265px;
+		margin: auto;
+		border: 1px solid #0BDA51;
+	  margin-top: 25px;
+	}
+	.save-button:hover {
+		background-color: #32CD32;
+		color: white;
+		text-decoration: none;
+	}
+	.save-button.save-button--disabled,
+	.save-button[disabled] {
+		background-color: #c7c7c7 !important;
+		border-color: #c7c7c7 !important;
+		color: #6b6b6b !important;
+		cursor: not-allowed !important;
+		opacity: 0.7;
+	}
+	
+	.list {
+		list-style-type: decimal;
+		  text-align: left;
+	  }
+	  
+	textarea.form-control.ng-pristine.ng-valid.ng-valid-required.ng-valid-maxlength {
+		height: 150px;
+	}
+	
+	textarea.form-control.ng-valid-maxlength.ng-valid.ng-valid-required.ng-animate.ng-pristine-remove.ng-dirty-add.ng-pristine-remove-active.ng-dirty.ng-dirty-add-active {
+		height: 150px;    
+	}
+	
+	.add_info {
+	  padding-top: 10px;
+	  font-size: 20px;
+	}
+	.user-login-text-1 {
+	  color: #242629;
+	  font-size: 70px;
+	  font-weight: 800;
+	  letter-spacing: -1.29px;
+	  line-height: 63px;
+	}
+	.user-login-text-2 {
+	  color: #242629;
+	  font-size: 40px;
+	  font-weight: bold;
+	  letter-spacing: -0.74px;
+	  line-height: 63px;
+	}
+	.user-container {
+		box-shadow: none;
+		margin-left: 15%;
+		margin-right: 15%;
+		margin-top: 50px;
+		
+	}
+	.or-txt {
+	  position: relative;
+	  top: 100px;
+	}
+	.button-kit-dollar {
+			  display: inline-block;
+			  padding: 6px 12px;
+			  font-size: 13px;
+			  color:#ef0731;
+			  background-color: white;
+			  border: 1px solid #ef0731;
+			  border-radius: 5px;
+			  text-align: center;
+			  text-decoration: none;
+			  cursor: pointer;
+			  margin-bottom: 20px;
+		  }
+  
+		  .button-kit-dollar:hover {
+			  background-color: #ef0731;
+			  color: white;
+			  text-decoration: none;
+		  }
+		  .button-kit {
+			  display: inline-block;
+			  padding: 6px 12px;
+			  font-size: 13px;
+			  color:#fc0;
+			  background-color: white;
+			  border: 1px solid #fc0;
+			  border-radius: 5px;
+			  text-align: center;
+			  text-decoration: none;
+			  cursor: pointer;
+			  margin-bottom: 20px;
+		  }
+  
+		  .button-kit:hover {
+			  background-color: #fc0;
+			  color: white;
+			  text-decoration: none;
+		  }
+
+  .polo-size-row {
+	  float: right;
+  }
+  .polo-size {
+	  width: 330px;
+  }
+  .FloorPlanImage {
+		margin-left: auto;
+		margin-right: auto;
+		transition: transform 0.3s ease;
+	 }
+	 .FloorPlanImage[srcFull]{
+	     cursor:pointer;
+}
+.FloorPlanImage:hover {
+		/* transform: scale(1.2) */
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		/* transform: translateY(-3px);  */
+	 }
+	 
+	 /* Image Modal Styles */
+	 .image-modal {
+		display: none;
+		position: fixed;
+		z-index: 10000;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.9);
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+	 }
+	 
+	 .image-modal.active {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	 }
+	 
+	 .image-modal-content {
+		position: relative;
+		margin: auto;
+		padding: 20px;
+		max-width: 95%;
+		max-height: 95%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	 }
+	 
+	 .image-modal-content img {
+		max-width: 100%;
+		max-height: 95vh;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		border-radius: 4px;
+	 }
+	 
+	 .image-modal-close {
+		position: absolute;
+		top: 15px;
+		right: 15px;
+		color: #fff;
+		font-size: 40px;
+		font-weight: bold;
+		cursor: pointer;
+		z-index: 10001;
+		width: 44px;
+		height: 44px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: rgba(0, 0, 0, 0.5);
+		border-radius: 50%;
+		line-height: 1;
+		transition: background-color 0.3s ease;
+	 }
+	 
+	 .image-modal-close:hover,
+	 .image-modal-close:focus {
+		background-color: rgba(0, 0, 0, 0.8);
+		text-decoration: none;
+	 }
+	 
+	 @media screen and (max-width: 768px) {
+		.image-modal-close {
+			top: 10px;
+			right: 10px;
+			font-size: 32px;
+			width: 36px;
+			height: 36px;
+		}
+		.image-modal-content {
+			padding: 10px;
+		}
+	 }
+	@media screen and (max-width: 1300px) {
+	.user-view-text-3 {
+		font-size: 35px;
+	  }
+	}
+	@media screen and (max-width: 1199px) {
+	  .polo-size-row {
+	  float: none;
+	  }
+	  .polo-size {
+		  width: 100%;
+	  }
+	}
+	@media screen and (max-width: 991px) {
+	  .or-txt {
+		  top: 0;
+	  }
+	}
+	@media screen and (max-width: 900px) {
+		.container-form {
+			  flex-direction: column;
+		}
+	}
+	@media screen and (max-width: 650px) {
+	.user-login-text-1 {
+		font-size: 55px;
+	  }
+	}
+	@media screen and (max-width: 600px) {
+	.user-view-text-3 {
+		font-size: 30px;
+	  }
+	}
+	@media screen and (max-width: 425px) {
+		.user-container {
+			margin-left: 5%;
+			margin-right: 5%;
+			margin-top: 0;
+		}
+	.user-login-text-2 {
+		font-size: 30px;
+		}
+	.user-login-text-1 {
+		font-size: 40px;
+		}
+		.user-form-mobile {
+			padding: 0 0 10px 0 !important;
+		}
+	}
+	@media screen and (max-width: 375px) {
+		.captionText {
+			font-size: 30px;
+		}
+	}
+	@media screen and (max-width: 325px) {
+		.user-container {
+			margin-left: 0;
+			margin-right: 0;
+			margin-top: 0;
+		}
+	}
+  .kit-headers {
+	  border-bottom: 1px solid #dddd;
+	  border-top: 1px solid #dddd;
+	  margin: 40px 0 40px !important;
+	  padding: 10px 0;
+  }
+  .toggle-btn-sizes {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #AAAAAA;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+	text-decoration: none;
+  }
+
+  .toggle-btn-sizes:hover {
+	background-color: #DCDCDC;
+	text-decoration: none;
+  }
+  .toggle-btn-sizes:focus {
+	text-decoration: none;
+  }
+  
+  /* Mobile optimizations for images */
+  @media screen and (max-width: 768px) {
+	.kit_img {
+	  width: 120px !important;
+	  margin-bottom: 10px;
+	}
+	.kit_txt {
+	  font-size: 13px;
+	  margin-top: 5px;
+	}
+	.button-kit, .button-kit-dollar {
+	  padding: 6px 12px;
+	  font-size: 13px;
+	  margin-bottom: 10px;
+	}
+	.kit-headers {
+	  margin: 20px 0 20px !important;
+	  padding: 8px 0;
+	}
+	.column {
+	  padding: 10px;
+	}
+	/* Make image containers 2 per row on mobile - target divs containing kit_img */
+	.row[style*="text-align:center"] > div[class*="col-xs-12"],
+	.row[style*="display: flex"] > div[class*="col-xs-12"] {
+	  width: 50% !important;
+	  flex: 0 0 50% !important;
+	  max-width: 50% !important;
+	  padding-left: 8px;
+	  padding-right: 8px;
+	}
+  }
+  
+  @media screen and (max-width: 480px) {
+	.kit_img {
+	  width: 100px !important;
+	  margin-bottom: 8px;
+	}
+	.kit_txt {
+	  font-size: 12px;
+	  margin-top: 3px;
+	}
+	.button-kit, .button-kit-dollar {
+	  padding: 5px 10px;
+	  font-size: 12px;
+	  margin-bottom: 8px;
+	}
+	.kit-headers {
+	  margin: 15px 0 15px !important;
+	  padding: 6px 0;
+	  font-size: 16px !important;
+	}
+	.kit-headers span {
+	  font-size: 13px !important;
+	}
+	.column {
+	  padding: 8px;
+	}
+	/* Make image containers 2 per row on small mobile */
+	.row[style*="text-align:center"] > div[class*="col-xs-12"],
+	.row[style*="display: flex"] > div[class*="col-xs-12"] {
+	  width: 50% !important;
+	  flex: 0 0 50% !important;
+	  max-width: 50% !important;
+	  padding-left: 6px;
+	  padding-right: 6px;
+	}
+  }
+
+  .uniform-progress { display: flex; align-items: flex-start; justify-content: center; max-width: 700px; margin: 20px auto 10px; flex-wrap: wrap; }
+  .uniform-progress-step { flex: 1; min-width: 70px; display: flex; flex-direction: column; align-items: center; position: relative; cursor: pointer; }
+  .uniform-progress-step:not(:last-child):after { content: ''; position: absolute; top: 18px; left: 50%; width: 100%; height: 2px; background: #ddd; z-index: 0; }
+  .uniform-progress-step.done:not(:last-child):after { background: #fc0; }
+  .uniform-progress.dollar-thrifty .uniform-progress-step.done:not(:last-child):after { background: #ef0731; }
+  .uniform-progress-circle { width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #ddd; color: #242629; font-weight: 700; text-align: center; position: relative; z-index: 1; margin: 0 auto; }
+  .uniform-progress-step.active .uniform-progress-circle { background: #242629; color: #fc0; }
+  .uniform-progress-step.done .uniform-progress-circle { background: #fc0; color: #242629; }
+  .uniform-progress.dollar-thrifty .uniform-progress-step.active .uniform-progress-circle { background: #242629; color: #ef0731; }
+  .uniform-progress.dollar-thrifty .uniform-progress-step.done .uniform-progress-circle { background: #ef0731; color: #fff; }
+  .uniform-progress-label { margin-top: 6px; font-size: 13px; color: #6b6b6b; text-align: center; }
+  .uniform-progress-step.active .uniform-progress-label { color: #242629; font-weight: 600; }
+  .uniform-nav-buttons { display: flex; justify-content: center; gap: 12px; margin: 25px 0; flex-wrap: wrap; }
+  .uniform-btn-next, .uniform-btn-back { padding: 10px 26px; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; }
+  .uniform-btn-next { background: #fc0; color: #242629; }
+  .uniform-nav-buttons.dollar-thrifty .uniform-btn-next { background: #ef0731; color: #fff; }
+  .uniform-btn-back { background: #f2f2f2; color: #242629; }
+  .btn-picker-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0; }
+  .btn-picker { padding: 10px 18px; border-radius: 6px; border: 1px solid #c7c7c7; background: #fff; color: #242629; cursor: pointer; font-weight: 600; }
+  .btn-picker.active { background: #242629; color: #fc0; border-color: #242629; }
+  .uniform-summary { max-width: 500px; margin: 0 auto 20px; }
+  .uniform-summary-title { text-align: center; margin-bottom: 15px; }
+  .uniform-summary-row { display: flex; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5e5; }
+  .uniform-summary-label { color: #6b6b6b; }
+  .uniform-summary-value { font-weight: 600; color: #242629; }
+  </style>
+
+
+  
+  <!--  Hertz uniform FT-PT -->
+  <div class="" ng-show="currentCategory.InteropID === 'htz_uniform'">
+	<div class="column">
+	  <!-- Sales Kit -->
+	  <section class="user-view margin-Top" ng-show="currentCategory.InteropID === 'htz_uniform'">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+		  <form name="user_form" ng-submit="save()">
+			<div class="panel" id="user_form" style="box-shadow: none;">
+			  <div class="panel-heading" style="border: none;">
+				<p class="user-view-text-1">Hello {{user.FirstName}},</p> 
+				<div class="user-view-text-2">
+				  <p id="started">Let’s get started!</p>
+				  <!-- <p style="margin-top: 25px;">Please select your alotted uniforms (5 tops, 5 bottoms, 2 layers, and belt size. A cap and name tag are included)</p> -->
+				</div>
+			  </div>
+				<div class="uniform-progress">
+					<div class="uniform-progress-step" ng-repeat="label in uniformStepLabels" ng-class="{active: uniformStep === $index + 1, done: uniformStep > $index + 1}" ng-click="goToUniformStep($index + 1)">
+						<div class="uniform-progress-circle">{{$index + 1}}</div>
+						<div class="uniform-progress-label">{{label}}</div>
+					</div>
+				</div>
+
+			  
+			  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"  ng-show="totalOrderCount > 0 && !hertzChampionUser">
+					<div class="alert alert-warning" role="alert" style="text-align:center;margin-top:10px;">
+						<strong>{{user.FirstName}}</strong>, you already placed your uniform order. Please email your <strong>Hertz Experience Team at <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a></strong> if you have any questions regarding your order.
+					</div>
+				  </div>
+  
+
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && !coldUser && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 short sleeves shirts and 2 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && coldUser === true && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 short sleeves shirts and 2 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && !coldUser && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 2 short sleeves shirts and 1 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && coldUser === true && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 2 short sleeves shirts and 1 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="laxUser === true && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 4 short sleeves shirts and 2 long sleeve shirts.</span></p>
+
+				<div class="row" ng-show="uniformStep === 1" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-M-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-M-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Hertz Men's Short Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOSS-M-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+						<!-- loop over all products, but only show the associated products and their quantity XS:250, S:12, M:5, L: , XL:, 2XL: , 3XL: , 4XL: , 5XL: , 6XL: -->
+					<!--	<p>
+							<a href="" ng-click="showSizesMSS = !showSizesMSS" class="toggle-btn-sizes">
+							  {{ showSizesMSS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesMSS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOSS-M-HZ']['inventory'][size]}},
+							</span>
+						 </p>
+						<!-- <p>Available Qty<br/>
+							<strong>XS:</strong>{{products[0].QuantityAvailable}}, <strong>S:</strong>{{products[1].QuantityAvailable}}, <strong>M:</strong>{{products[2].QuantityAvailable}}, <strong>L:</strong> , <strong>XL:</strong>, <strong>2XL:</strong> , <strong>3XL:</strong> , <strong>4XL:</strong> , <strong>5XL:</strong> , <strong>6XL:</strong> </p> -->
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-W-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-W-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Hertz Women's Short Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOSS-W-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+						<!-- <p>Available Qty<br/><strong>XS:</strong> {{products[1].QuantityAvailable}}, <strong>S:</strong> {{products[1].QuantityAvailable}}, <strong>M:</strong> {{products[1].QuantityAvailable}}, <strong>L:</strong> {{products[1].QuantityAvailable}}, <strong>XL:</strong> {{products[1].QuantityAvailable}}, <strong>2XL:</strong> {{products[1].QuantityAvailable}}, <strong>3XL:</strong> {{products[1].QuantityAvailable}}, <strong>4XL:</strong> {{products[1].QuantityAvailable}}, <strong>5XL:</strong> {{products[1].QuantityAvailable}}, <strong>6XL:</strong> {{products[1].QuantityAvailable}}</p> -->
+						<!-- <p>
+							<a href="" ng-click="showSizesLSS = !showSizesLSS" class="toggle-btn-sizes">
+							  {{ showSizesLSS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesLSS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOSS-W-HZ']['inventory'][size]}},
+							</span>
+						 </p>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-M-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-M-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Hertz Men's Long Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOLS-M-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+						<!-- <p>
+							<a href="" ng-click="showSizesMLS = !showSizesMLS" class="toggle-btn-sizes">
+							  {{ showSizesMLS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesMLS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOLS-M-HZ']['inventory'][size]}},
+							</span>
+						 </p>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-W-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-W-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Hertz Women's Long Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOLS-W-HZ-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+						<!-- <p>
+							<a href="" ng-click="showSizesLLS = !showSizesLLS" class="toggle-btn-sizes">
+							  {{ showSizesLLS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesLLS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOLS-W-HZ']['inventory'][size]}},
+							</span>
+						 </p>
+					</div>
+				</div>
+
+				<div class="row" ng-show="uniformStep === 1">
+				  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Top_Gender'}">
+					<customselectionbuttons customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+				  </div>
+				 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_SS'}">
+					<customselectionbuttons customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+				  </div>
+				  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_LS'}">
+					<customselectionbuttons customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+				  </div>
+				</div>
+				<div class="uniform-nav-buttons" ng-show="uniformStep === 1">
+					<button type="button" class="btn uniform-btn-next" ng-click="nextUniformStep()">Continue to Bottoms</button>
+				</div>
+
+    
+			  </div>
+
+<!-- Hertz Bottoms -->
+<div ng-hide="noBottomsUser === true" ng-show="uniformStep === 2">
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && !coldUser">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 5 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && coldUser === true">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 5 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && !coldUser">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && coldUser === true">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="laxUser === true">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 6 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<div class="row" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-M-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-M-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Mens Cargo Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOPANT-M-UV Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizes = !showSizes" class="toggle-btn-sizes">
+			  {{ showSizes ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		  </p> -->
+		  
+		  <p ng-show="showSizes">
+			<span ng-repeat="size in ['28x30', '28x32', '28x34', '28x36', '30x30', '30x32', '30x34', '30x36', '32x30', '32x32', '32x34', '32x36', '34x30', '34x32', '34x34', '34x36', '36x30', '36x32', '36x34', '36x36', '38x30', '38x32', '38x34', '38x36', '40x30', '40x32', '40x34', '40x36', '42x30', '42x32', '42x34', '42x36', '44x30', '44x32', '44x34', '44x36', '46x30', '46x32', '46x34', '46x36', '48x30', '48x32', '48x34', '48x36', '50x30', '50x32', '50x34', '50x36', '52x30', '52x32', '52x34', '52x36', '54x30', '54x32', '54x34', '56x30', '56x32', '56x34', '58x30', '58x32', '58x34', '60x30', '60x32']">
+			  <strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOPANT-M-UV']['inventory'][size]}},
+			</span>
+		  </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-M-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-M-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Mens Performance Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-PERFPANT-M-UV Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesPerf = !showSizesPerf" class="toggle-btn-sizes">
+			  {{ showSizesPerf ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesPerf">
+			<span ng-repeat="size in ['28x30', '28x32', '28x34', '28x36', '30x30', '30x32', '30x34', '30x36', '32x30', '32x32', '32x34', '32x36', '34x30', '34x32', '34x34', '34x36', '36x30', '36x32', '36x34', '36x36', '38x30', '38x32', '38x34', '38x36', '40x30', '40x32', '40x34', '40x36', '42x30', '42x32', '42x34', '42x36', '44x30', '44x32', '44x34', '44x36', '46x30', '46x32', '46x34', '46x36', '48x30', '48x32', '48x34', '48x36', '50x30', '50x32', '50x34', '50x36', '52x30', '52x32', '52x34', '52x36', '54x30', '54x32', '54x34', '56x30', '56x32', '56x34', '58x30', '58x32', '58x34', '60x30', '60x32']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-PERFPANT-M-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-M-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-M-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Mens Cargo Shorts</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOSHORT-M Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesCargo = !showSizesCargo" class="toggle-btn-sizes">
+			  {{ showSizesCargo ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesCargo">
+			<span ng-repeat="size in ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46', '48', '50', '52', '54', '56', '58', '60']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOSHORT-M-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Cargo Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOPANT-W-UV Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWCargo = !showSizesWCargo" class="toggle-btn-sizes">
+			  {{ showSizesWCargo ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWCargo">
+			<span ng-repeat="size in ['00R', '00T', '0R', '0T', '2R', '2T', '4R', '4T', '6R', '6T', '8R', '8T', '10R', '10T', '12R', '12T', '14R', '14T', '16R', '16T', '16W', '18W', '20W', '22W', '24W', '26W', '28W', '30W', '32W', '34W']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOPANT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Performance Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-PERFPANT-W-UV Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWPerf = !showSizesWPerf" class="toggle-btn-sizes">
+			  {{ showSizesWPerf ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWPerf">
+			<span ng-repeat="size in ['00R', '00T', '0R', '0T', '2R', '2T', '4R', '4T', '6R', '6T', '8R', '8T', '10R', '10T', '12R', '12T', '14R', '14T', '16R', '16T', '16W', '18W', '20W', '22W', '24W', '26W', '28W', '30W', '32W', '34W']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-PERFPANT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Cargo Shorts</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOSHORT-W-UV Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWCShorts = !showSizesWCShorts" class="toggle-btn-sizes">
+			  {{ showSizesWCShorts ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWCShorts">
+			<span ng-repeat="size in ['00', '0', '2', '4', '6', '8', '10', '12', '14', '16', '16W', '18W', '20W', '22W', '24W', '26W']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOSHORT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-LSKIRT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-LSKIRT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Modest Skirt</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-LSKIRT-W-UV Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesSkirt = !showSizesSkirt" class="toggle-btn-sizes">
+			  {{ showSizesSkirt ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesSkirt">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-LSKIRT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+</div>
+
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_1'})[0] || {Value:''}).Value">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_1'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceOne === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceOne === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceOne === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceOne === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceOne === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceOne === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceOne === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_2'})[0] || {Value:''}).Value">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_2'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceTwo === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceTwo === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceTwo === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceTwo === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceTwo === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceTwo === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceTwo === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_3'})[0] || {Value:''}).Value">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_3'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceThree === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceThree === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceThree === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceThree === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceThree === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceThree === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceThree === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_4'})[0] || {Value:''}).Value" ng-hide="partimeUser === true">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_4'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceFour === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceFour === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceFour === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceFour === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceFour === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceFour === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceFour === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_5'})[0] || {Value:''}).Value" ng-hide="partimeUser === true">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_5'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceFive === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceFive === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceFive === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceFive === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceFive === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceFive === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceFive === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_6'})[0] || {Value:''}).Value" ng-show="laxUser === true" ng-hide="fulltimeUser === true || partimeUser === true">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_6'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceSix === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceSix === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceSix === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceSix === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceSix === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceSix === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceSix === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+</div>
+
+
+				<div class="uniform-nav-buttons" ng-show="uniformStep === 2">
+					<button type="button" class="btn uniform-btn-back" ng-click="prevUniformStep()">Back</button>
+					<button type="button" class="btn uniform-btn-next" ng-click="nextUniformStep()">Continue to Layers & Extras</button>
+				</div>
+
+<!-- Hertz Layers -->
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-show="uniformStep === 3">Select your Layers<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 2 layering pieces.<br/>You may select the same style and size, or choose different options as needed.</span></p>
+<div class="row" ng-show="uniformStep === 3" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-QTZIP-M-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-QTZIP-M-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Hertz Mens 1/4 Zip Fleece</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-QTZIP-M-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesMZF = !showSizesMZF" class="toggle-btn-sizes">
+			  {{ showSizesMZF ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesMZF">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-QTZIP-M-HZ']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-FLZIP-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-FLZIP-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Hertz Womens Full Zip Fleece</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-FLZIP-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWZF = !showSizesWZF" class="toggle-btn-sizes">
+			  {{ showSizesWZF ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWZF">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-FLZIP-W-HZ']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-SSHELL-US-HZ.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-SSHELL-US-HZ.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Hertz Unisex Softshell w/Zip Off Sleeves</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-SSHELL-US-HZ Size charts 20250912.pdf" class="button-kit" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesUZS = !showSizesUZS" class="toggle-btn-sizes">
+			  {{ showSizesUZS ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesUZS">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-SSHELL-US-HZ']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+</div>
+
+<div class="row" ng-show="uniformStep === 3">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Layer_1'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Layer_2'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+
+  <p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-show="fulltimeUser === true && coldUser === true && uniformStep === 3">Additional Items<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size.<br/>Each employee will receive 1 belt. Employees who work outdoors may also select a hat & beanie.<br/>The hat has a velcro closure in the back for adjusting size.</span></p>
+  <p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-show="partimeUser === true && coldUser === true && uniformStep === 3">Additional Items<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size.<br/>Each employee will receive 1 belt. Employees who work outdoors may also select a hat & beanie.<br/>The hat has a velcro closure in the back for adjusting size.</span></p>
+  <p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-hide="(fulltimeUser === true && coldUser === true) || (partimeUser === true && coldUser === true) || uniformStep !== 3">Additional Items<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size.<br/>Each employee will receive 1 belt. Employees who work outdoors may also select a hat.<br/>The hat has a velcro closure in the back for adjusting size.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Hats are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+  <div style="padding-bottom: 20px;text-align: center;" class="row" ng-show="uniformStep === 3">
+	<div class="row" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+			<img class="kit_img" src="https://thumbprint.com/four51_images/Hertz/Hertz_Reflective_Hat.jpg" alt="">
+			<p class="kit_txt">Hertz Reflective Hat</p>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4" ng-show="coldUser === true">
+			<img class="kit_img" src="https://thumbprint.com/four51_images/Hertz/Hertz_Black_Beanie.jpg" alt="">
+			<p class="kit_txt">Hertz Black Beanie (cold climates only)</p>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+			<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-RFBLT-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-RFBLT-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+			<p class="kit_txt">Reflective Belt</p>
+			<a href="https://thumbprint.com/four51_images/Hertz/hertz-belt-sizechart.png" class="button-kit" target="_blank">Size Chart</a>
+		</div>
+	 </div>
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Belt'}">
+		  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+		</div>
+	</div>
+	<div class="row" style="">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Hat'}">
+		  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+		</div>
+	</div>
+	<div class="row" style="" ng-show="coldUser === true">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Beanie'}">
+		  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+		</div>
+	</div>
+</div>		
+
+
+
+			
+				<div class="uniform-nav-buttons" ng-show="uniformStep === 3">
+					<button type="button" class="btn uniform-btn-back" ng-click="prevUniformStep()">Back</button>
+					<button type="button" class="btn uniform-btn-next" ng-click="nextUniformStep()">Continue to Review</button>
+				</div>
+
+<!-- add to cart button -->
+			<div class="text-center" ng-show="uniformStep === 4">
+				<button type="button" class="btn uniform-btn-back" ng-click="prevUniformStep()" style="margin-bottom: 15px;">Back</button>
+				<div class="uniform-summary">
+					<h4 class="uniform-summary-title">Review your selections</h4>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Fit</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Hertz_Choice_Top_Gender'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Short Sleeve Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_SS'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Long Sleeve Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_LS'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row" ng-repeat="n in [1,2,3,4,5,6]" ng-show="((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_' + n})[0] || {}).Value">
+						<span class="uniform-summary-label">Bottom {{$index + 1}}</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_' + n})[0] || {}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Layer 1</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Hertz_Choice_Layer_1'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Layer 2</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Hertz_Choice_Layer_2'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Belt Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Belt'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Hat Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Hat'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row" ng-show="coldUser === true">
+						<span class="uniform-summary-label">Beanie Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Beanie'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+				</div>
+
+				<div class="container">
+				  <div class="row">
+					<div class="col-md-12">
+					  <p class="alert alert-success" ng-show="actionMessage" ng-bind-html="actionMessage | r | xlat"></p>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Disclaimer'}">
+						<div class="row alert alert-danger" role="alert" style="margin-top: 20px;max-width: 600px;margin-left: auto;margin-right: auto;">
+							<occheckboxfield customfield="field" label='By checking this box, I confirm that I have selected my uniform allotment. Please ensure all required styles and sizes are selected before checkout.' checked='Yes' unchecked='No' style=""></occheckboxfield>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" 
+     ng-hide="totalOrderCount > 0 && !hertzChampionUser && user.Email !== 'hz199748@hertz.net'">
+  <input class="btn save-button allocation-submit" 
+         type="submit" 
+         value="Add to Cart"
+         ng-disabled="isAddingToCart || user_form.$invalid || (((user.CustomFields | filter:{Name:'Hertz_Disclaimer'})[0] || {Value:'No'}).Value !== 'Yes') || (currentOrder && currentOrder.LineItems && currentOrder.LineItems.length > 0)"
+         ng-class="{'save-button--disabled': isAddingToCart || user_form.$invalid || (((user.CustomFields | filter:{Name:'Hertz_Disclaimer'})[0] || {Value:'No'}).Value !== 'Yes') || (currentOrder && currentOrder.LineItems && currentOrder.LineItems.length > 0)}"/>
+</div>
+
+				</div>
+			  </div>
+			  <!--end add to cart button -->
+			</div>
+		  </form>
+		</div>
+	  </section>
+  </div>
+</div>	
+		
+  <!-- end of Hertz -->
+
+  <!--  Dollar/Thrifty uniform FT-PT -->
+
+  <div class="" ng-show="currentCategory.InteropID === 'dt_uniform'">
+	<div class="column">
+	  <!-- Sales Kit -->
+	  <section class="user-view margin-Top" ng-show="currentCategory.InteropID === 'dt_uniform'">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+		  <form name="user_form" ng-submit="save()">
+			<div class="panel" id="user_form" style="box-shadow: none;">
+			  <div class="panel-heading" style="border: none;">
+				<p class="user-view-text-1">Hello {{user.FirstName}},</p> 
+				<div class="user-view-text-2">
+				  <p id="started">Let’s get started!</p>
+				</div>
+			  </div>
+				<div class="uniform-progress dollar-thrifty">
+					<div class="uniform-progress-step" ng-repeat="label in uniformStepLabels" ng-class="{active: uniformStep === $index + 1, done: uniformStep > $index + 1}" ng-click="goToUniformStep($index + 1)">
+						<div class="uniform-progress-circle">{{$index + 1}}</div>
+						<div class="uniform-progress-label">{{label}}</div>
+					</div>
+				</div>
+
+  
+
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && !coldUser && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 short sleeves shirts and 2 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && coldUser === true && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 short sleeves shirts and 2 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && !coldUser && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 2 short sleeves shirts and 1 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && coldUser === true && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 2 short sleeves shirts and 1 long sleeve shirts.</span></p>
+			<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="laxUser === true && uniformStep === 1">Select your Tops<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 4 short sleeves shirts and 2 long sleeve shirts.</span></p>
+
+				<div class="row" ng-show="uniformStep === 1" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-M-DT-3.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-M-DT-3.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Dollar Thrifty Mens Short Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOSS-M-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+						<!-- loop over all products, but only show the associated products and their quantity XS:250, S:12, M:5, L: , XL:, 2XL: , 3XL: , 4XL: , 5XL: , 6XL: -->
+						<!-- <p>
+							<a href="" ng-click="showSizesDMSS = !showSizesDMSS" class="toggle-btn-sizes">
+							  {{ showSizesDMSS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesDMSS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOSS-M-DT']['inventory'][size]}},
+							</span>
+						 </p>
+						<!-- <p>Available Qty<br/>
+							<strong>XS:</strong>{{products[0].QuantityAvailable}}, <strong>S:</strong>{{products[1].QuantityAvailable}}, <strong>M:</strong>{{products[2].QuantityAvailable}}, <strong>L:</strong> , <strong>XL:</strong>, <strong>2XL:</strong> , <strong>3XL:</strong> , <strong>4XL:</strong> , <strong>5XL:</strong> , <strong>6XL:</strong> </p> -->
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-W-DT.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOSS-W-DT.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Dollar Thrifty Womens Short Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOSS-W-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+						<!-- <p>Available Qty<br/><strong>XS:</strong> {{products[1].QuantityAvailable}}, <strong>S:</strong> {{products[1].QuantityAvailable}}, <strong>M:</strong> {{products[1].QuantityAvailable}}, <strong>L:</strong> {{products[1].QuantityAvailable}}, <strong>XL:</strong> {{products[1].QuantityAvailable}}, <strong>2XL:</strong> {{products[1].QuantityAvailable}}, <strong>3XL:</strong> {{products[1].QuantityAvailable}}, <strong>4XL:</strong> {{products[1].QuantityAvailable}}, <strong>5XL:</strong> {{products[1].QuantityAvailable}}, <strong>6XL:</strong> {{products[1].QuantityAvailable}}</p> -->
+						<!-- <p>
+							<a href="" ng-click="showSizesDWSS = !showSizesDWSS" class="toggle-btn-sizes">
+							  {{ showSizesDWSS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesDWSS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOSS-W-DT']['inventory'][size]}},
+							</span>
+						 </p>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-M-DT.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-M-DT.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Dollar Thrifty Mens Long Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOLS-M-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+						<!-- <p>
+							<a href="" ng-click="showSizesDMLS = !showSizesDMLS" class="toggle-btn-sizes">
+							  {{ showSizesDMLS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesDMLS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOLS-M-DT']['inventory'][size]}},
+							</span>
+						 </p>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+						<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-W-DT.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-POLOLS-W-DT.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+						<p class="kit_txt">Dollar Thrifty Womens Long Sleeve Polo</p>
+						<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-POLOLS-W-HZ-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+						<!-- <p>
+							<a href="" ng-click="showSizesDWLS = !showSizesDWLS" class="toggle-btn-sizes">
+							  {{ showSizesDWLS ? 'Hide Inventory' : 'Show Available Inventory' }}
+							</a>
+						</p> -->
+						<p ng-show="showSizesDWLS">
+							<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+								<strong>{{size}}:</strong> {{groupedProducts['HTZ-POLOLS-W-DT']['inventory'][size]}},
+							</span>
+						 </p>
+					</div>
+				</div>
+
+				<div class="row" ng-show="uniformStep === 1">
+					<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Top_Gender'}">
+					  <customselectionbuttons customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+					</div>
+				   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_SS'}">
+					  <customselectionbuttons customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_LS'}">
+					  <customselectionbuttons customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+					</div>
+				  </div>
+				<div class="uniform-nav-buttons dollar-thrifty" ng-show="uniformStep === 1">
+					<button type="button" class="btn uniform-btn-next" ng-click="nextUniformStep()">Continue to Bottoms</button>
+				</div>
+
+    
+			  </div>
+
+<!-- Dollar/Thrifty Bottoms -->
+<div ng-hide="noBottomsUser === true" ng-show="uniformStep === 2">
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && !coldUser">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 5 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="fulltimeUser === true && coldUser === true">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 5 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && !coldUser">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="partimeUser === true && coldUser === true">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 3 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;" ng-show="laxUser === true">Select your Bottoms<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 6 bottoms.<br/>You may select the same style and size, or choose different options as needed.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Shorts are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+<div class="row" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-M-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-M-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Mens Cargo Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOPANT-M-UV Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizes = !showSizes" class="toggle-btn-sizes">
+			  {{ showSizes ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		  </p> -->
+		  
+		  <p ng-show="showSizes">
+			<span ng-repeat="size in ['28x30', '28x32', '28x34', '28x36', '30x30', '30x32', '30x34', '30x36', '32x30', '32x32', '32x34', '32x36', '34x30', '34x32', '34x34', '34x36', '36x30', '36x32', '36x34', '36x36', '38x30', '38x32', '38x34', '38x36', '40x30', '40x32', '40x34', '40x36', '42x30', '42x32', '42x34', '42x36', '44x30', '44x32', '44x34', '44x36', '46x30', '46x32', '46x34', '46x36', '48x30', '48x32', '48x34', '48x36', '50x30', '50x32', '50x34', '50x36', '52x30', '52x32', '52x34', '52x36', '54x30', '54x32', '54x34', '56x30', '56x32', '56x34', '58x30', '58x32', '58x34', '60x30', '60x32']">
+			  <strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOPANT-M-UV']['inventory'][size]}},
+			</span>
+		  </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-M-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-M-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Mens Performance Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-PERFPANT-M-UV Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesPerf = !showSizesPerf" class="toggle-btn-sizes">
+			  {{ showSizesPerf ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesPerf">
+			<span ng-repeat="size in ['28x30', '28x32', '28x34', '28x36', '30x30', '30x32', '30x34', '30x36', '32x30', '32x32', '32x34', '32x36', '34x30', '34x32', '34x34', '34x36', '36x30', '36x32', '36x34', '36x36', '38x30', '38x32', '38x34', '38x36', '40x30', '40x32', '40x34', '40x36', '42x30', '42x32', '42x34', '42x36', '44x30', '44x32', '44x34', '44x36', '46x30', '46x32', '46x34', '46x36', '48x30', '48x32', '48x34', '48x36', '50x30', '50x32', '50x34', '50x36', '52x30', '52x32', '52x34', '52x36', '54x30', '54x32', '54x34', '56x30', '56x32', '56x34', '58x30', '58x32', '58x34', '60x30', '60x32']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-PERFPANT-M-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-M-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-M-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Mens Cargo Shorts</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOSHORT-M Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesCargo = !showSizesCargo" class="toggle-btn-sizes">
+			  {{ showSizesCargo ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesCargo">
+			<span ng-repeat="size in ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46', '48', '50', '52', '54', '56', '58', '60']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOSHORT-M-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOPANT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Cargo Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOPANT-W-UV Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWCargo = !showSizesWCargo" class="toggle-btn-sizes">
+			  {{ showSizesWCargo ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWCargo">
+			<span ng-repeat="size in ['00R', '00T', '0R', '0T', '2R', '2T', '4R', '4T', '6R', '6T', '8R', '8T', '10R', '10T', '12R', '12T', '14R', '14T', '16R', '16T', '16W', '18W', '20W', '22W', '24W', '26W', '28W', '30W', '32W', '34W']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOPANT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-PERFPANT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Performance Pants</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-PERFPANT-W-UV Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWPerf = !showSizesWPerf" class="toggle-btn-sizes">
+			  {{ showSizesWPerf ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWPerf">
+			<span ng-repeat="size in ['00R', '00T', '0R', '0T', '2R', '2T', '4R', '4T', '6R', '6T', '8R', '8T', '10R', '10T', '12R', '12T', '14R', '14T', '16R', '16T', '16W', '18W', '20W', '22W', '24W', '26W', '28W', '30W', '32W', '34W']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-PERFPANT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-CARGOSHORT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Cargo Shorts</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-CARGOSHORT-W-UV Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesWCShorts = !showSizesWCShorts" class="toggle-btn-sizes">
+			  {{ showSizesWCShorts ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesWCShorts">
+			<span ng-repeat="size in ['00', '0', '2', '4', '6', '8', '10', '12', '14', '16', '16W', '18W', '20W', '22W', '24W', '26W']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-CARGOSHORT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-LSKIRT-W-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-LSKIRT-W-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Women's Modest Skirt</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-LSKIRT-W-UV Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesSkirt = !showSizesSkirt" class="toggle-btn-sizes">
+			  {{ showSizesSkirt ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesSkirt">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-LSKIRT-W-UV']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+</div>
+
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_1'})[0] || {Value:''}).Value">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_1'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceOne === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceOne === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceOne === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceOne === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceOne === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceOne === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceOne === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_2'})[0] || {Value:''}).Value">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_2'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceTwo === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceTwo === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceTwo === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceTwo === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceTwo === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceTwo === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceTwo === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_3'})[0] || {Value:''}).Value">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_3'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceThree === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceThree === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceThree === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceThree === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceThree === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceThree === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceThree === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_4'})[0] || {Value:''}).Value" ng-hide="partimeUser === true">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_4'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceFour === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceFour === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceFour === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceFour === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceFour === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceFour === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceFour === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_5'})[0] || {Value:''}).Value" ng-hide="partimeUser === true">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_5'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceFive === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceFive === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceFive === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceFive === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceFive === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceFive === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceFive === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+  <div class="row" ng-init="bottomChoice = ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_6'})[0] || {Value:''}).Value" ng-show="laxUser === true" ng-hide="fulltimeUser === true || partimeUser === true">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_6'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Pants'}" ng-show="bottomChoiceSix === 'Mens Cargo Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired"/>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Performance_Pants'}" ng-show="bottomChoiceSix === 'Mens Performance Pants'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Mens_Cargo_Shorts'}" ng-show="bottomChoiceSix === 'Mens Cargo Shorts'">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Pants'}" ng-show="bottomChoiceSix === 'Womens Cargo Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Performance_Pants'}" ng-show="bottomChoiceSix === 'Womens Performance Pants'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Cargo_Shorts'}" ng-show="bottomChoiceSix === 'Womens Cargo Shorts'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Womens_Modest_Skirt'}" ng-show="bottomChoiceSix === 'Womens Modest Skirt'">
+		<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+</div>
+
+
+				<div class="uniform-nav-buttons dollar-thrifty" ng-show="uniformStep === 2">
+					<button type="button" class="btn uniform-btn-back" ng-click="prevUniformStep()">Back</button>
+					<button type="button" class="btn uniform-btn-next" ng-click="nextUniformStep()">Continue to Layers & Extras</button>
+				</div>
+
+<!-- Dollar/Thrifty Layers -->
+<p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-show="uniformStep === 3">Select your Layers<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size or style from the list that appears.<br/>If you are between sizes or prefer a more relaxed fit, we recommend sizing up.<br/>You'll be allocated 2 layering pieces.<br/>You may select the same style and size, or choose different options as needed.</span></p>
+<div class="row" ng-show="uniformStep === 3" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/Dollar_Thrifty_Men_Zip_Fleece.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/Dollar_Thrifty_Men_Zip_Fleece.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Dollar Thrifty Mens 1/4 Zip Fleece</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-QTZIP-M-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesDMZF = !showSizesDMZF" class="toggle-btn-sizes">
+			  {{ showSizesDMZF ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesDMZF">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-QTZIP-M-DT']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-FLZIP-DT.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-FLZIP-DT.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Dollar Thrifty Womens Full Zip Fleece</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-FLZIP-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesDWZF = !showSizesDWZF" class="toggle-btn-sizes">
+			  {{ showSizesDWZF ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesDWZF">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-FLZIP-W-DT']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-SSHELL-US-DT.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-SSHELL-US-DT.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+		<p class="kit_txt">Dollar Thrifty Unisex Softshell w/Zip Off Sleeves</p>
+		<a href="https://thumbprint.com/four51_images/Hertz/Hertz-HTZ-SSHELL-US-HZ Size charts 20250912.pdf" class="button-kit-dollar" target="_blank">Size Chart</a>
+		<!-- <p>
+			<a href="" ng-click="showSizesDUSZ = !showSizesDUSZ" class="toggle-btn-sizes">
+			  {{ showSizesDUSZ ? 'Hide Inventory' : 'Show Available Inventory' }}
+			</a>
+		</p> -->
+		<p ng-show="showSizesDUSZ">
+			<span ng-repeat="size in ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL']">
+				<strong>{{size}}:</strong> {{groupedProducts['HTZ-SSHELL-US-DT']['inventory'][size]}},
+			</span>
+		 </p>
+	</div>
+</div>
+
+<div class="row" ng-show="uniformStep === 3">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Dollar_Choice_Layer_1'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" ng-repeat="field in user.CustomFields | filter:{Name:'Dollar_Choice_Layer_2'}">
+	  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+	</div>
+  </div>
+
+  <p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-show="fulltimeUser === true && coldUser === true && uniformStep === 3">Additional Items<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size.<br/>Each employee will receive 1 belt. Employees who work outdoors may also select a hat & beanie.<br/>The hat has a velcro closure in the back for adjusting size.</span></p>
+  <p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-show="partimeUser === true && coldUser === true && uniformStep === 3">Additional Items<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size.<br/>Each employee will receive 1 belt. Employees who work outdoors may also select a hat & beanie.<br/>The hat has a velcro closure in the back for adjusting size.</span></p>
+  <p class="kit-headers" style="text-align: center; font-weight: 600; font-size: 18px;margin-bottom: 0;padding-top: 10px;margin-top: 25px;" ng-hide="(fulltimeUser === true && coldUser === true) || (partimeUser === true && coldUser === true) || uniformStep !== 3">Additional Items<br/><span style="font-size: 15px;font-weight: 100;">Click the small arrow next to the box, then select your size.<br/>Each employee will receive 1 belt. Employees who work outdoors may also select a hat.<br/>The hat has a velcro closure in the back for adjusting size.<br/><strong style="color: #d32f2f; font-weight: bold;">Please keep in mind: Hats are permitted for outdoor work only and are not allowed indoors.</strong></span></p>
+  <div style="padding-bottom: 20px;text-align: center;" class="row" ng-show="uniformStep === 3">
+	<div class="row" style="text-align:center;display: flex;justify-content: center;flex-wrap: wrap;">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+			<img class="kit_img" src="https://thumbprint.com/four51_images/Hertz/Dollar_Thrifty_Reflective_Hat.jpg" alt="">
+			<p class="kit_txt">Dollar Thrifty Reflective Hat</p>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4" ng-show="coldUser === true">
+			<img class="kit_img" src="https://thumbprint.com/four51_images/Hertz/Dollar_Thrifty_Black_Beanie.jpg" alt="">
+			<p class="kit_txt">Dollar Thrifty Black Beanie</p>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+			<img ng-src="https://thumbprint.com/four51_images/Hertz/HTZ-RFBLT-UV.jpg" srcFull="https://thumbprint.com/four51_images/Hertz/HTZ-RFBLT-UV.jpg" class="FloorPlanImage kit_img" title="click to enlarge">
+			<p class="kit_txt">Reflective Belt</p>
+			<a href="https://thumbprint.com/four51_images/Hertz/hertz-belt-sizechart.png" class="button-kit-dollar" target="_blank">Size Chart</a>
+		</div>
+	 </div>
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Belt'}">
+		  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+		</div>
+	</div>
+	<div class="row" style="">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Hat'}">
+		  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+		</div>
+	</div>
+	<div class="row" style="" ng-show="coldUser === true">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-repeat="field in user.CustomFields | filter:{Name:'Size_Hertz_Choice_Beanie'}">
+		  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
+		</div>
+	</div>
+</div>		
+
+
+
+     
+				<div class="uniform-nav-buttons dollar-thrifty" ng-show="uniformStep === 3">
+					<button type="button" class="btn uniform-btn-back" ng-click="prevUniformStep()">Back</button>
+					<button type="button" class="btn uniform-btn-next" ng-click="nextUniformStep()">Continue to Review</button>
+				</div>
+
+<!-- add to cart button -->
+<div class="text-center" ng-show="uniformStep === 4">
+				<button type="button" class="btn uniform-btn-back" ng-click="prevUniformStep()" style="margin-bottom: 15px;">Back</button>
+				<div class="uniform-summary">
+					<h4 class="uniform-summary-title">Review your selections</h4>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Fit</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Hertz_Choice_Top_Gender'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Short Sleeve Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_SS'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Long Sleeve Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Top_LS'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row" ng-repeat="n in [1,2,3,4,5,6]" ng-show="((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_' + n})[0] || {}).Value">
+						<span class="uniform-summary-label">Bottom {{$index + 1}}</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Hertz_Choice_Bottom_' + n})[0] || {}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Layer 1</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Dollar_Choice_Layer_1'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Layer 2</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Dollar_Choice_Layer_2'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Belt Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Belt'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row">
+						<span class="uniform-summary-label">Hat Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Hat'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+					<div class="uniform-summary-row" ng-show="coldUser === true">
+						<span class="uniform-summary-label">Beanie Size</span>
+						<span class="uniform-summary-value">{{ ((user.CustomFields | filter:{Name:'Size_Hertz_Choice_Beanie'})[0] || {Value:'Not selected'}).Value }}</span>
+					</div>
+				</div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="alert alert-success"
+           ng-show="actionMessage"
+           ng-bind-html="actionMessage | r | xlat"></p>
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+           ng-repeat="field in user.CustomFields | filter:{Name:'Hertz_Disclaimer'}">
+        <div class="row alert alert-danger" role="alert" style="margin-top: 20px;max-width: 600px;margin-left: auto;margin-right: auto;">
+          <occheckboxfield customfield="field"
+                           label="By checking this box, I confirm that I have selected my uniform allotment. Please ensure all required styles and sizes are selected before checkout."
+                           checked="Yes"
+                           unchecked="No"
+                           style=""></occheckboxfield>
+        </div>
+      </div>
+
+      <!-- Add to Cart: hidden and disabled until disclaimer is checked -->
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+     ng-hide="totalOrderCount > 0 && !hertzChampionUser && user.Email !== 'hz199748@hertz.net'">
+  <input class="btn save-button allocation-submit"
+         type="submit"
+         value="Add to Cart"
+         ng-disabled="isAddingToCart || user_form.$invalid || (((user.CustomFields | filter:{Name:'Hertz_Disclaimer'})[0] || {Value:'No'}).Value !== 'Yes') || (currentOrder && currentOrder.LineItems && currentOrder.LineItems.length > 0)"
+         ng-class="{'save-button--disabled': isAddingToCart || user_form.$invalid || (((user.CustomFields | filter:{Name:'Hertz_Disclaimer'})[0] || {Value:'No'}).Value !== 'Yes') || (currentOrder && currentOrder.LineItems && currentOrder.LineItems.length > 0)}"/>
+</div>
+
+      <div class="alert alert-warning" role="alert"
+           style="text-align:center;margin-top:10px;"
+           ng-show="totalOrderCount > 0 && !hertzChampionUser && user.Email !== 'hz199748@hertz.net'">
+        <strong>{{user.FirstName}}</strong>, you already placed your uniform order.
+        Please email your <strong>Hertz Experience Team at
+        <a href="mailto:hertz@thumbprint.com">hertz@thumbprint.com</a></strong>
+        if you have any questions regarding your order.
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--end add to cart button -->
+</div>
+</form>
+</div>
+</section>
+</div>
+
+
+<!-- end of Dollar Thrifty -->
+
+   
+  
+  
+  <div class="hidden" ng-show="productCount > settings.pageSize && (currentCategory.InteropID != 'htz_uniform' || currentCategory.InteropID != 'dt_uniform')">
+	<pagination page="settings.currentPage" max-size="10" rotate="false" boundary-links="true" total-items="productCount" items-per-page="settings.pageSize" direction-links="true" previous-text="{{'Previous' | xlat}}" next-text="{{'Next' | xlat}}"
+	  first-text="{{'First' | xlat}}" last-text="{{'Last' | xlat}}"></pagination>
+  </div>
+  <div class="panel-product-list no-panels" ng-show="currentCategory.InteropID" ng-hide="currentCategory.InteropID === 'htz_uniform' || currentCategory.InteropID === 'dt_uniform'">
+	<nav class="nav">
+	  <div class="row view-form-icon" ng-show="currentCategory.SortOptions.length > 0">
+		<div class="col-xs-9">
+		  <label>{{'Sort by' | r | xlat}}</label>
+		  <select class="form-control" ng-options="option.SortValue as (option.Display | xlat) for option in currentCategory.SortOptions" ng-model="sort">
+			<option value=""></option>
+		  </select>
+		  <i class="fa fa-sort" />
+		</div>
+	  </div>
+	  <ul style="display: flex;justify-content: center;flex-wrap: wrap;">
+		<loadingindicator ng-show="searchLoading" title="{{'Please wait while we fetch all products' | r | xlat}}" />
+		<li class="inline gallery" id="451_lst_prod" ng-repeat="product in products | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize | orderBy:sorter:direction" style="margin: 25px;">
+		  <div class="well" style="border:none;border-radius: 30px;">
+			<shortproductviewgallery p="product" user="user" />
+		  </div>
+		</li>
+	  </ul>
+	</nav>
+  </div>
+  <div class="hidden" ng-show="productCount > settings.pageSize && (currentCategory.InteropID != 'htz_uniform' || currentCategory.InteropID != 'dt_uniform')">
+	<pagination page="settings.currentPage" max-size="10" rotate="false" boundary-links="true" total-items="productCount" items-per-page="settings.pageSize" direction-links="true" previous-text="{{'Previous' | xlat}}" next-text="{{'Next' | xlat}}"
+	  first-text="{{'First' | xlat}}" last-text="{{'Last' | xlat}}"></pagination>
+  </div>
+
+
+
+
+  <ul class="hidden" ng-show="currentCategory.InteropID === 'htz_uniform' || currentCategory.InteropID === 'dt_uniform'">
+	<li>
+	  <contentmodal3></contentmodal3>
+	</li>
+  </ul>
+  
+  <!-- Inventory Error Modal Template -->
+  <script type="text/ng-template" id="inventoryErrorModal.html">
+    <div class="modal-header" style="background-color: #d9534f; color: white; border-bottom: 2px solid #c9302c;">
+      <h3 class="modal-title" style="margin: 0; font-weight: bold;">
+        <i class="fa fa-exclamation-triangle" style="margin-right: 8px;"></i>Inventory Error
+      </h3>
+    </div>
+    <div class="modal-body" style="padding: 20px;">
+      <div class="alert alert-danger" style="border-left: 4px solid #d9534f; background-color: #f2dede; border-color: #ebccd1; color: #a94442; padding: 15px; margin-bottom: 20px;" ng-bind-html="errorMessage"></div>
+      <p style="margin-bottom: 15px; color: #333; line-height: 1.6;">Please adjust your selections and try again.</p>
+      <p style="margin-bottom: 0; color: #666; font-size: 14px; line-height: 1.6;">
+        <i class="fa fa-envelope" style="margin-right: 5px; color: #5bc0de;"></i>
+        If you have any questions or need assistance, please contact us at 
+        <a href="mailto:hertzsupport@thumbprint.com" style="color: #5bc0de; text-decoration: underline;">hertzsupport@thumbprint.com</a>
+      </p>
+    </div>
+    <div class="modal-footer" style="border-top: 1px solid #e5e5e5; padding: 15px 20px; background-color: #f9f9f9;">
+      <button class="btn btn-primary" ng-click="ok()" style="min-width: 100px; font-weight: bold;">OK</button>
+    </div>
+  </script>
+  <script>
+	jQuery(function($) {
+		// Create modal element if it doesn't exist
+		if ($('#imageModal').length === 0) {
+			$('body').append('<div id="imageModal" class="image-modal"><div class="image-modal-content"><span class="image-modal-close">&times;</span><img src="" alt="Enlarged view"></div></div>');
+		}
+		
+		var $modal = $('#imageModal');
+		var $modalImg = $modal.find('img');
+		var $modalClose = $modal.find('.image-modal-close');
+		
+		// Open image in modal when clicked
+		$(document).on("click", ".FloorPlanImage", function(e) {
+			e.preventDefault();
+			// Check for srcFull first (full-sized image), then ng-src, then src
+			var src = $(this).attr("srcFull") || $(this).attr("ng-src") || $(this).attr("src");
+			if (src) {
+				$modalImg.attr('src', src);
+				$modal.addClass('active');
+				// Prevent body scroll when modal is open
+				$('body').css('overflow', 'hidden');
+			}
+		});
+		
+		// Close modal when clicking the X button
+		$modalClose.on('click', function(e) {
+			e.preventDefault();
+			closeModal();
+		});
+		
+		// Close modal when clicking outside the image (on the dark background)
+		$modal.on('click', function(e) {
+			// Only close if clicking directly on the modal background, not on the content or image
+			if (e.target === $modal[0]) {
+				closeModal();
+			}
+		});
+		
+		// Close modal with ESC key
+		$(document).on('keydown', function(e) {
+			if (e.key === 'Escape' && $modal.hasClass('active')) {
+				closeModal();
+			}
+		});
+		
+		function closeModal() {
+			$modal.removeClass('active');
+			$modalImg.attr('src', '');
+			$('body').css('overflow', '');
+		}
+	});
+	</script>  <script>
+    jQuery(function($){
+      function formHasVisibleUnselectedAllocations($form) {
+        var hasEmpty = false;
+
+        $form.find('select:visible').each(function() {
+          var val = $(this).val();
+          if (val === null || val === undefined || val === '') {
+            hasEmpty = true;
+            return false;
+          }
+        });
+        if (hasEmpty) {
+          return true;
+        }
+
+        $form.find('customselectionfield:visible').each(function() {
+          var $field = $(this);
+          if (!$field.is('[required]') && !$field.is('[ng-required]')) {
+            return true;
+          }
+          var $control = $field.find('select, input, textarea').first();
+          if ($control.length) {
+            var val = $control.val();
+            if (val === null || val === undefined || val === '') {
+              hasEmpty = true;
+              return false;
+            }
+          }
+          return true;
+        });
+        if (hasEmpty) {
+          return true;
+        }
+
+        $form.find('customselectionbuttons:visible').each(function() {
+          var $field = $(this);
+          if ($field.find('.btn-picker.active').length === 0) {
+            hasEmpty = true;
+            return false;
+          }
+          return true;
+        });
+
+        return hasEmpty;
+      }
+
+      function updateAllocationButtons() {
+        $('form[name="user_form"]').each(function() {
+          var $form = $(this);
+          var $button = $form.find('input[type="submit"].allocation-submit');
+          if (!$button.length) {
+            return;
+          }
+
+          var shouldDisable = formHasVisibleUnselectedAllocations($form);
+          if (shouldDisable) {
+            $button.prop('disabled', true).addClass('save-button--disabled');
+          } else {
+            $button.prop('disabled', false).removeClass('save-button--disabled');
+          }
+        });
+      }
+
+      $(document).on('change input', 'form[name="user_form"] select, form[name="user_form"] input, form[name="user_form"] customselectionfield', updateAllocationButtons);
+      updateAllocationButtons();
+    });
+  </script>
