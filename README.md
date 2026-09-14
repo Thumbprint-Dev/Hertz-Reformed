@@ -1,7 +1,22 @@
 # Hertz-Reformed
 
-The Hertz Uniforms Four51 storefront theme. This repo is what Four51 deploys — `index.html`
-and its assets sit at the root, so **Git File Deployment** picks them up directly.
+The Hertz Uniforms Four51 storefront theme. This repo is what Four51 deploys.
+
+## Layout, and the Git File Deployment settings
+
+The theme lives under **`app/`** — `app/index.html`, `app/js`, `app/css`, `app/lib`,
+`app/partials` — which is the structure both `Four51/Four51Storefront` and
+`Thumbprint-Dev/ModernTheme` use. It is not decorative: Four51's **Git File Deployment**
+form asks for an *App code folder*, and that is the folder it means.
+
+| Field | Value |
+|---|---|
+| Repository URL | `https://github.com/Thumbprint-Dev/Hertz-Reformed` |
+| **App code folder** | `app` |
+| Deployment sub folder in repository | *(leave blank)* |
+
+Every asset path inside `app/index.html` is relative (`js/…`, `css/…`, `lib/…`), so the
+folder moves as a unit and nothing needs rewriting.
 
 ## Deployment
 
@@ -29,11 +44,11 @@ remains. The two are joined by IDs only.
 
 | File | Role |
 |---|---|
-| `js/allocationConfig.js` | Base URL and the on/off flag |
-| `js/services/allocationService.js` | API client |
-| `js/controllers/allocationCtrl.js` | The `/allocation` page |
-| `partials/allocationView.html` | Its markup |
-| `css/custom.css` | Its styles, appended under `/* Uniform Allocation */` |
+| `app/js/allocationConfig.js` | Base URL and the on/off flag |
+| `app/js/services/allocationService.js` | API client |
+| `app/js/controllers/allocationCtrl.js` | The `/allocation` page |
+| `app/partials/allocationView.html` | Its markup |
+| `app/css/custom.css` | Its styles, appended under `/* Uniform Allocation */` |
 
 **It ships disabled.** `AllocationConfig.enabled` is `false`, so the theme behaves exactly as
 it did before these files existed: the page renders a single "not switched on" line and
@@ -56,13 +71,13 @@ None of these are code changes in this repo.
 
 ### Why the client does not use `$http`
 
-`js/interceptors.js` sets `config.headers['Authorization'] = Security.auth()` on **every**
+`app/js/interceptors.js` sets `config.headers['Authorization'] = Security.auth()` on **every**
 outbound `$http` call, with no URL allowlist. For a third-party API that is two problems: it
 overwrites the caller's own `Authorization`, so our session token would be silently replaced
 and every request would 401 with nothing in the code to explain it; and it would send the
 Four51 session token to another origin on every call.
 
-`allocationService.js` therefore uses a plain `XMLHttpRequest` wrapped in `$q`, which the
+`app/js/services/allocationService.js` therefore uses a plain `XMLHttpRequest` wrapped in `$q`, which the
 interceptor never sees. The Four51 token is sent exactly once, deliberately, to the one
 endpoint whose job is to resolve it. The token we get back is held **in memory only** — not
 `localStorage`, not a cookie — because it authorises spending an employee's allocation and
@@ -87,7 +102,7 @@ nothing to do with stock.
   scope, and assigning to an undotted name there creates a shadowing copy instead of
   updating the controller's property — the `$watch` never fires again. Bind to an object:
   `ng-model="thing.value"`.
-- **All new CSS goes at the end of `css/custom.css`** under a comment block. Never edit
+- **All new CSS goes at the end of `app/css/custom.css`** under a comment block. Never edit
   `bootstrap-451.css`; override it from `custom.css`.
 - **Use `padding-top`/`padding-bottom`, not the `padding` shorthand**, on any class meant to
   be combined with another that supplies its own padding — the shorthand replaces all four
