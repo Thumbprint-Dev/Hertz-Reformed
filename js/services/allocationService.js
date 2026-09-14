@@ -44,6 +44,25 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
     }
 
     /**
+     * Settle a deferred from outside Angular, and get back into a digest.
+     *
+     * This XHR is not Angular's, so nothing schedules a digest when it completes and the
+     * view would never update.
+     *
+     * `$evalAsync`, NOT `$applyAsync`. `$applyAsync` arrived in Angular 1.3 and this theme
+     * runs 1.2.15, where it is simply `undefined` — calling it threw inside the xhr
+     * handler, so the deferred was never resolved and never rejected, and the page sat on
+     * "Loading your allocation..." forever with no error anywhere. A hang rather than a
+     * failure, which is the harder thing to diagnose.
+     *
+     * `$evalAsync` has existed since 1.0 and schedules a digest if one is not already
+     * running, which is exactly what is needed here.
+     */
+    function settle(fn) {
+      $rootScope.$evalAsync(fn);
+    }
+
+    /**
      * A request that bypasses Angular's $http, and therefore the interceptor.
      *
      * Deliberately plain: no retries, no caching, no global error broadcast. A failure
@@ -68,17 +87,14 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
           return;
         }
         if (xhr.status >= 200 && xhr.status < 300) {
-          // $q resolves outside a digest here, because the XHR is not Angular's.
-          $rootScope.$applyAsync(function() { deferred.resolve(parsed); });
+          settle(function() { deferred.resolve(parsed); });
         } else {
-          $rootScope.$applyAsync(function() {
-            deferred.reject({ status: xhr.status, body: parsed });
-          });
+          settle(function() { deferred.reject({ status: xhr.status, body: parsed }); });
         }
       };
 
       xhr.onerror = function() {
-        $rootScope.$applyAsync(function() {
+        settle(function() {
           // Network-level failure. With `enabled: true` and decision 44 unsettled, this is
           // what a browser sees: the preflight never gets past Cloud Run's IAM check.
           deferred.reject({ status: 0, body: null, network: true });

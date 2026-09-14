@@ -22,7 +22,17 @@
 
     <div ng-if="alloc.enabled">
 
-      <p class="hz-alloc-muted" ng-show="alloc.loading">Loading your allocation&hellip;</p>
+      <!-- Skeleton rather than a spinner or a line of text: it occupies the shape the
+           real table will take, so the page does not jump when the data lands, and it
+           reads as "your allocation is coming" rather than "something is happening". -->
+      <div class="hz-alloc-skeleton" ng-show="alloc.loading" aria-busy="true" aria-live="polite">
+        <span class="hz-sr-only">Loading your allocation</span>
+        <div class="hz-skel hz-skel-meta"></div>
+        <div class="hz-skel-row" ng-repeat="n in [1,2,3,4,5]">
+          <div class="hz-skel hz-skel-label"></div>
+          <div class="hz-skel hz-skel-num"></div>
+        </div>
+      </div>
 
       <div class="hz-alloc-error" ng-show="alloc.error">
         <p>{{alloc.error}}</p>
