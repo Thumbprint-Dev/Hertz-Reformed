@@ -1,0 +1,80 @@
+<style>
+  .title-container {
+    text-align: center;     /* Center the heading */
+    margin: 2em 0;         /* Spacing above and below */
+    position: relative;
+  }
+  
+  .title-container h3 {
+    display: inline-block;
+    background-color: #fff; /* Ensure the text has a solid background, 
+                               so the line doesn’t run through it */
+    padding: 0 1em;         /* Horizontal padding around the text */
+    position: relative;
+    z-index: 1;            /* Place the heading above the pseudo-element line */
+  }
+  
+  .title-container::before {
+    content: "";
+    position: absolute;
+    top: 50%;               /* Vertically center the line with text */
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #ccc; /* Light gray line */
+    z-index: 0;
+  }
+  
+  .view-product-btn {
+  background-color: #DA833F; 
+  border: none;
+  border-radius: 25px;       /* Rounded pill shape */
+  color: #fff;
+  font-weight: 600;          /* Slightly bolder text */
+  padding: 0.6em 1.2em;      /* Balanced padding */
+  transition: background-color 0.3s ease;
+  text-transform: uppercase; /* Optional for a modern look */
+}
+
+.view-product-btn:hover {
+  background-color: #C47338; /* Darken on hover */
+  text-decoration: none;
+  color: #fff;
+}
+
+</style>
+<div>
+<div class="title-container">
+  <h3>{{('Related' | r) + ' ' +  ('Products' | r) | xlat}}</h3>
+</div>
+
+    <div>
+        <nav class="nav">
+            <ul>
+                <li ng-repeat="p in relatedProducts">
+                    <div class="well">
+                        <div class="row">
+                        <div class="col-sm-8 text-left">
+                                <div class="panel-body">
+                                    <h3>{{p.Name}}</h3>
+                                    <p ng-bind-html="trusted(p.Description)" />
+                                </div>
+                            </div>
+                            <div class="col-sm-4 text-center">
+                                <a class="thumbnail" href="product/{{p.InteropID}}">
+                                    <figure>
+                                        <img ng-src="{{p.SmallImageUrl}}"/>
+                                    </figure>
+                                    <div class="empty" ng-hide="p.SmallImageUrl">
+                                        <span class="fa empty"><i class="fa fa-camera"></i></span>
+                                    </div>
+                                    <div class="btn view-product-btn">{{('View' | r) + ' ' + ('Product' | r) | xlat}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

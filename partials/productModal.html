@@ -1,0 +1,210 @@
+<style>
+    .modal-content {
+        padding: 30px;
+    }
+    .product-modal .panel-table {
+        margin:0px;
+    }
+    .product-modal-prices {
+        text-align: right;
+        margin-top: 40px;
+        overflow:auto;
+    }
+    .modal-qty-field {
+        margin-top: 10px;
+        /* margin-bottom: 25px; */
+    }
+    .product-modal .item-info {
+        margin-top: 15px;
+    }
+    .product-modal .item-info p {
+        margin-bottom: 3px;
+        font-size: 11px;
+    }
+    .product-modal .stacked-buttons {
+        margin-top: 10px;
+    }
+    .product-modal .stacked-buttons .btn {
+        width:100%;
+        border-radius: unset;
+        margin-top: 20px;
+        min-height: 40px;
+        text-transform: unset;
+    }
+    .product-modal .stacked-buttons.variant-order .btn {
+        width:80%;
+    }
+    .secondary-title {
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #0061AA;
+        font-size: 14px;
+        margin-bottom: 10px;
+        margin-top: 0px;
+    }
+    .secondary-title.product-modal-title {
+        text-transform: unset;
+        font-size: 22px;
+    }
+    .product-modal-message {
+        font-size: 16px;
+        font-weight: bold;
+        color: #0061AA;
+        margin-top: 5px;
+        margin-bottom: 0px;
+        text-transform: uppercase;
+    }
+    .modal-dialog {
+      width: 50%;
+    }
+
+    .popup-footer {
+      padding: 20px;
+    }
+    @media screen and (max-width: 1500px) {
+        .modal-dialog {
+          width: 60%;
+        }
+    }
+    @media screen and (max-width: 1200px) {
+        .modal-dialog {
+          width: 80%;
+        }
+    }
+    @media screen and (max-width: 767px) {
+        .modal-content {
+            padding: 30px 0px 0px;
+            width: 90%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-52%, 0%);
+        }
+        .modal-dialog {
+          width: 100%;
+        }
+        .product-modal {
+          padding: 15px;
+        }
+        .popup-footer {
+          margin-bottom: 20px;
+        }
+    }
+</style>
+<div class="row product-modal">
+    <!-- View for normal static order product -->
+    <section ng-show="display == 'normal order' && LineItem.Product.Type == 'Static'">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <figure>
+                <!--<img id="451_img_prod_lg" class="product-image-large img-responsive" ng-src="{{LineItem.Variant.PreviewUrl || LineItem.Variant.LargeImageUrl || LineItem.Product.LargeImageUrl}}" imageonload />-->
+                    <div class="panel panel-default" ng-controller="LightboxCtrl" style="border-color: white;box-shadow: none;">
+                        <productlightbox></productlightbox>
+                    </div>
+            </figure>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <div class="secondary-title product-modal-title">{{LineItem.Product.Name}}</div>
+            <!--<h2 class="pdt-product-name" ng-show="LineItem.Variant.ExternalID">
+              {{LineItem.Variant.ExternalID}}
+            </h2>-->
+            <h4 ng-show="LineItem.Product.ExternalID" class="text-info" style="text-transform:uppercase;font-weight:800;color: black;">
+              {{'ID' | r | xlat}}: {{LineItem.Product.ExternalID}}
+            </h4>
+            <h2 class="text-success" ng-show="LineItem.PriceSchedule.PriceBreaks.length == 1" ng-if="!(user.Permissions.contains('HidePricing'))">
+              {{LineItem.PriceSchedule.PriceBreaks[0].Price | culturecurrency}}
+            </h2>
+            <p ng-bind-html="trustedDescription(LineItem.Product)" ng-show="LineItem.Product.Description" />
+              <p ng-show="$parent.LineItem.Product.InteropID === 'ADT-ADKIT-000'" style="margin: 0;padding-top: 10px;">
+        			<span class="text-info">{{'Quantity Available' | r | xlat}}:</span> {{inventoryDisplay(LineItem.Product, LineItem.Variant)}}
+        	  </p>
+            <br />
+            <!-- PRICE SCHEDULE PANEL! --->
+            <priceScheduleTable ng-if="!(user.Permissions.contains('HidePricing'))" ps='LineItem.PriceSchedule' p='LineItem.Product'></priceScheduleTable>
+            <p ng-show="LineItem.Product.DisplayInventory && inventoryDisplay(LineItem.Product, LineItem.Variant) != undefined && (LineItem.Product.InteropID === 'ADT-DRK-014' || LineItem.Product.InteropID === 'ADT-PRO-041' || LineItem.Product.InteropID === 'ADT-PRO-042')" style="padding-top:20px;">
+                {{'Quantity Available' | r | xlat}}: {{inventoryDisplay(LineItem.Product, LineItem.Variant) }}
+            </p>
+            <p ng-show="LineItem.PriceSchedule.MinQuantity > 1 && !LineItem.PriceSchedule.RestrictedQuantity">
+              <span class="text-info">{{'Minimum Quantity' | r | xlat}}</span> {{LineItem.PriceSchedule.MinQuantity}}
+            </p>
+            <div class="form-group" ng-repeat="s in LineItem.Specs | onproperty:[{Property: 'CanSetForLineItem', Value: true}, {Property: 'DefinesVariant', Value: true}]" ng-hide="LineItem.Product.InteropID === 'ADT-LSS-001'">
+                <customfilefield customfield="s" ng-if="s.ControlType == 'File'"></customfilefield>
+                <customtextfield customfield="s" ng-if="s.ControlType == 'Text'"></customtextfield>
+                <customselectionfield change="specChanged" customfield="s" ng-if="s.ControlType == 'Selection'"></customselectionfield>
+            </div>
+            <div class="view-form-icon modal-qty-field row" ng-hide="LineItem.Product.InteropID === 'ADT-LSS-001'">
+                <div class="col-xs-6">
+                    <label class="required">Quantity</label>
+                    <quantityfield lineitem="LineItem"></quantityfield>
+                </div>
+                <div class="col-xs-6">
+                    <div class="text-right product-modal-add-to-order">
+                        <button class="btn btn-info form-control modal-cart-buttons" type="button" id="451_btn_orderadd" ng-click="addToOrder()">
+                            <loadingindicator ng-show="addToOrderIndicator" />
+                            <i ng-show="lineItemErrors.length > 0" class="fa fa-warning"></i>
+                            {{addToOrderText | r | xlat}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <productmatrix matrixitem="LineItem" ng-if="LineItem.Product.InteropID === 'ADT-LSS-001'"></productmatrix>
+            <div class="view-error-message" ng-show="showAddToCartErrors && lineItemErrors.length > 0">
+                <hr class="hr-spacer" />
+                <ul class="alert-warning">
+                    <li class="text-center">
+                        <ul ng-class="{'one': errorSection == 'open', 'two': errorSection == '' }">
+                            <li class="alert-warning" ng-repeat="e in lineItemErrors">{{e | xlat}}</li>
+                            <li class="alert-warning" ng-show="variantLineItems[v.InteropID].qtyError">{{variantLineItems[v.InteropID].qtyError}}</li>
+                        </ul>
+                    </li>
+                    <li class="text-center" ng-show="lineItemErrors.length > 1">
+                        <a>
+                            <i class="fa fa-caret-down" ng-click="errorSection = 'open'" ng-hide="errorSection == 'open'"></i>
+                            <i class="fa fa-caret-up" ng-click="errorSection = ''" ng-show="errorSection == 'open'"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- End view for normal static order product -->
+
+    <!-- View for after a product has been added to the cart -->
+    <section ng-show="display == 'added to cart'">
+        <div class="col-xs-12 col-md-5">
+            <h1 class="product-modal-message" ng-show="message">{{message}}</h1>
+            <div class="secondary-title product-modal-title">{{LineItem.Product.Name}}</div>
+            <div class="item-info">
+                <p>{{LineItem.Product.ExternalID}}</p>
+                <!--<p>ITEM SUBTOTAL: {{(LineItem.LineTotal || variantLineItemsOrderTotal) | culturecurrency}}</p>-->
+            </div>
+            <div class="stacked-buttons">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info s" type="button" id="451_btn_orderadd" ng-click="ok()" style="border-radius: 4px;">
+                            Continue Shopping
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info" type="button" id="451_btn_orderadd" ng-click="continueToCart()" style="border-radius: 4px;">
+                            View Cart & Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 col-md-offset-1">
+            <figure>
+                <img id="451_img_prod_lg" class="product-image-large img-responsive" ng-src="{{LineItem.Variant.PreviewUrl || LineItem.Variant.LargeImageUrl || LineItem.Product.LargeImageUrl}}" imageonload />
+            </figure>
+        </div>
+    </section>
+    <!-- End view for after a product has been added to the cart -->
+</div>
+<div class="popup-footer">
+  <div class="pull-right">
+  <a target="_blank" class="btn btn-info" ng-click="cancel()">Close</a>
+  </div>
+</div>
+

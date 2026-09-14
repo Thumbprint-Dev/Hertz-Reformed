@@ -1,0 +1,13 @@
+<div class="view-form-icon">
+    <label ng-class="{required: customfield.Required}">{{customfield.Label || customfield.Name | r}}</label>
+    <div class="btn-picker-group" ng-init="init()">
+        <button type="button"
+                class="btn-picker"
+                ng-repeat="option in customfield.Options"
+                ng-class="{active: option.Selected}"
+                ng-click="selectOption(option)">
+            {{option.Value}}
+        </button>
+    </div>
+    <input type="hidden" ng-model="customfield.Value" ng-required="customfield.Required" />
+</div>

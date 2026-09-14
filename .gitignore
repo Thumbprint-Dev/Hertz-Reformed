@@ -1,0 +1,4 @@
+.DS_Store
+# Local preview harness — renders the allocation page against a local API. It belongs in
+# the platform repo, not here: anything in this repo is a candidate for live deployment.
+preview.html

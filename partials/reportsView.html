@@ -1,0 +1,94 @@
+<style>
+  .cart-title {
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: -0.74px;
+    line-height: 63px;
+  }
+  .order-details-container {
+    padding: 10px;
+    min-width: 400px;
+    border-radius: 5px;
+    margin-bottom: 100px;
+ }
+ .contactus-text {
+   color: #01A9E6;
+    margin-bottom: 0;
+    font-weight: 800;
+    font-size: 30px;
+ }
+.reports-field {
+    border-top-left-radius: 24px !important;
+    border-bottom-left-radius: 24px !important;
+}
+   @media screen and (max-width: 1250px) {
+  .order-details-container {
+    width: 400px;
+ }
+}
+   @media screen and (max-width: 1110px) {
+  .order-details-container {
+    width: 350px;
+ }
+}
+   @media screen and (max-width: 950px) {
+  .order-details-container {
+    width: unset;
+ }
+}
+</style>
+<section class="marginTop">
+    <loadingindicator ng-show="displayLoadingIndicator" />
+    <div class="order-details-container">
+        <!--<div class="panel-heading">
+            <h3 class="panel-title">{{('Saved' | r) + ' ' + ('Reports' | r) | xlat}}</h3>
+        </div>-->
+        <!--<p class="cart-title" style="border-bottom: 1px solid #979797;">Saved Reports</p>-->
+        <div class="panel-body view-form-icon">
+            <div class="input-group">
+                <label ng-show="searchTerm">{{'Search' | r | xlat}}</label>
+                <input class='form-control reports-field' type="text" placeholder="{{'Search' | r | xlat}}" ng-model="searchTerm" autocomplete="off" />
+                <i class="fa fa-search"></i>
+                <div class="input-group-btn">
+                    <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
+                        <span>{{('New' | r) + ' ' + ('Report' | r) | xlat}}</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li ng-repeat="(key,value) in Reports.AvailableTypes">
+                            <a role="presentation" tabindex="-1" href="report/{{key}}">{{value | xlat}}</a>
+                        </li>
+                    </ul>
+                </div>
+             </div>
+        </div>
+        <div class="panel-table">
+            <div class="row text-info">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-2 hidden-xs">{{'Name' | r | xlat}}</div>
+                <div class="col-sm-2 hidden-xs">{{'Type' | r | xlat}}</div>
+            </div>
+            <div class="row" ng-repeat="report in Reports | filter:{'Name': searchTerm}">
+                <div class="col-sm-1">
+                    <input type="checkbox" ng-model="report.Selected" />
+                </div>
+                <div class="col-sm-2">
+                    <span class="visible-xs panel-table-heading-xs text-info">{{'Name' | r | xlat}}</span>
+                    <a ng-href="{{'report/' + report.ID}}">{{report.Name}}</a>
+                </div>
+                <div class="col-sm-2">
+                    <span class="visible-xs panel-table-heading-xs text-info">{{'Type' | r | xlat}}</span>
+                    {{report.ReportTypeName | xlat}}
+                </div>
+             </div>
+        </div>
+        <div class="navbar-fixed-bottom">
+            <div class="view-response-message alert-success text-center" alert-show="actionMessage">
+                <p>{{actionMessage | r | xlat}}</p>
+            </div>
+        </div>
+        <div class="panel-footer" style="background: white;">
+            <button type="button" class="btn btn-danger" ng-click="deleteSelected($event)" ng-disabled="(Reports | filter:searchTerm | filter:{Selected:true}).length == 0">{{('Delete' | r) + ' ' +  ('Selected' | r) | xlat}}</button>
+        </div>
+    </div>
+</section>

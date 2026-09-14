@@ -1,0 +1,238 @@
+<style>
+    .panel-nav ul li:hover {
+  
+      text-decoration: none;
+      border-radius: 4px;
+    }
+  
+    .panel-nav ul li.active {
+      background-color: white;
+    }
+  
+    .panel-nav ul li a:hover {
+      color: #ff6700;
+    }
+  
+    .top-level-cat:hover {
+      text-decoration: none;
+    }
+  
+    .panel-nav ul li.active {
+      background-color: white;
+    }
+  
+    .panel-nav ul li.active a {
+      color: #ff6700;
+    }
+  
+    .panel-nav ul li ul li {
+      /* background-color: #50bda7; */
+      margin-left: 10px;
+    }
+  
+    .menuSubCat {
+      padding-left: 10px;
+    }
+  
+    .panel-nav ul li ul li a {
+      color: #333333;
+      text-decoration: none;
+    }
+  
+    .panel-nav ul li ul li a:hover {
+      background-color: white;
+    }
+  
+    .panel-nav ul li ul li a.active {
+      color: #ff6700 !important;
+    }
+  
+    .panel-nav ul li ul:hover {
+      background: white !important;
+    }
+  
+    .marketing-title {
+      text-align: center;
+      font-size: 50px;
+      font-weight: 800;
+      color: #092846;
+    }
+  
+    .marketing-sub-title {
+      font-size: 30px;
+      font-weight: 800;
+      color: #092846;
+    }
+  
+    .marketing-text {
+      font-size: 20px;
+      color: gray;
+      text-align: left;
+      float: left;
+    }
+  
+    .marketing-li {
+      text-align: center;
+      padding: 20px;
+    }
+  
+    .marketing-image-title {
+      min-height: 250px;
+    }
+  
+    .box {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: 1000px;
+      border: 1px solid rgb(220, 68, 5);
+      border-radius: 5px;
+      overflow: hidden;
+      /* Ensures the border-radius applies to children */
+    }
+  
+    .image-half,
+    .content-half {
+      width: 50%;
+      /* Ensures both divs take up 50% of the container's width */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .image-half img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Ensures the image covers the full half without distortion */
+    }
+  
+    .content-half {
+      background-color: rgb(220, 68, 5);
+      color: white;
+      flex-direction: column;
+      padding-left: 50px;
+      align-items: flex-start;
+    }
+  
+    .content-half p {
+      margin: 5px 0;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+  
+    .shop-men-btn {
+      background-color: white;
+      color: rgb(220, 68, 5);
+      border: 2px solid white;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+      margin-top: 10px;
+    }
+  
+    .shop-men-btn:hover {
+      background-color: #f0f0f0;
+      border: 2px solid #f0f0f0;
+    }
+  
+    /* Media Query for Mobile Devices */
+    @media screen and (max-width: 768px) {
+      .box {
+        flex-direction: column;
+        /* Stacks the image and content vertically on small screens */
+        max-width: 100%;
+        /* Ensure it takes full width on mobile */
+        border: none;
+      }
+  
+      .image-half,
+      .content-half {
+        /* Ensure each half takes full width when stacked */
+        padding: 20px;
+        /* Add some padding for a better mobile view */
+        border-radius: 0px;
+      }
+  
+      .content-half {
+        padding-left: 0;
+        /* Remove the left padding on mobile */
+        align-items: center;
+        /* Center the content */
+        text-align: center;
+        /* Center the text */
+      }
+  
+      .content-half p {
+        font-size: 1.2em;
+        /* Reduce font size for mobile */
+      }
+  
+      .shop-men-btn {
+        font-size: 1em;
+        /* Reduce button font size for mobile */
+        padding: 8px 16px;
+        /* Adjust padding for the button */
+      }
+    }
+  
+    @media screen and (max-width: 991px) {
+      .marketing-text {
+        text-align: center;
+        float: none;
+      }
+    }
+  </style>
+  <section style="margin-top:20px;">
+      <!--<nav id="451qa_nav_hdr" class="nav">
+        <breadcrumbs ng-hide="isActive('catalog')"></breadcrumbs>
+            <ul class="">
+                <li class="hidden-sm hidden-xs">
+                    <span ng-click="toggleNav()"><i class="fa fa-bars" ng-class="{ 'text-info': navStatus.visible }"></i></span>
+                </li>
+                <li>
+                    <span id="451_lbl_curcat" class="text-primary" ng-bind-html="currentCategory.Name || '  {{'Categories' | r | xlat}}'"></span>
+                </li>
+            </ul>
+        </nav> 
+        <div class="row" style="margin-top: 10px;">
+             <aside class="col-md-2 visible-md visible-lg" ng-if="navStatus.visible">
+                <div class=" panel-nav">
+                    <div class="">
+                        <h2 class="side-nav-title">
+                            {{'Categories' | r | xlat}}
+                        </h2>
+                    </div>
+                    <hr class="divider">
+                    <nav class="nav 451qa_sidenav panel-body">
+                        <ul>
+                            <categorycollapse tree='tree'></categorycollapse>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>-->
+            <div ng-class="{ 'col-md-12': navStatus.visible, 'col-md-12': !navStatus.visible }" >
+            
+
+ 
+  	<div style="padding-top: 15px;margin-bottom:15px;" ng-hide="isActive('catalog')">
+	  <a href back-step class="back" style="text-decoration: none;">
+		<button class="btn btn-info btn-block btn-md text-center add-to-cart-button apparel-btn" style="width: 100px;"><i class="fa fa-arrow-left navArrow"></i> Back</button>
+	  </a>
+	</div>
+  
+  
+  <categorylistview ng-hide="isActive('catalog/htz_uniform') || isActive('catalog/dt_uniform')"></categorylistview> 
+  
+  <!--<loadingindicator ng-show="productLoadingIndicator" title="{{'Please wait while we fetch all products' | r | xlat}}" />-->
+  
+  <productlistview ></productlistview>
+  
+  </div>
+  <div class="description text-left">
+    <p ng-bind-html="trusted(currentCategory.Description)"></p>
+  </div>
+  </div>
+  </section>
