@@ -2476,25 +2476,33 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   padding: 14px 22px; border-radius: 2px; border: 1px solid transparent;
   white-space: nowrap; box-shadow: none; text-transform: none;
 }
+/* The checkout button swaps class by form state — btn-success when the cart is valid,
+   btn-warning when it is not and the button is disabled — so both have to be spoken for
+   or it changes colour scheme mid-page. */
 .hz-shop .btn-primary,
-.hz-shop .checkoutBtn-cart,
-.hz-shop .checkoutBtn-continue {
+.hz-shop .btn-success,
+.hz-shop .checkoutBtn-cart {
   background: var(--yellow) !important; border-color: var(--yellow) !important;
   color: var(--black-90) !important;
 }
 .hz-shop .btn-primary:hover, .hz-shop .btn-primary:focus,
-.hz-shop .checkoutBtn-cart:hover, .hz-shop .checkoutBtn-continue:hover {
+.hz-shop .btn-success:hover, .hz-shop .btn-success:focus,
+.hz-shop .checkoutBtn-cart:hover, .hz-shop .checkoutBtn-cart:focus {
   background: var(--yellow-press) !important; border-color: var(--yellow-press) !important;
   color: var(--black-90) !important;
 }
+/* One primary action per view. Continue Shopping is the way out, not the way on, so it
+   is a ghost — two yellow slabs side by side make neither of them the answer. */
 .hz-shop .btn-default,
 .hz-shop .checkoutBtn-save,
-.hz-shop .checkoutBtn-cancel {
+.hz-shop .checkoutBtn-cancel,
+.hz-shop .checkoutBtn-continue {
   background: #fff !important; border-color: var(--rule) !important; color: var(--ink) !important;
 }
 .hz-shop .btn-default:hover,
 .hz-shop .checkoutBtn-save:hover,
-.hz-shop .checkoutBtn-cancel:hover {
+.hz-shop .checkoutBtn-cancel:hover,
+.hz-shop .checkoutBtn-continue:hover {
   background: var(--surface-alt) !important; border-color: var(--ink) !important;
 }
 /* Removing a line is destructive but ordinary — a quiet control, not a red slab. */
@@ -2508,6 +2516,16 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   border-color: #9b1c1c !important; color: #9b1c1c !important;
 }
 .hz-shop .btn-link { color: var(--ink) !important; text-decoration: underline; padding: 0; }
+
+/* Not yet available, rather than something has gone wrong: a disabled checkout usually
+   means a required field is still empty, and amber suggests a problem the shopper has
+   already caused. */
+.hz-shop .btn-warning,
+.hz-shop .btn[disabled],
+.hz-shop .btn.disabled {
+  background: #EDEFF2 !important; border-color: var(--rule) !important;
+  color: var(--black-60) !important; opacity: 1; cursor: not-allowed;
+}
 
 /* ---- inputs ---- */
 .hz-shop .form-control,
@@ -2562,4 +2580,111 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
 @media (max-width: 600px) {
   .hz-shop .btn { padding: 16px 24px; width: 100%; margin-bottom: 8px; }
+}
+
+/* ---------- cart and checkout: structure ----------
+   The previous block put these pages on the brand's surface. This one gives them the
+   shape a modern checkout has: a tinted ground with white content sitting on it, one
+   readable column of line items, and a summary that stays with you while you scroll.
+
+   Shopify is the reference for the *structure* — rhythm, a sticky tinted summary, compact
+   rows, one unmistakable primary action. It is not the reference for the surface: the
+   brand guide is flat, 2px, and yellow-only, so none of the soft shadows and pill radii
+   come with it. Still markup-free; every rule below hangs off classes already in the
+   templates.
+   -------------------------------------------------- */
+.hz-shop {
+  /* Break out of .mainContainer's 10% padding so the ground reaches the edges, the same
+     way the landing page does. 10/80 = 12.5% of the content box. */
+  margin-left: -12.5%;
+  margin-right: -12.5%;
+  padding: clamp(20px, 3vw, 40px) clamp(16px, 4vw, 56px) clamp(60px, 8vw, 110px);
+  background: #F6F7F9;
+  min-height: 70vh;
+}
+@media screen and (max-width: 425px) {
+  .hz-shop { margin-left: -2.0833%; margin-right: -2.0833%; }
+}
+
+/* White content on the tinted ground. */
+.hz-shop .panel,
+.hz-shop .well,
+.hz-shop .order-summary-container {
+  padding: clamp(14px, 1.6vw, 24px);
+  /* The theme pins a top and bottom border inline on the cart panel; a full box reads as
+     one object instead of two stray rules. */
+  border: 1px solid var(--rule) !important;
+}
+
+/* ---- line items: one compact row each ---- */
+.hz-shop .panel-lineitem {
+  border-top: 1px solid var(--rule);
+  padding: 20px 0;
+}
+.hz-shop .panel-lineitem img {
+  max-width: 100%; height: auto;
+  border: 1px solid var(--rule); border-radius: 2px; background: #fff;
+}
+/* "Click Image to Enlarge" is instruction, not content. */
+.hz-shop .panel-lineitem .text-center > strong,
+.hz-shop .panel-lineitem small { color: var(--black-60); font-weight: 400; }
+
+/* ---- order summary: sticky, and aligned on a grid rather than floats ---- */
+.hz-shop .order-summary-container {
+  position: sticky; top: 16px;
+  background: #fff !important;
+}
+.hz-shop .order-summary-inner-container { padding: 0 !important; }
+.hz-shop .order-summary-header {
+  font-size: 17px; margin: 0 0 16px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+/* Each row is label | amount. The theme floats the amount right; as a flex item the
+   float is ignored and the two simply sit at either end, which also lines the figures
+   up with each other instead of with whatever the label length happens to be. */
+.hz-shop .order-summary-body {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  margin: 0 0 10px; font-size: 14.5px; color: var(--black-80);
+}
+.hz-shop .order-summary-body .pull-right,
+.hz-shop .order-summary-total .pull-right {
+  float: none !important; font-variant-numeric: tabular-nums; color: var(--ink);
+}
+.hz-shop .order-summary-body .text-info { color: var(--black-80) !important; }
+.hz-shop .order-summary-total {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  border-top: 2px solid var(--ink); margin: 16px 0 0; padding-top: 16px;
+  font-size: 21px;
+}
+/* The buttons live in a <ul>; it is a stack of actions, not a list. */
+.hz-shop .order-summary-container ul { list-style: none; margin: 0; padding: 0; }
+.hz-shop .order-summary-container li { padding: 0 !important; margin-top: 10px; }
+.hz-shop .order-summary-container .btn { display: block; width: 100%; text-align: center; }
+.hz-shop .checkoutBtn-cart { padding: 17px 22px !important; font-size: 16px !important; }
+
+/* The allotment confirmation is a routine step, not an error. Red framing on something
+   every shopper must tick trains people to ignore red, which is the one colour that has
+   to keep working. */
+.hz-shop .order-summary-container .alert-danger {
+  background: var(--surface-alt) !important;
+  border: 1px solid var(--rule) !important;
+  color: var(--black-80) !important;
+  text-align: left !important;
+  border-radius: 2px !important;
+  font-size: 13.5px; line-height: 1.5;
+}
+.hz-shop .order-summary-container .alert-danger input[type="checkbox"] {
+  margin-right: 8px; transform: scale(1.15);
+}
+
+/* ---- checkout: one column of steps, summary beside it ---- */
+.hz-shop--checkout .panel { margin-bottom: 18px; }
+.hz-shop--checkout .navbar-fixed-bottom {
+  position: sticky; bottom: 0; left: auto; right: auto;
+  border-top: 1px solid var(--rule);
+  margin: 24px -16px -24px; border-radius: 2px;
+}
+
+@media (max-width: 991px) {
+  .hz-shop .order-summary-container { position: static; margin-top: 20px; }
 }
