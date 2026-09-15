@@ -52,20 +52,24 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       percentLeft: 0,
       closed: [],
       heroImage: HERO_IMAGE,
-      /** Where the two champion entries go. See the category ids below. */
+      /** Where the two champion entries go. */
       alaCarteHref: 'catalog',
-      onBehalfHref: 'catalog'
+      onBehalfHref: 'champion'
     };
 
     /**
-     * The Four51 categories behind the champion entries.
+     * Where the champion entries go.
      *
-     * Both are authored in the Four51 admin and scoped to the champion groups, so moving
-     * either one is a category id here and nothing else. An id left empty falls back to
-     * the first category the tree returns, so the entry still leads somewhere real rather
-     * than to an empty page.
+     * "Order on behalf" is the beneficiary picker at /champion, not a Four51 category. A
+     * category can only show products; it has no idea *whose* allocation is being spent,
+     * so ordering straight into one would meter the champion's own. The picker asks who
+     * first and opens the uniform picker with `?for=<employeeId>`, which is what carries
+     * the beneficiary through the cart gate and into checkout.
+     *
+     * À la carte is genuinely a category, because it is a plain catalogue purchase charged
+     * to the location. Empty falls back to the first category in the tree, so the entry
+     * leads somewhere real until that category exists.
      */
-    var ON_BEHALF_CATEGORY = 'orderob';
     var A_LA_CARTE_CATEGORY = '';
 
     /**
@@ -187,7 +191,6 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         .then(function(list) {
           if (list) $scope.home.categories = list;
           $scope.home.alaCarteHref = categoryHref(A_LA_CARTE_CATEGORY, list);
-          $scope.home.onBehalfHref = categoryHref(ON_BEHALF_CATEGORY, list);
           $scope.home.loading = false;
         })
         .catch(function(err) {
