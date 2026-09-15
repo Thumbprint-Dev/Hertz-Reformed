@@ -5,16 +5,24 @@
  * (`docs/09-SPIKE-FINDINGS.md`) — so enforcement has to happen before the storefront saves
  * an order. This is that "before".
  *
- * ## Why a decorator and not a call in each controller
+ * ## Why it wraps the service and not each controller
  *
  * `Order.save` is the one function every cart write goes through: adding a product,
  * editing a quantity, deleting a line, the cart page's own autosaves. Calling the gate from
  * each controller means finding all of them today and remembering on every future one, and
- * the cost of missing one is silent over-allocation. Decorating the service gates the paths
+ * the cost of missing one is silent over-allocation. Wrapping the service gates the paths
  * nobody thought about, including the ones added after this file.
  *
- * `$provide.decorator` runs at config time and replaces the function on the instance, so
- * callers need no change and cannot opt out.
+ * ## Why `run` and not `$provide.decorator`
+ *
+ * In Angular 1.2 a `config` block is pushed onto the *same* queue as provider
+ * registrations and runs in declaration order, so `$provide.decorator('Order', …)` only
+ * works if this file is loaded after `orderService.js`. It was not, and the whole app died
+ * on `unknown provider: OrderProvider` — a white screen, not a degraded cart.
+ *
+ * A `run` block executes once the injector is built, so every service exists and the order
+ * of the script tags stops mattering. `Order` is a singleton object, so replacing its
+ * methods here reaches every consumer, and run blocks execute before any controller does.
  *
  * ## What it does on failure, and why
  *
@@ -40,22 +48,10 @@
  * A promotional mug in the same cart as a polo is not an allocation item and this must not
  * pretend otherwise.
  */
-four51.app.config(['$provide', function($provide) {
-  $provide.decorator('Order', ['$delegate', '$injector', function($delegate, $injector) {
+four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
 
-    var save = $delegate.save;
-    var submit = $delegate.submit;
-
-    /**
-     * Resolved lazily.
-     *
-     * `Allocation` depends on `User`, which depends on `Order`; asking for it at config
-     * time would close that circle and fail to bootstrap the app. By the time a save
-     * happens the injector is long since built.
-     */
-    function allocation() {
-      return $injector.get('Allocation');
-    }
+    var save = Order.save;
+    var submit = Order.submit;
 
     /** The lines the gate meters, in the shape the API takes. */
     function linesOf(order) {
@@ -84,12 +80,11 @@ four51.app.config(['$provide', function($provide) {
      * stock message and send someone to the wrong person for help.
      */
     function refusalMessage(err) {
-      var messages = allocation().refusalText(err && err.body);
+      var messages = Allocation.refusalText(err && err.body);
       return messages.length ? messages.join(' ') : 'That order exceeds your uniform allocation.';
     }
 
-    $delegate.save = function(order, success, error) {
-      var Allocation = allocation();
+    Order.save = function(order, success, error) {
       var orderId = order && order.ID;
 
       // No id yet, or the integration is off: nothing to meter against. An order with no
@@ -124,8 +119,7 @@ four51.app.config(['$provide', function($provide) {
      * ever correct it. This way the worst case is an accepted order we failed to record,
      * which is precisely the discrepancy reconciliation looks for.
      */
-    $delegate.submit = function(order, success, error) {
-      var Allocation = allocation();
+    Order.submit = function(order, success, error) {
       var orderId = order && order.ID;
 
       submit(order, function(saved) {
@@ -145,6 +139,4 @@ four51.app.config(['$provide', function($provide) {
       }, error);
     };
 
-    return $delegate;
-  }]);
 }]);
