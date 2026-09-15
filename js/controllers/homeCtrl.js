@@ -26,11 +26,11 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
      * Relative paths resolve against the theme root, so a file dropped in `css/img/`
      * is `'css/img/hero.jpg'`.
      *
-     * Per the brand guidelines §4.1 the image must be black and white with noticeable
-     * contrast. The grayscale conversion is done in CSS, so a colour original can be used
-     * as supplied rather than being edited first.
+     * §4.1 asks for black and white; this one runs in colour under the §4.3 carve-out for
+     * yellow that is really in the scene. See `.hz-lp-hero-img` in custom.css, where the
+     * grayscale filter is one uncommented line away.
      */
-    var HERO_IMAGE = '';
+    var HERO_IMAGE = 'css/img/hero-lifestyle.jpg';
 
     // An object, never bare primitives: anything under an `ng-if` gets a child scope, and
     // writing to a bare name there shadows rather than updates.

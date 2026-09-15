@@ -2019,9 +2019,12 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-hero-img {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover; max-width: 100%;
-  /* §4.1 — black and white with noticeable contrast, so a colour original can be
-     dropped in without being edited first. */
-  filter: grayscale(1) contrast(1.12);
+  /* §4.1 makes photography black and white, and §4.3 carves out yellow that is genuinely
+     in the scene. This frame is the carve-out: the yellow is the uniform's own trim and
+     the garage markings, and it is also the thing the page is about — grayscale takes the
+     detail that distinguishes one polo from another out of a picture whose job is to show
+     the uniforms. Restore the brand default by uncommenting the line below. */
+  /* filter: grayscale(1) contrast(1.12); */
 }
 .hz-lp-hero-ph {
   position: absolute; inset: 16px;
