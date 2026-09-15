@@ -52,18 +52,20 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       percentLeft: 0,
       closed: [],
       heroImage: HERO_IMAGE,
-      /**
-       * Where "Buy à la carte" goes.
-       *
-       * Hertz will author a dedicated à la carte category in the Four51 admin; when it
-       * exists, name its InteropID in A_LA_CARTE_CATEGORY below and this points at it.
-       * Until then it falls back to the first category the tree returns, so the entry
-       * works rather than leading nowhere.
-       */
-      alaCarteHref: 'catalog'
+      /** Where the two champion entries go. See the category ids below. */
+      alaCarteHref: 'catalog',
+      onBehalfHref: 'catalog'
     };
 
-    /** InteropID of the à la carte category, once Hertz creates it. */
+    /**
+     * The Four51 categories behind the champion entries.
+     *
+     * Both are authored in the Four51 admin and scoped to the champion groups, so moving
+     * either one is a category id here and nothing else. An id left empty falls back to
+     * the first category the tree returns, so the entry still leads somewhere real rather
+     * than to an empty page.
+     */
+    var ON_BEHALF_CATEGORY = 'orderob';
     var A_LA_CARTE_CATEGORY = '';
 
     /**
@@ -131,8 +133,8 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       return d.promise;
     }
 
-    function alaCarteHref(list) {
-      if (A_LA_CARTE_CATEGORY) return 'catalog/' + A_LA_CARTE_CATEGORY;
+    function categoryHref(interopId, list) {
+      if (interopId) return 'catalog/' + interopId;
       var first = (list || [])[0];
       return first ? first.href : 'catalog';
     }
@@ -184,7 +186,8 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         })
         .then(function(list) {
           if (list) $scope.home.categories = list;
-          $scope.home.alaCarteHref = alaCarteHref(list);
+          $scope.home.alaCarteHref = categoryHref(A_LA_CARTE_CATEGORY, list);
+          $scope.home.onBehalfHref = categoryHref(ON_BEHALF_CATEGORY, list);
           $scope.home.loading = false;
         })
         .catch(function(err) {

@@ -25,25 +25,19 @@
     <div class="hz-lp-hero-text">
       <p class="hz-lp-kicker">Official marketplace</p>
 
-      <h1 class="hz-lp-h1" ng-if="!home.isChampion">Choose the apparel that matches your&nbsp;style.</h1>
-      <h1 class="hz-lp-h1" ng-if="home.isChampion">Outfit your team.</h1>
+      <h1 class="hz-lp-h1">Choose the apparel that matches your&nbsp;style.</h1>
       <span class="hz-lp-bar" aria-hidden="true"></span>
 
-      <p class="hz-lp-sub" ng-if="!home.isChampion">
+      <p class="hz-lp-sub">
         Build a kit from your allocation &mdash; tops, layering, bottoms and headwear.
         Take what you need now; the rest stays available. Let&rsquo;s go!
       </p>
 
-      <!-- A champion has no allocation of their own. The two things they do are the two
-           things offered, and neither is "choose your uniform". -->
-      <p class="hz-lp-sub" ng-if="home.isChampion">
-        Order uniforms on behalf of anyone on your team, or buy à la carte for your
-        location. Let&rsquo;s go!
-      </p>
-
+      <!-- Same hero either way; only the primary action differs, because a champion has no
+           allocation of their own to choose from. -->
       <div class="hz-lp-ctas">
         <a class="hz-lp-btn" href="allocation" ng-if="!home.isChampion">Choose your uniform</a>
-        <a class="hz-lp-btn" href="champion" ng-if="home.isChampion">Order for an employee</a>
+        <a class="hz-lp-btn" ng-href="{{home.onBehalfHref}}" ng-if="home.isChampion">Order on behalf</a>
         <a class="hz-lp-btn hz-lp-btn--ghost" href="faq"
            ng-show="hertzChampionUser || dollarChampionUser || thriftyChampionUser">Uniform FAQ</a>
         <a class="hz-lp-btn hz-lp-btn--ghost" href="allofaq"
@@ -153,13 +147,27 @@
     </div>
   </div>
 
-  <!-- Four51 scopes categories by group, so for a champion an empty list means the groups
-       are not set up rather than that there is nothing to buy. Say which — but only to
-       them, since for an ordinary shopper an empty list is now the expected state. -->
-  <div class="hz-lp-start" ng-if="home.isChampion && !home.categories.length && !home.loading">
-    <p class="hz-lp-empty">
-      No categories are assigned to your group yet.
-    </p>
+  <!-- ───────────────────────────────────────────────────────── champion entries -->
+  <!-- The two things a champion does. Both are Four51 categories, so both are a category
+       InteropID away from moving; neither is an allocation. -->
+  <div class="hz-lp-champ" ng-if="home.isChampion">
+    <div class="hz-lp-cells hz-lp-cells--two">
+      <a class="hz-lp-cell hz-lp-cell--text" ng-href="{{home.onBehalfHref}}">
+        <span class="hz-lp-cell-name">Order on behalf</span>
+        <span class="hz-lp-cell-sub">
+          Order uniforms for anyone on your team, against their allocation.
+        </span>
+        <span class="hz-lp-cell-go">Start &rarr;</span>
+      </a>
+
+      <a class="hz-lp-cell hz-lp-cell--text" ng-href="{{home.alaCarteHref}}">
+        <span class="hz-lp-cell-name">Buy &agrave; la carte</span>
+        <span class="hz-lp-cell-sub">
+          Order outside an allocation, charged to your location.
+        </span>
+        <span class="hz-lp-cell-go">Browse &rarr;</span>
+      </a>
+    </div>
   </div>
 
   <!-- ──────────────────────────────────────────────────────────── reset band -->
