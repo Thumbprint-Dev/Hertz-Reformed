@@ -51,8 +51,20 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       /** Width of the progress bar, as a percentage. */
       percentLeft: 0,
       closed: [],
-      heroImage: HERO_IMAGE
+      heroImage: HERO_IMAGE,
+      /**
+       * Where "Buy à la carte" goes.
+       *
+       * Hertz will author a dedicated à la carte category in the Four51 admin; when it
+       * exists, name its InteropID in A_LA_CARTE_CATEGORY below and this points at it.
+       * Until then it falls back to the first category the tree returns, so the entry
+       * works rather than leading nowhere.
+       */
+      alaCarteHref: 'catalog'
     };
+
+    /** InteropID of the à la carte category, once Hertz creates it. */
+    var A_LA_CARTE_CATEGORY = '';
 
     /**
      * Brand to a CSS-safe key, so the theme can swap hero art and accents per brand.
@@ -95,7 +107,18 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       if (err.noSession) return 'Please sign in to see your uniform allocation.';
       if (err.network || err.status === 0) return 'Could not reach the allocation service.';
       if (err.status === 403) return 'The allocation service refused this request.';
-      if (err.status === 401) return 'Your session could not be verified.';
+      if (err.status === 401) {
+        // A 401 under the shim is an allowlist question, and the only useful thing to say
+        // is which login was tried. Saying "no username" is just as actionable as naming
+        // one — it points at a different fix — and both beat a bare failure.
+        if (err.shimUsername) {
+          return 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.';
+        }
+        if (err.shimAttempted) {
+          return 'Could not read your Four51 username, so allocation could not verify you.';
+        }
+        return 'Your session could not be verified.';
+      }
       return 'Could not load your allocation.';
     }
 
@@ -130,6 +153,12 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       return d.promise;
     }
 
+    function alaCarteHref(list) {
+      if (A_LA_CARTE_CATEGORY) return 'catalog/' + A_LA_CARTE_CATEGORY;
+      var first = (list || [])[0];
+      return first ? first.href : 'catalog';
+    }
+
     $scope.home.load = function() {
       if (!$scope.home.enabled) {
         loadCategories().then(function(list) { $scope.home.categories = list; });
@@ -142,6 +171,13 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         .then(function(eligibility) {
           $scope.home.eligibility = eligibility;
           $scope.home.isChampion = Allocation.hasRole('champion') || Allocation.hasRole('admin');
+
+          // A Champion has no allocation of their own to show. They order on behalf of
+          // their team and buy à la carte, so fetching an entitlement here would render a
+          // counter for something they never spend. Skipping the call also means the band
+          // never briefly appears and then vanishes once the role is known.
+          if ($scope.home.isChampion) return null;
+
           // Before day 90 there is no entitlement to fetch, and `/me/eligibility` already
           // carries the date access opens. Asking anyway returns an empty shell that reads
           // as "you have nothing" rather than "you are eligible on the 20th".
@@ -170,6 +206,7 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         })
         .then(function(list) {
           if (list) $scope.home.categories = list;
+          $scope.home.alaCarteHref = alaCarteHref(list);
           $scope.home.loading = false;
         })
         .catch(function(err) {

@@ -1,0 +1,84 @@
+<!--
+  Order for someone else — the beneficiary picker.
+
+  Same visual language as the landing page: flat ruled grid, yellow as fill only, 2px
+  radius on controls. It has to feel like part of the same site, but it is doing something
+  the rest of the site never does, so the "you are about to spend someone else's
+  allocation" framing is explicit rather than implied.
+
+  Every custom element carries an explicit closing tag.
+-->
+<section class="hz-lp hz-team">
+
+  <div class="hz-team-head">
+    <p class="hz-lp-kicker">Uniform champion</p>
+    <h1 class="hz-lp-h1">Order for someone on your team.</h1>
+    <span class="hz-lp-bar" aria-hidden="true"></span>
+    <p class="hz-lp-sub">
+      Search by employee ID, name or department. You will order against their allocation,
+      not your own.
+    </p>
+  </div>
+
+  <div class="hz-team-body">
+
+    <div class="hz-note" ng-if="!champ.enabled">
+      <p>Live allocation is not switched on for this environment yet.</p>
+    </div>
+
+    <div ng-if="champ.enabled">
+
+      <div class="hz-lp-alloc-skel" ng-show="champ.loading" aria-busy="true">
+        <span class="hz-sr-only">Loading your team</span>
+        <div class="hz-skel" ng-repeat="n in [1,2,3,4,5]" style="height:52px"></div>
+      </div>
+
+      <div class="hz-alert" ng-show="champ.error"><p>{{champ.error}}</p></div>
+
+      <!-- Not an error: an ordinary employee simply has no team. Say so plainly rather
+           than showing an empty table that looks broken. -->
+      <div class="hz-note" ng-show="!champ.loading && !champ.error && !champ.isChampion">
+        <p>You are not set up as a uniform champion, so there is nobody to order for.</p>
+      </div>
+
+      <div ng-show="!champ.loading && !champ.error && champ.isChampion">
+
+        <div class="hz-team-search">
+          <label class="hz-sr-only" for="hz-team-q">Search your team</label>
+          <input id="hz-team-q" type="search" autocomplete="off"
+                 placeholder="Employee ID, name or department"
+                 ng-model="champ.query" ng-change="champ.filter()" />
+          <button type="button" class="hz-lp-btn hz-lp-btn--ghost"
+                  ng-click="champ.clear()" ng-if="champ.query">Clear</button>
+        </div>
+
+        <p class="hz-team-count">
+          <b>{{champ.shown.length}}</b>
+          <span ng-if="champ.shown.length === champ.total">people you can order for</span>
+          <span ng-if="champ.shown.length !== champ.total">of {{champ.total}} match &ldquo;{{champ.query}}&rdquo;</span>
+        </p>
+
+        <div class="hz-team-list" ng-if="champ.shown.length">
+          <div class="hz-team-row" ng-repeat="b in champ.shown">
+            <span class="hz-team-id">{{b.employeeId}}</span>
+            <span class="hz-team-name">{{b.name}}</span>
+            <span class="hz-team-dept">Dept {{b.deptCode || '—'}}</span>
+
+            <!-- Before day 90 there is nothing to order, and saying why beats a button
+                 that refuses when pressed. -->
+            <span class="hz-team-wait" ng-if="!b.eligible">Not eligible yet</span>
+
+            <button class="hz-lp-btn" type="button" ng-if="b.eligible"
+                    ng-click="champ.orderFor(b)">
+              Order for them <b aria-hidden="true">&rarr;</b>
+            </button>
+          </div>
+        </div>
+
+        <p class="hz-lp-empty" ng-if="!champ.shown.length">
+          Nobody matches &ldquo;{{champ.query}}&rdquo;.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

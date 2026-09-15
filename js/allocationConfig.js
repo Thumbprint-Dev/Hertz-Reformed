@@ -28,21 +28,33 @@ four51.app.constant('AllocationConfig', {
   tokenRefreshSeconds: 780,
 
   /**
-   * TESTING SHIM. Send this fixed token instead of the signed-in Four51 session.
+   * TESTING SHIM. Authenticate as whoever is signed in, via the API's local auth stub.
    *
    * Why it exists: until Four51 API credentials are available, the deployed service runs
    * its local auth stub, which resolves `local:<username>` and cannot resolve a real
    * Four51 session token at all. Without this there is no way to exercise the integration
    * end to end against the real storefront.
    *
-   * What it costs: whoever loads the page acts as this employee. It is bounded on the
-   * server by LOCAL_TOKEN_ALLOWLIST, which names the handful of test logins the stub will
-   * resolve and refuses everything else — so the exposure is a synthetic test account, not
-   * an arbitrary one. That is an acceptable trade on a sandbox holding generated data and
-   * an unacceptable one anywhere near real employees.
+   * It used to be a fixed string — `local:web-htz` — which meant *every* visitor acted as
+   * that one employee no matter who signed in. That made a second test account
+   * impossible: a Champion would log in and see the first employee's allocation.
+   * It now sends the signed-in Four51 username, so the person at the keyboard is the
+   * person the API sees.
    *
-   * MUST be null before any real HR feed lands. Leaving it set is the difference between a
+   * What it costs: the username is asserted by the browser rather than proven. It is
+   * bounded on the server by LOCAL_TOKEN_ALLOWLIST, which names the handful of test logins
+   * the stub will resolve and refuses everything else — so the exposure is a synthetic
+   * test account, not an arbitrary one. That is an acceptable trade on a sandbox holding
+   * generated data and an unacceptable one anywhere near real employees.
+   *
+   * `true` reads the signed-in username. A **string** pins that username instead, which is
+   * the escape hatch for when Four51 reports something the server allowlist does not
+   * expect — a site-prefixed login, say — so a test is never blocked on working that out:
+   *
+   *     localAuthShim: 'web-htz'
+   *
+   * MUST be false before any real HR feed lands. Leaving it on is the difference between a
    * test fixture and an impersonation endpoint.
    */
-  devToken: 'local:web-htz'
+  localAuthShim: true
 });

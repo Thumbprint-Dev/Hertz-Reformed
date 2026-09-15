@@ -25,16 +25,25 @@
     <div class="hz-lp-hero-text">
       <p class="hz-lp-kicker">Official marketplace</p>
 
-      <h1 class="hz-lp-h1">Choose the apparel that matches your&nbsp;style.</h1>
+      <h1 class="hz-lp-h1" ng-if="!home.isChampion">Choose the apparel that matches your&nbsp;style.</h1>
+      <h1 class="hz-lp-h1" ng-if="home.isChampion">Outfit your team.</h1>
       <span class="hz-lp-bar" aria-hidden="true"></span>
 
-      <p class="hz-lp-sub">
+      <p class="hz-lp-sub" ng-if="!home.isChampion">
         Build a kit from your allocation &mdash; tops, layering, bottoms and headwear.
         Take what you need now; the rest stays available. Let&rsquo;s go!
       </p>
 
+      <!-- A champion has no allocation of their own. The two things they do are the two
+           things offered, and neither is "choose your uniform". -->
+      <p class="hz-lp-sub" ng-if="home.isChampion">
+        Order uniforms on behalf of anyone on your team, or buy à la carte for your
+        location. Let&rsquo;s go!
+      </p>
+
       <div class="hz-lp-ctas">
-        <a class="hz-lp-btn" href="allocation">Choose your uniform</a>
+        <a class="hz-lp-btn" href="allocation" ng-if="!home.isChampion">Choose your uniform</a>
+        <a class="hz-lp-btn" href="champion" ng-if="home.isChampion">Order for an employee</a>
         <a class="hz-lp-btn hz-lp-btn--ghost" href="faq"
            ng-show="hertzChampionUser || dollarChampionUser || thriftyChampionUser">Uniform FAQ</a>
         <a class="hz-lp-btn hz-lp-btn--ghost" href="allofaq"
@@ -59,7 +68,8 @@
   </div>
 
   <!-- ─────────────────────────────────────────────────────────── allocation band -->
-  <div class="hz-lp-alloc" ng-if="home.enabled">
+  <!-- Skipped entirely for a champion: it counts an allocation they do not have. -->
+  <div class="hz-lp-alloc" ng-if="home.enabled && !home.isChampion">
 
     <div class="hz-lp-alloc-skel" ng-show="home.loading">
       <span class="hz-sr-only">Loading your allocation</span>
@@ -118,17 +128,19 @@
 
   <!-- ──────────────────────────────────────────────────────────────── start here -->
   <!--
-    Champions only.
+    Champions only — this grid is à la carte.
 
-    An employee ordering their own allocation has no categories to browse — everything they
-    may take is in the picker, which "Start selecting" goes straight to. Showing them a
-    category grid offers a second, weaker route to the same place, and for most of them it
-    would be empty besides. Champions do have categories, because they also buy à la carte.
+    An employee ordering their own allocation has no categories to browse: everything they
+    may take is in the picker, which "Start selecting" goes straight to. A champion has no
+    allocation of their own and buys outside one, so for them the catalogue is the point
+    rather than a weaker second route to it.
   -->
   <div class="hz-lp-start" ng-if="home.isChampion && home.categories.length">
     <div class="hz-lp-start-head">
-      <h2 class="hz-lp-h2">Start here</h2>
-      <a class="hz-lp-link" href="allocation">See what you have left</a>
+      <h2 class="hz-lp-h2">Buy &agrave; la carte</h2>
+      <span class="hz-lp-link hz-lp-link--plain">
+        Ordered outside an allocation, charged to your location
+      </span>
     </div>
 
     <!-- Rules are drawn on the cells, not with gap + a container background: a partial
@@ -148,27 +160,6 @@
     <p class="hz-lp-empty">
       No categories are assigned to your group yet.
     </p>
-  </div>
-
-  <!-- ───────────────────────────────────────────────────────────────── champion -->
-  <!-- A band of its own rather than more cells above: one of these spends someone else's
-       allocation, and sitting it among the shopping categories would read as ordinary. -->
-  <div class="hz-lp-champ" ng-if="home.isChampion">
-    <div class="hz-lp-start-head">
-      <h2 class="hz-lp-h2">Uniform champion</h2>
-      <span class="hz-lp-tag">Your team</span>
-    </div>
-
-    <div class="hz-lp-cells hz-lp-cells--two">
-      <a class="hz-lp-cell hz-lp-cell--text" href="catalog">
-        <span class="hz-lp-cell-name">Buy &agrave; la carte</span>
-        <span class="hz-lp-cell-sub">Order outside a standard allocation, charged to your location.</span>
-      </a>
-      <a class="hz-lp-cell hz-lp-cell--text" href="allocation">
-        <span class="hz-lp-cell-name">Order for an employee</span>
-        <span class="hz-lp-cell-sub">Choose someone in your scope and order against their allocation.</span>
-      </a>
-    </div>
   </div>
 
   <!-- ──────────────────────────────────────────────────────────── reset band -->

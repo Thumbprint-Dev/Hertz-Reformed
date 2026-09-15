@@ -7,8 +7,22 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
-  function($scope, Allocation) {
+four51.app.controller('AllocationCtrl', ['$scope', '$location', '$q', 'Allocation',
+  function($scope, $location, $q, Allocation) {
+
+    /**
+     * Whose allocation this page is spending.
+     *
+     * `?for=<employeeId>` means a Champion arrived from the team picker. It is read from
+     * the URL rather than held in a service so a reload, a bookmark or a second tab
+     * cannot quietly revert to the Champion's own allocation — that version of the bug
+     * spends the wrong person's year and looks like nothing happened.
+     *
+     * Empty for an ordinary employee, and every call below then behaves exactly as it did
+     * before. The server authorises the id on every request regardless; this only decides
+     * what to ask for.
+     */
+    var FOR = ($location.search() || {}).for || null;
 
     // Bound to an object, never bare primitives: anything under an `ng-if` gets a child
     // scope, and writing to a bare name there shadows rather than updates.
@@ -26,7 +40,15 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       totalPicked: 0,
       preview: null,
       submitting: false,
-      result: null
+      result: null,
+      /** True when a Champion is ordering for someone else. */
+      onBehalf: false,
+      beneficiaryId: null
+    };
+
+    /** Back to the team picker, dropping the beneficiary. */
+    $scope.alloc.leaveOnBehalf = function() {
+      $location.path('/champion').search({});
     };
 
     /**
@@ -45,7 +67,9 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
      * Four51 order id and this draft is only ever a preview key.
      */
     function draftOrderId() {
-      var who = (Allocation.identity() || {}).employeeId;
+      // Keyed on the beneficiary, not the caller: a Champion checking selections for two
+      // people in one session must not have the second compared against the first.
+      var who = FOR || (Allocation.identity() || {}).employeeId;
       // No identity means no session, and `check()` cannot have got this far — but keep
       // it stable rather than minting a fresh key per click.
       return 'picker-draft:' + (who || 'anon');
@@ -98,7 +122,18 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       if (err.noSession) return 'Please sign in to choose your uniform.';
       if (err.network || err.status === 0) return 'Could not reach the allocation service.';
       if (err.status === 403) return 'The allocation service refused this request.';
-      if (err.status === 401) return 'Your session could not be verified.';
+      if (err.status === 401) {
+        // A 401 under the shim is an allowlist question, and the only useful thing to say
+        // is which login was tried. Saying "no username" is just as actionable as naming
+        // one — it points at a different fix — and both beat a bare failure.
+        if (err.shimUsername) {
+          return 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.';
+        }
+        if (err.shimAttempted) {
+          return 'Could not read your Four51 username, so allocation could not verify you.';
+        }
+        return 'Your session could not be verified.';
+      }
       return 'Could not load your allocation.';
     }
 
@@ -276,7 +311,7 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
         return;
       }
 
-      Allocation.previewCart(draftOrderId(), lines)
+      Allocation.previewCart(draftOrderId(), lines, FOR)
         .then(function() {
           $scope.alloc.result = { ok: true, messages: ['Your selection fits your allocation.'] };
           $scope.alloc.submitting = false;
@@ -304,15 +339,26 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       $scope.alloc.loading = true;
       $scope.alloc.error = null;
 
-      Allocation.eligibility()
+      Allocation.eligibility(FOR)
         .then(function(eligibility) {
+          // A Champion has no allocation of their own, so this page with nobody named is
+          // a dead end for them — it would render an empty picker for units they never
+          // get. Send them to choose someone instead. The role is only known once the
+          // session resolves, which is why this is here rather than before the call.
+          if (!FOR && (Allocation.hasRole('champion') || Allocation.hasRole('admin'))) {
+            $scope.alloc.loading = false;
+            $location.path('/champion').search({});
+            return $q.reject({ redirected: true });
+          }
           $scope.alloc.eligibility = eligibility;
           if (eligibility && eligibility.status !== 'eligible') return null;
-          return Allocation.entitlement();
+          return Allocation.entitlement(FOR);
         })
         .then(function(view) {
           if (view) {
             $scope.alloc.view = view;
+            $scope.alloc.onBehalf = !!view.onBehalf;
+            $scope.alloc.beneficiaryId = view.employeeId;
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = view.pools || [];
@@ -327,6 +373,9 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
           $scope.alloc.loading = false;
         })
         .catch(function(err) {
+          // A redirect is not a failure; showing an error under a page that is leaving
+          // would flash a message nobody can act on.
+          if (err && err.redirected) return;
           $scope.alloc.error = describe(err);
           $scope.alloc.loading = false;
         });
