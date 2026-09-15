@@ -1702,10 +1702,15 @@ contentmodal2 a:hover{
   --a: #fc0; --a-deep: #e8b800; --on-a: #11172b;
   --ink: #11172b; --body: #2c3140; --muted: #5f6778;
   --line: #e3e7ef; --firm: #c9d0dd; --sub: #f8f9fc;
+  /* The page ground is white to match the rest of the site, so the pool and rail cards
+     are white on white and the ground can no longer separate them. Their outer edge has
+     to carry that on its own, which is why it is a step firmer than the --line used for
+     dividers inside a card. */
+  --edge: #dae0ea;
   --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
   font-family: 'Open Sans', Arial, sans-serif;
   color: var(--body);
-  background: #f4f6fa;
+  background: #fff;
   padding-top: 34px;
   padding-bottom: 80px;
 }
@@ -1725,7 +1730,7 @@ contentmodal2 a:hover{
 .hz-pick-skel { display: flex; flex-direction: column; gap: 10px; }
 
 /* ---- pool ---- */
-.hz-pool { background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.hz-pool { background: #fff; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; }
 
 .hz-pool-head {
   display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center;
@@ -1747,7 +1752,7 @@ contentmodal2 a:hover{
 }
 .hz-pool-n--shut { font-size: 13px; color: var(--muted); }
 .hz-pool-n--shut i { font-size: 13px; text-transform: none; letter-spacing: 0; margin: 0; font-weight: 600; }
-.hz-pool--shut { background: var(--sub); }
+.hz-pool--shut { background: var(--sub); border-color: var(--edge); }
 .hz-pool--shut .hz-pool-name { color: var(--muted); }
 
 .hz-chev {
@@ -1807,7 +1812,7 @@ contentmodal2 a:hover{
 
 /* ---- rail ---- */
 .hz-rail {
-  position: sticky; top: 16px; background: #fff; border: 1px solid var(--line);
+  position: sticky; top: 16px; background: #fff; border: 1px solid var(--edge);
   border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 14px;
 }
 .hz-rail-h { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); margin: 0; }

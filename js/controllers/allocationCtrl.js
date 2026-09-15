@@ -29,6 +29,31 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       result: null
     };
 
+    /**
+     * The draft order id — stable for this employee, for the life of the account.
+     *
+     * `validateCart` reconciles the reservation held against an order id TO the lines it
+     * is given; it does not add. So the id is what decides whether a second check
+     * *replaces* the first or *stacks on top of* it.
+     *
+     * A per-click or per-visit id stacks, and nothing ever gives those units back:
+     * `release` is only reachable through `validateCart` with the same id
+     * (`src/cart/validate.ts:275`), so a hold whose id is gone is held until the cycle
+     * closes. Keying on the employee means every check — this click, this reload, next
+     * week — reconciles the same draft, and the hold always equals what is currently on
+     * screen.
+     *
+     * When the real Four51 cart add is wired, the Four51 order id replaces this: the
+     * draft exists because the picker validates a selection that has no order behind it
+     * yet.
+     */
+    function draftOrderId() {
+      var who = (Allocation.identity() || {}).employeeId;
+      // No identity means no session, and `check()` cannot have got this far — but fall
+      // back to something stable-per-visit rather than minting a fresh hold per click.
+      return 'picker-draft:' + (who || 'anon');
+    }
+
     var SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
     $scope.alloc.sizes = SIZES;
 
@@ -233,9 +258,14 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       $scope.alloc.submitting = true;
       $scope.alloc.result = null;
 
+      // Only what was actually chosen. `setSize` seeds a { qty: 0 } row for every product
+      // as it renders, so iterating `picked` blindly posts zero-quantity lines — which the
+      // API rejects outright, because a zero would silently reduce a reservation rather
+      // than express an intent.
       var lines = [];
       var i = 0;
       angular.forEach($scope.alloc.picked, function(row, productId) {
+        if (!row || row.qty < 1) return;
         i++;
         lines.push({
           four51LineId: 'pick-' + i,
@@ -244,7 +274,12 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
         });
       });
 
-      Allocation.validateCart('picker-' + Date.now(), lines)
+      if (!lines.length) {
+        $scope.alloc.submitting = false;
+        return;
+      }
+
+      Allocation.validateCart(draftOrderId(), lines)
         .then(function() {
           $scope.alloc.result = { ok: true, messages: ['Your selection fits your allocation.'] };
           $scope.alloc.submitting = false;
@@ -252,9 +287,16 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
         .catch(function(err) {
           // A 409 body is a Four51-shaped refusal. Read Message and Errors only — never
           // LineItems[].Errors, which the storefront rewrites to "out of stock".
-          var messages = (err && err.status === 409)
-            ? Allocation.refusalText(err.body)
-            : [describe(err)];
+          var messages;
+          if (err && err.status === 409) {
+            messages = Allocation.refusalText(err.body);
+          } else if (err && err.status === 400) {
+            messages = ['That selection could not be read. Please adjust it and try again.'];
+          } else if (err && (err.network || err.status === 0)) {
+            messages = ['Could not reach the allocation service. Please try again.'];
+          } else {
+            messages = ['Your selection could not be checked just now. Please try again.'];
+          }
           $scope.alloc.result = { ok: false, messages: messages };
           $scope.alloc.submitting = false;
         });
