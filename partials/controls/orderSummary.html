@@ -1,211 +1,64 @@
-<style>
-  .order-summary-container {
-    background-color: #ededed;
-    border-radius: 24px;
-  }
-  .order-summary-inner-container {
-    padding: 30px;
-  }
-  .order-summary-header {
-    color: #000000;
-    font-size: 32px;
-    font-weight: bold;
-    letter-spacing: -0.59px;
-    line-height: 63px;
-  }
-  .order-summary-body {
-    color: #000000;
-    font-size: 20px;
-    letter-spacing: -0.37px;
-    line-height: 24px;
-    padding-bottom: 15px;
-  }
-  .order-summary-total {
-    border-top: 1px solid #4E2683;
-    padding-top: 30px;
-    color: #000000;
-    font-size: 25px;
-    font-weight: 800;
-    letter-spacing: -0.46px;
-    line-height: 30px;
-  }
-  .checkoutBtn-sum {
-    height: 61px;
-    width: -webkit-fill-available;
-    font-size: 20px !important;
-    font-weight: 800;
-    letter-spacing: -0.31px;
-    line-height: 20px;
-    text-align: center;
-    /* background: #ffc82e;
-    border: #ffc82e; */
-    color: white;
-  }
-  .checkoutBtn-save {
-    height: 61px;
-    width: -webkit-fill-available;
-    color: #00A3B2;
-    font-size: 20px !important;
-    font-weight: 800;
-    letter-spacing: -0.31px;
-    line-height: 20px;
-    text-align: center;
-    background: white;
-    border: white;
-  }
-  .checkoutBtn-save:hover {
-    background:#4E2683;
-    border: #4E2683;
-    color:white;
-  }
-  .checkoutBtn-continue {
-    height: 61px;
-    width: -webkit-fill-available;
-    color: white;
-    font-size: 20px !important;
-    font-weight: 800;
-    letter-spacing: -0.31px;
-    line-height: 20px;
-    text-align: center;
-    background: black;
-    border: black;
-    margin-bottom: 15px;
-  }
-.checkoutBtn-continue:hover {
-  background: #1775ab;
-  border: #1775ab;
-  color:white;
-}
-  .checkoutBtn-cancel {
-    height: 61px;
-    width: -webkit-fill-available;
-    color: white;
-    font-size: 20px !important;
-    font-weight: 800;
-    letter-spacing: -0.31px;
-    line-height: 20px;
-    text-align: center;
-    background: #D43F3A;
-    border: #D43F3A;
-  }
-  .checkoutBtn-cancel:hover {
-    background:#A9322E;
-    border: #A9322E;
-    color: white;
-  }
+<div class="mt-cart-summary-card">
+    <h2 class="mt-cart-summary-title">{{('Order' | r) + ' ' + ('Summary' | r) | xlat}}</h2>
 
-  @media screen and (max-width: 1000px) {
-    .order-summary-container {
-      width: unset;
-    }
-    .checkoutBtn-sum {
-      width: -webkit-fill-available;
-    }
-    .checkoutBtn-save {
-      width: -webkit-fill-available;
-    }
-  }
-  
-</style>
-<div class="">
-  <!--<div class="panel-heading">
-        <h3 class="panel-title panel-primary">
-            {{('Checkout' | r) + ' ' + ('Summary' | r) | xlat}}
-        </h3>
-    </div>-->
-  <div class="order-summary-container">
-    <div class="order-summary-inner-container">
-      <p class="order-summary-header">Order Summary</p>
-      <loadingindicator ng-show="couponLoadingIndicator" title="{{'Please wait while we verify and apply your promotion code' | r | xlat}}" />
-      <loadingindicator ng-show="couponRemoveIndicator" title="{{'Please wait while we remove your promotion code' | r | xlat}}" />
-      <orderconfirmationmessage />
-      <p class="order-summary-body">
-        <span class="text-info">{{'Items' | r | xlat}}</span>
-        <span class="pull-right">{{currentOrder.LineItems.length}}</span>
-      </p>
-      <p class="order-summary-body" ng-if="!(user.Permissions.contains('HidePricing'))">
-        <span class="text-info">{{'Subtotal' | r | xlat}}</span>
-        <span class="pull-right">{{currentOrder.Subtotal | culturecurrency}}</span>
-      </p>
-      <p class="order-summary-body" ng-if="!(user.Permissions.contains('HidePricing'))">
-        <span class="text-info">{{('Shipping' | r) + ' ' + ('Costs' | r) | xlat}}</span>
-        <span class="pull-right">{{currentOrder.ShippingCost | culturecurrency}}</span>
-      </p>
-      <p class="order-summary-body" ng-if="!(user.Permissions.contains('HidePricing'))">
-        <span class="text-info">{{'Tax' | r | xlat}}</span>
-        <span class="pull-right">{{currentOrder.TaxCost || 0 | culturecurrency}}</span>
-      </p>
-      <!--<div class="alert alert-warning" role="alert" style="text-align:center;margin-bottom: 0;" ng-hide="adtDealer === true || multiFamily === true || adtBuilderKit === true">
-         Don't forget to use coupon code <strong>WELCOME</strong> on your first order.
-       </div>-->
-      <div class="alert alert-warning" role="alert" style="text-align:center;margin-bottom: 0;" ng-show="(conSpringUser === true || conOfficeSpringUser === true) && openOrderCountModal === 0">
-         Don't forget to use your Spring 2025 Construction Apparel coupon code <strong>TTCSPRING25</strong> on your first order. Once you add the code below, click the green check mark to apply it.
-       </div>
-      <div ng-show="user.Permissions.contains('SendOrderNotificationToOthers')" style="margin-top: 20px; margin-bottom: 20px; padding-top: 20px; border-top: 1px solid #dddddd;">
-        <p class="order-summary-body" style="margin-bottom: 10px;">
-          <span class="text-info">{{('Email' | r) + ' ' + ('Notification' | r) | xlat}}</span>
-        </p>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <input class="form-control" type="email" ng-model="currentOrder.ExternalOrderDetailRecipients" placeholder="{{('Email' | r) + ' ' +  ('Address' | r) | xlat}}" autocomplete="off" style="font-size: 16px; padding: 10px; border-radius: 4px; border: 1px solid #cccccc;" />
-        </div>
-        <p style="color: #666666; font-size: 14px; margin-bottom: 0; line-height: 1.4;">
-          <small>{{'Send a copy of the order details to above email address.' | r | xlat}}</small>
-        </p>
-      </div>
-      <div ng-show="user.Permissions.contains('ViewPromotions')">
-        <div ng-show="!currentOrder.Coupon">
-          <div class="form-group view-form-icon">
-            <div>
-              <label ng-show="currentOrder.CouponCode">{{('Promotion' | r) + ' ' + ('Code' | r) | xlat}}</label>
-              <div class="input-group">
-                <input class="form-control" type="text" ng-model="currentOrder.CouponCode" placeholder="{{('Promotion' | r) + ' ' + ('Code' | r) | xlat}}" autocomplete="off" />
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-success" ng-click="applyCoupon()" style="border-bottom-right-radius: 4px;border-top-right-radius: 4px;"><i class="fa fa-check"></i></button>
-                </span>
-              </div>
-              <i class="fa fa-question-circle"></i>
-            </div>
-          </div>
-        </div>
-        <p ng-show="currentOrder.Coupon" class="alert alert-primary" role="alert" style="margin-top: 10px;color: rgb(220, 68, 5);background-color: #fef2ed;border-color: rgb(220, 68, 5);border-radius: 4px;">
-          <span style="font-weight: 500;"><strong>{{user.FirstName}}</strong>, </span><span>thank you for being a member of the team!</span><br />
-        </p>
-        <div ng-show="currentOrder.Coupon">
-          <button type="button" class="btn btn-danger pull-right" ng-click="removeCoupon()">Remove {{'Coupon' | r | xlat}}</button>
-          <p class="text-left" ng-show="currentOrder.Coupon.ExpirationDate"><small class="text-danger">{{'Expires' | r | xlat}}: {{currentOrder.Coupon.ExpirationDate | date:user.Culture.DateFormat.short}}</small></p>
-        </div>
-      </div>
+    <loadingindicator ng-show="couponLoadingIndicator" title="{{'Please wait while we verify and apply your promotion code' | r | xlat}}"></loadingindicator>
+    <loadingindicator ng-show="couponRemoveIndicator" title="{{'Please wait while we remove your promotion code' | r | xlat}}"></loadingindicator>
+    <orderconfirmationmessage></orderconfirmationmessage>
 
-      <h4 class="order-summary-total" ng-if="!(user.Permissions.contains('HidePricing'))">
-        <strong>{{'Total' | r | xlat}}</strong>
-        <span class="text-success pull-right" style="color: #000000;"><strong>{{currentOrder.Total | culturecurrency}}</strong></span>
-      </h4>
-      <p class="text-info text-left" ng-if="user.Company.TaxMethod != 'NoTax' && !user.Permissions.contains('HidePricing')">{{('Shipping' | r) + ', handling and tax may be added to this subtotal.' | xlat}}</p>
-
-      <ul>
-        <li style="padding-top: 15px;padding-bottom: 15px;">
-<button class="btn checkoutBtn-sum"
-        ng-class="{'btn-warning': cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || submitClicked || !currentOrder.ShipAddressID, 'btn-success': !cart_shipping.$invalid && !cart_order.$invalid && !cart_billing.$invalid || !submitClicked || currentOrder.ShipAddressID }"
-        ng-click="submitOrder()" ng-disabled="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || submitClicked || !currentOrder.ShipAddressID">
-    <i ng-show="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || submitClicked || !currentOrder.ShipAddressID" class="fa fa-warning"></i>
-    <span>{{('Submit' | r) + ' ' + ('Order' | r) | xlat}}</span>
-</button>
-        
-        </li>
-        <li ng-if="continue">
-            <button type="button" class="btn checkoutBtn-continue" redirect="catalog/mf-online">
-                <span class="hidden-xs">{{'Continue Shopping' | r | xlat}}</span>
-                <span class="visible-xs">{{'Shop' | r | xlat}}</span>
-            </button>
-        </li>
-        <li>
-            <button class="btn checkoutBtn-cancel" ng-click="currentOrder.Status == 'AwaitingApproval' ? cancelEdit() : cancelOrder()">
-                <span class="hidden-xs" ng-show="currentOrder.Status != 'AwaitingApproval'">{{('Cancel' | r) + ' ' + ('Order' | r) | xlat}}</span>
-                <span class="visible-xs">{{'Cancel' | r | xlat}}</span>
-            </button>
-        </li>
-      </ul>
+    <div class="mt-checkout-summary-line">
+        <span>{{'Items' | r | xlat}}</span>
+        <span>{{currentOrder.LineItems.length}}</span>
     </div>
-  </div>
+    <div class="mt-checkout-summary-line" ng-if="!(user.Permissions.contains('HidePricing'))">
+        <span>{{'Subtotal' | r | xlat}}</span>
+        <span>{{currentOrder.Subtotal | culturecurrency}}</span>
+    </div>
+    <div class="mt-checkout-summary-line" ng-if="!(user.Permissions.contains('HidePricing'))">
+        <span>{{('Shipping' | r) + ' ' + ('Costs' | r) | xlat}}</span>
+        <span>{{currentOrder.ShippingCost | culturecurrency}}</span>
+    </div>
+    <div class="mt-checkout-summary-line" ng-if="!(user.Permissions.contains('HidePricing'))">
+        <span>{{'Tax' | r | xlat}}</span>
+        <span>{{currentOrder.TaxCost || 0 | culturecurrency}}</span>
+    </div>
 
+    <div class="mt-checkout-coupon" ng-show="user.Permissions.contains('ViewPromotions')">
+        <div ng-show="!currentOrder.Coupon">
+            <label ng-show="currentOrder.CouponCode">{{('Promotion' | r) + ' ' + ('Code' | r) | xlat}}</label>
+            <div class="mt-field-row">
+                <input type="text" ng-model="currentOrder.CouponCode" placeholder="{{('Promotion' | r) + ' ' + ('Code' | r) | xlat}}" autocomplete="off" />
+                <button type="button" class="mt-btn-accent" ng-click="applyCoupon()"><i class="fa fa-check"></i></button>
+            </div>
+        </div>
+        <div ng-show="currentOrder.Coupon" class="mt-checkout-coupon-applied">
+            <span>{{currentOrder.Coupon.Label}}: {{currentOrder.Coupon.OrderDiscount * -1 | culturecurrency}}</span>
+            <button type="button" class="mt-cart-remove-link" ng-click="removeCoupon()">{{'Remove' | r | xlat}} {{'Coupon' | r | xlat}}</button>
+            <p class="mt-pdp-meta" ng-show="currentOrder.Coupon.ExpirationDate">{{'Expires' | r | xlat}}: {{currentOrder.Coupon.ExpirationDate | date:user.Culture.DateFormat.short}}</p>
+        </div>
+    </div>
+
+    <div class="mt-checkout-spendingaccount-applied" ng-show="currentOrder.BudgetAccountID && currentBudgetAccount && !(user.Permissions.contains('HidePricing'))">
+        <span>{{currentBudgetAccount.Label}}</span>
+        <span>{{(currentOrder.Total - (remainingOrderTotal > 0 ? remainingOrderTotal : 0)) * -1 | culturecurrency}}</span>
+    </div>
+
+    <div class="mt-cart-summary-row" ng-if="!(user.Permissions.contains('HidePricing'))">
+        <span>{{'Total' | r | xlat}}</span>
+        <span>{{(currentOrder.BudgetAccountID && currentBudgetAccount ? (remainingOrderTotal > 0 ? remainingOrderTotal : 0) : currentOrder.Total) | culturecurrency}}</span>
+    </div>
+    <p class="mt-pdp-meta" ng-show="currentOrder.BudgetAccountID && currentBudgetAccount && !(user.Permissions.contains('HidePricing'))">
+        {{'Remaining balance to be charged to your other payment method.' | r | xlat}}
+    </p>
+    <p class="mt-pdp-meta" ng-if="user.Company.TaxMethod != 'NoTax' && !user.Permissions.contains('HidePricing')">{{('Shipping' | r) + ', handling and tax may be added to this subtotal.' | xlat}}</p>
+
+    <button type="button" class="mt-btn-accent mt-cart-checkout-btn" ng-click="submitOrder()"
+            ng-disabled="submitClicked">
+        <i ng-show="submitAttempted && (cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid)" class="fa fa-warning"></i>
+        {{('Submit' | r) + ' ' + ('Order' | r) | xlat}}
+    </button>
+
+
+    <button type="button" class="mt-header-btn mt-checkout-security-link" redirect="/security">
+        <i class="fa fa-info-circle"></i> {{'Concerned About Security?' | r | xlat}}
+    </button>
 </div>
