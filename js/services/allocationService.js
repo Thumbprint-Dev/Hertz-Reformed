@@ -38,6 +38,9 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
     var _token = null;
     var _tokenAt = 0;
     var _pending = null;
+    // The session response already carries roles and the employee id. Holding them avoids
+    // a second call for something we were just told.
+    var _identity = { employeeId: null, roles: [] };
 
     function url(path) {
       return AllocationConfig.baseUrl.replace(/\/$/, '') + path;
@@ -127,6 +130,7 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
         .then(function(data) {
           _token = data.token;
           _tokenAt = Date.now();
+          _identity = { employeeId: data.employeeId, roles: data.roles || [] };
           _pending = null;
           return _token;
         })
@@ -214,11 +218,25 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
         return out;
       },
 
+      /**
+       * Who the session belongs to, and what they may do.
+       *
+       * Populated by the exchange, so it is only meaningful after a call that needed a
+       * token. Roles come from `user_role_assignments` with `revoked_at IS NULL`, so a
+       * champion who has been stood down loses the entries on their next session.
+       */
+      identity: function() { return _identity; },
+
+      hasRole: function(role) {
+        return (_identity.roles || []).indexOf(role) > -1;
+      },
+
       /** Drop the cached token. Call on logout so the next user re-exchanges. */
       clear: function() {
         _token = null;
         _tokenAt = 0;
         _pending = null;
+        _identity = { employeeId: null, roles: [] };
       }
     };
   }]);

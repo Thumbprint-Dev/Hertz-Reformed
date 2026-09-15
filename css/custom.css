@@ -1179,16 +1179,21 @@ contentmodal2 a:hover{
   margin-bottom: 18px;
 }
 
-/* ------------------- Uniform Program: shared shell ------------------- */
-/*
-   Foundations for the allocation screens. Colours are this theme's own — #fc0 accent,
-   #11172b navy, Open Sans — with neutrals biased cool toward the navy rather than flat
-   greys, so nothing here introduces a second palette.
 
-   Barlow Semi Condensed carries the figures only. It nods to Hertz's condensed brand type
-   and earns its place on dense numerals; everything else stays Open Sans.
+/* ------------------- Uniform Program ------------------- */
+/*
+   The front door and the allocation screens.
+
+   Palette is this theme's own — #fc0, #11172b, Open Sans — with neutrals biased cool
+   toward the navy rather than flat greys. Barlow Semi Condensed carries headings and
+   figures only: it nods to Hertz's condensed brand type and earns its place on display
+   sizes and dense numerals. Nothing here introduces a second palette.
+
+   Brand theming is a single data attribute on the root. Hero art and accent swap per
+   brand, everything else is shared, so a third brand is a few lines rather than a second
+   template.
 */
-.hz-home, .hz-alloc2 {
+.hz-home {
   --hz-ground: #f4f6fa;
   --hz-surface: #fff;
   --hz-sub: #f8f9fc;
@@ -1199,137 +1204,255 @@ contentmodal2 a:hover{
   --hz-muted: #5f6778;
   --hz-accent: #fc0;
   --hz-accent-deep: #e8b800;
+  --hz-on-accent: #11172b;
   --hz-warn-bg: #fdf4e2;
   --hz-warn-ink: #8a5a10;
   --hz-stop-bg: #fcebed;
   --hz-stop-ink: #a4192d;
-  --hz-ok: #1d6f4f;
   --hz-display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
 
   font-family: 'Open Sans', Arial, sans-serif;
   color: var(--hz-body);
   background: var(--hz-ground);
-  padding-top: 40px;
-  padding-bottom: 72px;
+  padding-bottom: 80px;
 }
+
+/* Dollar/Thrifty and Thrifty carry their own accents; the structure is identical. */
+.hz-home[data-brand="dollar"]  { --hz-accent: #e51937; --hz-accent-deep: #c4142e; --hz-on-accent: #fff; }
+.hz-home[data-brand="thrifty"] { --hz-accent: #0071ce; --hz-accent-deep: #005ba8; --hz-on-accent: #fff; }
 
 .hz-shell {
-  max-width: 760px;
+  max-width: 1080px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
-.hz-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--hz-muted);
-  margin: 0 0 10px;
+/* ---------------------------------------------------------------- hero */
+.hz-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--hz-ink);
+  margin-bottom: 52px;
 }
 
-.hz-hero { margin-bottom: 26px; }
-
-.hz-hero-title {
-  font-family: var(--hz-display);
-  font-weight: 600;
-  font-size: 44px;
-  line-height: 1.04;
-  letter-spacing: -0.008em;
-  color: var(--hz-ink);
-  margin: 0;
+/*
+   Art placeholder. A brand hero image drops in here as a background-image with no other
+   change; until then this is a deep graded field rather than a grey box, so the page
+   looks finished instead of unfinished.
+*/
+.hz-hero-art {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 82% 18%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 60%),
+    linear-gradient(115deg, #11172b 0%, #1b2338 48%, #11172b 100%);
 }
+.hz-home[data-brand="dollar"]  .hz-hero-art { background:
+    radial-gradient(120% 90% at 82% 18%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 60%),
+    linear-gradient(115deg, #2a0d13 0%, #4a1622 48%, #2a0d13 100%); }
+.hz-home[data-brand="thrifty"] .hz-hero-art { background:
+    radial-gradient(120% 90% at 82% 18%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 60%),
+    linear-gradient(115deg, #071d33 0%, #0b2d4f 48%, #071d33 100%); }
 
-.hz-hero-sub { color: var(--hz-muted); font-size: 14.5px; margin: 8px 0 0; }
-
-.hz-card {
-  background: var(--hz-surface);
-  border: 1px solid var(--hz-line);
-  border-radius: 8px;
-  padding: 26px 28px;
-}
-
-.hz-card-title {
-  font-family: var(--hz-display);
-  font-weight: 600;
-  font-size: 24px;
-  color: var(--hz-ink);
-  margin: 0 0 6px;
-}
-.hz-card-body { margin: 0; color: var(--hz-body); font-size: 15px; }
-.hz-card-wait { border-left: 3px solid var(--hz-accent); }
-
-/* The lead figure. Big on purpose: it is the reason anyone opens this page. */
-.hz-lead { display: flex; align-items: center; gap: 18px; }
-
-.hz-lead-n {
-  font-family: var(--hz-display);
-  font-weight: 600;
-  font-size: 72px;
-  line-height: 0.9;
-  color: var(--hz-ink);
-  font-variant-numeric: tabular-nums;
-}
-.hz-lead-label { display: flex; flex-direction: column; gap: 2px; }
-.hz-lead-label strong { color: var(--hz-ink); font-size: 16px; font-weight: 700; }
-.hz-lead-label span { color: var(--hz-muted); font-size: 13.5px; }
-
-.hz-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 24px; }
-
-.hz-chip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 7px;
-  background: var(--hz-sub);
-  border: 1px solid var(--hz-line);
-  border-radius: 20px;
-  padding: 5px 13px;
-  font-size: 13px;
-  color: var(--hz-body);
-}
-.hz-chip b {
-  font-family: var(--hz-display);
-  font-size: 15px;
-  color: var(--hz-ink);
-  font-variant-numeric: tabular-nums;
-}
-
-.hz-btn {
-  display: inline-block;
+/* The accent rule under the hero, echoing the wordmark's underline. */
+.hz-hero::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 4px;
   background: var(--hz-accent);
-  color: var(--hz-ink);
-  border: 1px solid var(--hz-accent-deep);
+}
+
+.hz-hero-inner {
+  position: relative;
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 72px 24px 64px;
+}
+
+.hz-kicker {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hz-accent);
+  margin: 0 0 14px;
+}
+
+.hz-h1 {
+  font-family: var(--hz-display);
+  font-weight: 700;
+  font-size: clamp(38px, 6.4vw, 66px);
+  line-height: 0.98;
+  letter-spacing: -0.012em;
+  color: #fff;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.hz-hero-stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 22px;
+  margin-top: 34px;
+}
+.hz-hero-stat--flat { min-height: 48px; }
+
+.hz-stat-n {
+  font-family: var(--hz-display);
+  font-weight: 600;
+  font-size: 62px;
+  line-height: 0.85;
+  color: var(--hz-accent);
+  font-variant-numeric: tabular-nums;
+}
+.hz-stat-t { display: flex; flex-direction: column; gap: 2px; }
+.hz-stat-t b { color: #fff; font-size: 15px; font-weight: 700; }
+.hz-stat-t i { color: rgba(255,255,255,.62); font-size: 13px; font-style: normal; }
+
+.hz-cta {
+  background: var(--hz-accent);
+  color: var(--hz-on-accent);
+  border: 0;
   border-radius: 4px;
-  padding: 13px 26px;
+  padding: 14px 28px;
   font-weight: 700;
   font-size: 15px;
   text-decoration: none;
-  cursor: pointer;
+  white-space: nowrap;
 }
-.hz-btn:hover, .hz-btn:focus { background: var(--hz-accent-deep); color: var(--hz-ink); text-decoration: none; }
-.hz-btn:focus { outline: 2px solid var(--hz-ink); outline-offset: 2px; }
+.hz-cta:hover, .hz-cta:focus { background: var(--hz-accent-deep); color: var(--hz-on-accent); text-decoration: none; }
+.hz-cta:focus { outline: 2px solid #fff; outline-offset: 3px; }
 
-.hz-seasonal {
-  margin-top: 16px;
-  font-size: 13.5px;
-  color: var(--hz-warn-ink);
-  background: var(--hz-warn-bg);
-  border-radius: 6px;
-  padding: 12px 16px;
+.hz-hero-note {
+  margin: 26px 0 0;
+  color: #fff;
+  background: rgba(255,255,255,.1);
+  border-left: 3px solid var(--hz-accent);
+  padding: 13px 17px;
+  border-radius: 0 4px 4px 0;
+  max-width: 54ch;
+  font-size: 14.5px;
 }
-.hz-seasonal strong { font-weight: 700; }
 
+/* ---------------------------------------------------------------- headings */
+.hz-h2 {
+  font-family: var(--hz-display);
+  font-weight: 600;
+  font-size: 30px;
+  color: var(--hz-ink);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+}
+.hz-h2--tight { margin: 6px 0 0; }
+
+/* ---------------------------------------------------------------- tiles */
+.hz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.hz-grid--two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+.hz-tile {
+  display: flex;
+  flex-direction: column;
+  background: var(--hz-surface);
+  border: 1px solid var(--hz-line);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.hz-tile:hover, .hz-tile:focus {
+  text-decoration: none;
+  color: inherit;
+  transform: translateY(-2px);
+  border-color: var(--hz-line-firm);
+  box-shadow: 0 8px 22px rgba(17,23,43,.09);
+}
+.hz-tile:focus { outline: 2px solid var(--hz-ink); outline-offset: 2px; }
+
+/* Where the category artwork goes. Graded rather than flat grey so an unconfigured
+   category still looks deliberate. */
+.hz-tile-art {
+  display: block;
+  height: 132px;
+  background:
+    radial-gradient(90% 120% at 30% 10%, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 70%),
+    linear-gradient(135deg, #eef1f6 0%, #dfe4ee 100%);
+  border-bottom: 1px solid var(--hz-line);
+}
+
+.hz-tile-body { display: flex; flex-direction: column; gap: 5px; padding: 18px 20px 20px; }
+
+.hz-tile-name {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--hz-ink);
+  line-height: 1.25;
+}
+.hz-tile-sub { font-size: 13.5px; color: var(--hz-muted); line-height: 1.5; }
+
+.hz-tile-go {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hz-ink);
+}
+.hz-tile-go::after { content: " \2192"; }
+
+/* ---------------------------------------------------------------- champion */
+.hz-champ {
+  margin-top: 52px;
+  padding-top: 34px;
+  border-top: 1px solid var(--hz-line);
+}
+.hz-champ-head { margin-bottom: 18px; }
+
+.hz-badge {
+  display: inline-block;
+  background: var(--hz-ink);
+  color: #fff;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hz-tile--alt { background: var(--hz-sub); }
+.hz-tile--alt .hz-tile-body { padding-top: 22px; }
+
+/* ---------------------------------------------------------------- notices */
 .hz-note, .hz-alert {
   background: var(--hz-sub);
   border-left: 3px solid var(--hz-accent);
   border-radius: 0 6px 6px 0;
   padding: 14px 18px;
+  margin-bottom: 26px;
 }
 .hz-alert { border-left-color: var(--hz-stop-ink); background: var(--hz-stop-bg); }
 .hz-alert p { margin: 0; color: var(--hz-stop-ink); }
 .hz-note p { margin: 0; }
+
+.hz-seasonal {
+  margin-top: 30px;
+  font-size: 13.5px;
+  color: var(--hz-warn-ink);
+  background: var(--hz-warn-bg);
+  border-radius: 6px;
+  padding: 13px 17px;
+}
+.hz-seasonal strong { font-weight: 700; }
 
 .hz-foot {
   margin-top: 30px;
@@ -1338,25 +1461,34 @@ contentmodal2 a:hover{
   line-height: 1.6;
 }
 
-/* Skeleton: the shape of what is coming, so the page does not jump. */
-.hz-skeleton-card { display: flex; flex-direction: column; gap: 16px; }
-.hz-skel { background: #eceef3; border-radius: 4px; position: relative; overflow: hidden; }
+/* ---------------------------------------------------------------- skeleton */
+.hz-skel {
+  display: inline-block;
+  background: rgba(255,255,255,.16);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
 .hz-skel::after {
   content: ""; position: absolute; top: 0; left: 0; height: 100%; width: 200%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.85) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.28) 50%, rgba(255,255,255,0) 100%);
   animation: hz-sweep 1.25s ease-in-out infinite;
 }
 @keyframes hz-sweep { from { transform: translateX(-60%); } to { transform: translateX(60%); } }
-@media (prefers-reduced-motion: reduce) { .hz-skel::after { animation: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hz-skel::after { animation: none; }
+  .hz-tile { transition: none; }
+}
 
 .hz-sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-@media (max-width: 600px) {
-  .hz-hero-title { font-size: 34px; }
-  .hz-lead-n { font-size: 56px; }
-  .hz-card { padding: 20px; }
-  .hz-home, .hz-alloc2 { padding-top: 26px; }
+@media (max-width: 700px) {
+  .hz-hero-inner { padding: 48px 20px 44px; }
+  .hz-stat-n { font-size: 50px; }
+  .hz-shell { padding-left: 18px; padding-right: 18px; }
+  .hz-tile-art { height: 108px; }
 }
