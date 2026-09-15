@@ -2824,3 +2824,18 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 /* The ground was sized to a fixed share of the viewport, which left a field of grey under
    a short cart. It only needs to reach past the content. */
 .hz-shop { min-height: 0; padding-bottom: clamp(40px, 6vw, 72px); }
+
+/* ---- cart and checkout: final pass ---- */
+
+/* The ground was sized to its content, so on a checkout whose sections are collapsed it
+   stopped a third of the way down and left the rest of the page white. It only has to
+   reach the footer. */
+.hz-shop { min-height: calc(100vh - 240px); }
+
+/* The buttons in the order summary sit in a <ul>; the empty rows in it leave a stray rule
+   floating under the last button. */
+.hz-shop .order-summary-container li:empty { display: none; }
+
+/* .btn-info carries wide tracking from the legacy theme, which on a two-word label reads
+   as a heading rather than a control. */
+.hz-shop .btn-info { letter-spacing: 0 !important; }
