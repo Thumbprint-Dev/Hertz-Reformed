@@ -171,6 +171,13 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         .then(function(eligibility) {
           $scope.home.eligibility = eligibility;
           $scope.home.isChampion = Allocation.hasRole('champion') || Allocation.hasRole('admin');
+
+          // A Champion has no allocation of their own to show. They order on behalf of
+          // their team and buy à la carte, so fetching an entitlement here would render a
+          // counter for something they never spend. Skipping the call also means the band
+          // never briefly appears and then vanishes once the role is known.
+          if ($scope.home.isChampion) return null;
+
           // Before day 90 there is no entitlement to fetch, and `/me/eligibility` already
           // carries the date access opens. Asking anyway returns an empty shell that reads
           // as "you have nothing" rather than "you are eligible on the 20th".

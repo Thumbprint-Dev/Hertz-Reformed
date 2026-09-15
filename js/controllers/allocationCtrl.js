@@ -7,8 +7,8 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', '$location', 'Allocation',
-  function($scope, $location, Allocation) {
+four51.app.controller('AllocationCtrl', ['$scope', '$location', '$q', 'Allocation',
+  function($scope, $location, $q, Allocation) {
 
     /**
      * Whose allocation this page is spending.
@@ -341,6 +341,15 @@ four51.app.controller('AllocationCtrl', ['$scope', '$location', 'Allocation',
 
       Allocation.eligibility(FOR)
         .then(function(eligibility) {
+          // A Champion has no allocation of their own, so this page with nobody named is
+          // a dead end for them — it would render an empty picker for units they never
+          // get. Send them to choose someone instead. The role is only known once the
+          // session resolves, which is why this is here rather than before the call.
+          if (!FOR && (Allocation.hasRole('champion') || Allocation.hasRole('admin'))) {
+            $scope.alloc.loading = false;
+            $location.path('/champion').search({});
+            return $q.reject({ redirected: true });
+          }
           $scope.alloc.eligibility = eligibility;
           if (eligibility && eligibility.status !== 'eligible') return null;
           return Allocation.entitlement(FOR);
@@ -364,6 +373,9 @@ four51.app.controller('AllocationCtrl', ['$scope', '$location', 'Allocation',
           $scope.alloc.loading = false;
         })
         .catch(function(err) {
+          // A redirect is not a failure; showing an error under a page that is leaving
+          // would flash a message nobody can act on.
+          if (err && err.redirected) return;
           $scope.alloc.error = describe(err);
           $scope.alloc.loading = false;
         });
