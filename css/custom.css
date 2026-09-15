@@ -2380,518 +2380,306 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-cell-go { font-size: 13px; font-weight: 700; color: var(--ink); margin-top: auto; }
 
 /* =========================================================================
-   Cart and checkout — brought onto the brand
+   Cart
 
-   These two pages are the theme's original Bootstrap 3 markup, and they carry
-   a lot of wired behaviour: shipping, payment, approvals, gift cards, punchout.
-   Rewriting the templates to restyle them would risk all of it for a visual
-   change, so this is a layer over the existing markup instead: the partials
-   gained one class each and nothing else moved.
+   Written for `partials/cartView.html`, which is this storefront's own markup
+   rather than the stock theme's. That is the whole reason this section is
+   short: the previous attempts were CSS fighting a Bootstrap column nest built
+   for prices, editable quantities and multi-address shipping, none of which a
+   Hertz employee sees. Owning the markup means the styles describe the page
+   instead of arguing with it.
 
-   It restates Bootstrap's structures in the brand's terms — flat, ruled, 2px
-   radius, yellow as a fill and never as type — so the pages read as part of the
-   same site without their logic being touched.
-
-   Everything is scoped under .hz-shop. The rest of the theme still runs on the
-   same Bootstrap classes and must not shift.
+   Same language as the landing page and the picker: flat, ruled, 2px radius,
+   yellow as a fill and never as type.
    ========================================================================= */
-.hz-shop {
+.hz-cart {
   --yellow: #FFCC00;
   --yellow-press: #E6B800;
-  --black-90: #434244;
-  --black-80: #58595B;
-  --black-60: #808285;
-  --rule: rgba(0,0,0,0.2);
-  --ink: #000;
-  --surface-alt: #FAFAFA;
+  --ink: #11172b;
+  --body: #2c3140;
+  --muted: #5f6778;
+  --line: #e3e7ef;
+  --edge: #dae0ea;
+  --sub: #f8f9fc;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
 
-  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
-  color: var(--black-80);
-  font-size: 15px;
-}
-.hz-shop, .hz-shop *, .hz-shop *::before, .hz-shop *::after { box-sizing: border-box; }
-
-/* ---- type ---- */
-.hz-shop h1, .hz-shop h2, .hz-shop h3, .hz-shop h4,
-.hz-shop .panel-title, .hz-shop .order-summary-header {
-  font-family: inherit; font-weight: 800; color: var(--ink);
-  letter-spacing: -0.01em; text-transform: none;
-}
-.hz-shop h1 { font-size: 30px; }
-.hz-shop h2 { font-size: 24px; }
-.hz-shop h3 { font-size: 19px; }
-.hz-shop h4, .hz-shop .panel-title { font-size: 16px; }
-/* Only field labels get the uppercase treatment. A bare <label> in this theme also wraps
-   checkbox and radio sentences — "By checking this box, I confirm…" — and uppercasing a
-   sentence at 11px is unreadable as well as shouty. */
-.hz-shop .control-label,
-.hz-shop .form-group > label {
-  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--black-60); margin-bottom: 6px;
-}
-.hz-shop .checkbox label,
-.hz-shop .radio label,
-.hz-shop label > input[type="checkbox"] ~ *,
-.hz-shop label > input[type="radio"] ~ * {
-  font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none;
-  color: var(--black-80);
-}
-.hz-shop small, .hz-shop .help-block { color: var(--black-60); font-size: 12.5px; }
-.hz-shop a { color: var(--ink); text-decoration: none; }
-.hz-shop a:hover, .hz-shop a:focus { color: var(--ink); text-decoration: underline; }
-.hz-shop :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
-
-/* ---- panels become ruled blocks, not rounded cards ---- */
-.hz-shop .panel,
-.hz-shop .well,
-.hz-shop .order-summary-container {
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: var(--body);
   background: #fff;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  box-shadow: none;
-  /* The theme pins a few of these inline; the layer has to win to stay flat. */
-  background-color: #fff !important;
-  border-radius: 2px !important;
-}
-.hz-shop .panel-heading {
-  background: var(--surface-alt); border-bottom: 1px solid var(--rule);
-  border-radius: 0; padding: 14px 18px;
-}
-.hz-shop .panel-body, .hz-shop .order-summary-inner-container { padding: 18px; }
-
-/* One line item per ruled row, matching the picker. */
-.hz-shop .panel-lineitem {
-  border-top: 1px solid var(--rule);
-  padding: 18px 0; margin: 0;
-}
-.hz-shop .panel-lineitem:first-child { border-top: 0; }
-.hz-shop .product-name { font-size: 15px; font-weight: 700; color: var(--ink); }
-.hz-shop .product-id {
-  font-size: 12.5px; color: var(--black-60); letter-spacing: .02em;
-}
-
-/* ---- buttons ---- */
-.hz-shop .btn {
-  font-family: inherit; font-size: 15px; font-weight: 700; line-height: 1;
-  padding: 14px 22px; border-radius: 2px; border: 1px solid transparent;
-  white-space: nowrap; box-shadow: none; text-transform: none;
-}
-/* The checkout button swaps class by form state — btn-success when the cart is valid,
-   btn-warning when it is not and the button is disabled — so both have to be spoken for
-   or it changes colour scheme mid-page. */
-.hz-shop .btn-primary,
-.hz-shop .btn-success,
-.hz-shop .checkoutBtn-cart {
-  background: var(--yellow) !important; border-color: var(--yellow) !important;
-  color: var(--black-90) !important;
-}
-.hz-shop .btn-primary:hover, .hz-shop .btn-primary:focus,
-.hz-shop .btn-success:hover, .hz-shop .btn-success:focus,
-.hz-shop .checkoutBtn-cart:hover, .hz-shop .checkoutBtn-cart:focus {
-  background: var(--yellow-press) !important; border-color: var(--yellow-press) !important;
-  color: var(--black-90) !important;
-}
-/* One primary action per view. Continue Shopping is the way out, not the way on, so it
-   is a ghost — two yellow slabs side by side make neither of them the answer. */
-.hz-shop .btn-default,
-.hz-shop .checkoutBtn-save,
-.hz-shop .checkoutBtn-cancel,
-.hz-shop .checkoutBtn-continue {
-  background: #fff !important; border-color: var(--rule) !important; color: var(--ink) !important;
-}
-.hz-shop .btn-default:hover,
-.hz-shop .checkoutBtn-save:hover,
-.hz-shop .checkoutBtn-cancel:hover,
-.hz-shop .checkoutBtn-continue:hover {
-  background: var(--surface-alt) !important; border-color: var(--ink) !important;
-}
-/* Removing a line is destructive but ordinary — a quiet control, not a red slab. */
-.hz-shop .btn-danger,
-.hz-shop .remove-btn, .hz-shop .remove-button {
-  background: #fff !important; border: 1px solid var(--rule) !important;
-  color: var(--black-80) !important; font-weight: 600 !important;
-}
-.hz-shop .btn-danger:hover,
-.hz-shop .remove-btn:hover, .hz-shop .remove-button:hover {
-  border-color: #9b1c1c !important; color: #9b1c1c !important;
-}
-.hz-shop .btn-link { color: var(--ink) !important; text-decoration: underline; padding: 0; }
-
-/* Not yet available, rather than something has gone wrong: a disabled checkout usually
-   means a required field is still empty, and amber suggests a problem the shopper has
-   already caused. */
-.hz-shop .btn-warning,
-.hz-shop .btn[disabled],
-.hz-shop .btn.disabled {
-  background: #EDEFF2 !important; border-color: var(--rule) !important;
-  color: var(--black-60) !important; opacity: 1; cursor: not-allowed;
-}
-
-/* ---- inputs ---- */
-.hz-shop .form-control,
-.hz-shop input[type="text"], .hz-shop input[type="email"], .hz-shop input[type="tel"],
-.hz-shop input[type="number"], .hz-shop select, .hz-shop textarea {
-  font-family: inherit; font-size: 15px; color: var(--ink);
-  height: auto; padding: 12px 14px;
-  border: 1px solid var(--rule); border-radius: 2px; box-shadow: none;
-  background: #fff;
-}
-.hz-shop .form-control:focus,
-.hz-shop select:focus, .hz-shop textarea:focus {
-  border-color: var(--ink); box-shadow: none; outline: 2px solid var(--yellow); outline-offset: 1px;
-}
-.hz-shop .input-group-addon { border-radius: 2px; border-color: var(--rule); background: var(--surface-alt); }
-
-/* ---- tables ---- */
-.hz-shop .table { font-size: 14px; }
-.hz-shop .table > thead > tr > th {
-  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--black-60); border-bottom: 1px solid var(--rule); padding: 10px 12px;
-}
-.hz-shop .table > tbody > tr > td {
-  border-top: 1px solid var(--rule); padding: 12px; vertical-align: middle;
-}
-.hz-shop .table-striped > tbody > tr:nth-of-type(odd) { background: var(--surface-alt); }
-
-/* ---- order summary ---- */
-.hz-shop .order-summary-header {
-  font-size: 17px; padding: 0 0 12px; border-bottom: 1px solid var(--rule); margin-bottom: 14px;
-}
-.hz-shop .order-summary-total {
-  border-top: 2px solid var(--ink); margin-top: 14px; padding-top: 14px;
-  font-size: 19px; font-weight: 800; color: var(--ink);
-}
-.hz-shop .order-summary-body { font-size: 14px; }
-
-/* ---- alerts: flat, and never a red slab for something that is not an error ---- */
-.hz-shop .alert { border-radius: 2px; border-width: 1px; font-size: 14px; padding: 14px 16px; }
-.hz-shop .alert-success { background: #f2f9f4; border-color: #cbe6d3; color: #1d6f4f; }
-.hz-shop .alert-danger  { background: #fdf3f3; border-color: #f0d4d4; color: #9b1c1c; }
-.hz-shop .alert-warning { background: var(--surface-alt); border-color: var(--rule); color: var(--black-80); }
-.hz-shop .alert-info    { background: var(--surface-alt); border-color: var(--rule); color: var(--black-80); }
-
-/* The checkout's action bar is pinned to the bottom of the window; give it a real
-   edge so it reads as a bar rather than buttons floating over the page. */
-.hz-shop .navbar-fixed-bottom {
-  background: #fff; border-top: 2px solid var(--ink); padding: 14px clamp(16px, 4vw, 56px);
-  box-shadow: none;
-}
-.hz-shop .view-response-message { font-size: 14px; }
-
-@media (max-width: 600px) {
-  .hz-shop .btn { padding: 16px 24px; width: 100%; margin-bottom: 8px; }
-}
-
-/* ---------- cart and checkout: structure ----------
-   The previous block put these pages on the brand's surface. This one gives them the
-   shape a modern checkout has: a tinted ground with white content sitting on it, one
-   readable column of line items, and a summary that stays with you while you scroll.
-
-   Shopify is the reference for the *structure* — rhythm, a sticky tinted summary, compact
-   rows, one unmistakable primary action. It is not the reference for the surface: the
-   brand guide is flat, 2px, and yellow-only, so none of the soft shadows and pill radii
-   come with it. Still markup-free; every rule below hangs off classes already in the
-   templates.
-   -------------------------------------------------- */
-.hz-shop {
-  /* Break out of .mainContainer's 10% padding so the ground reaches the edges, the same
-     way the landing page does. 10/80 = 12.5% of the content box. */
+  /* Cancel .mainContainer's 10% side padding so the page runs edge to edge like the
+     landing page: content box is 80% of the whole, and 10/80 = 12.5%. */
   margin-left: -12.5%;
   margin-right: -12.5%;
-  padding: clamp(20px, 3vw, 40px) clamp(16px, 4vw, 56px) clamp(60px, 8vw, 110px);
-  background: #F6F7F9;
-  min-height: 70vh;
+  padding: 28px clamp(16px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  min-height: calc(100vh - 150px);
 }
+.hz-cart, .hz-cart *, .hz-cart *::before, .hz-cart *::after { box-sizing: border-box; }
 @media screen and (max-width: 425px) {
-  .hz-shop { margin-left: -2.0833%; margin-right: -2.0833%; }
+  .hz-cart { margin-left: -2.0833%; margin-right: -2.0833%; }
 }
 
-/* White content on the tinted ground. */
-.hz-shop .panel,
-.hz-shop .well,
-.hz-shop .order-summary-container {
-  padding: clamp(14px, 1.6vw, 24px);
-  /* The theme pins a top and bottom border inline on the cart panel; a full box reads as
-     one object instead of two stray rules. */
-  border: 1px solid var(--rule) !important;
+.hz-cart-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 22px;
+}
+.hz-cart-title {
+  font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.02; letter-spacing: -0.008em; color: var(--ink); margin: 0;
+}
+.hz-cart-print {
+  background: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--body);
+  padding: 9px 14px; cursor: pointer; white-space: nowrap;
+}
+.hz-cart-print:hover { border-color: var(--ink); color: var(--ink); }
+
+.hz-cart-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px; align-items: start;
 }
 
-/* ---- line items: one compact row each ---- */
-.hz-shop .panel-lineitem {
-  border-top: 1px solid var(--rule);
-  padding: 20px 0;
+/* ---- items ---- */
+.hz-cart-items { border: 1px solid var(--edge); border-radius: 8px; background: #fff; }
+.hz-cart-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto auto;
+  align-items: center; gap: 18px;
+  padding: 18px 20px; border-top: 1px solid var(--line);
 }
-.hz-shop .panel-lineitem img {
-  max-width: 100%; height: auto;
-  border: 1px solid var(--rule); border-radius: 2px; background: #fff;
-}
-/* "Click Image to Enlarge" is instruction, not content. */
-.hz-shop .panel-lineitem .text-center > strong,
-.hz-shop .panel-lineitem small { color: var(--black-60); font-weight: 400; }
+.hz-cart-row:first-child { border-top: 0; }
 
-/* ---- order summary: sticky, and aligned on a grid rather than floats ---- */
-.hz-shop .order-summary-container {
-  position: sticky; top: 16px;
-  background: #fff !important;
+.hz-cart-thumb {
+  width: 88px; height: 88px; border: 1px solid var(--line); border-radius: 4px;
+  background: var(--sub); overflow: hidden; display: grid; place-items: center;
 }
-.hz-shop .order-summary-inner-container { padding: 0 !important; }
-.hz-shop .order-summary-header {
-  font-size: 17px; margin: 0 0 16px; padding-bottom: 14px;
-  border-bottom: 1px solid var(--rule);
+.hz-cart-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.hz-cart-info { min-width: 0; }
+.hz-cart-name { font-size: 15.5px; font-weight: 700; color: var(--ink); margin: 0 0 3px; }
+.hz-cart-sku {
+  font-family: var(--display); font-size: 13px; letter-spacing: .02em;
+  color: var(--muted); margin: 0;
 }
-/* Each row is label | amount. The theme floats the amount right; as a flex item the
-   float is ignored and the two simply sit at either end, which also lines the figures
-   up with each other instead of with whatever the label length happens to be. */
-.hz-shop .order-summary-body {
+.hz-cart-spec { font-size: 13px; color: var(--body); margin: 4px 0 0; }
+.hz-cart-spec span { color: var(--muted); }
+
+.hz-cart-qty { text-align: right; }
+.hz-cart-qty-l {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.hz-cart-qty-n {
+  font-family: var(--display); font-size: 26px; font-weight: 600; color: var(--ink);
+  line-height: 1.1; font-variant-numeric: tabular-nums;
+}
+.hz-cart-act { min-width: 0; }
+.hz-cart-remove {
+  background: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
+  padding: 9px 14px; cursor: pointer; white-space: nowrap;
+}
+.hz-cart-remove:hover { border-color: #9b1c1c; color: #9b1c1c; }
+
+/* ---- acknowledgements ---- */
+.hz-cart-ack {
+  grid-column: 1 / -1;
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 4px 0 0; padding: 12px 14px;
+  background: var(--sub); border: 1px solid var(--line); border-radius: 4px;
+  font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--body); cursor: pointer;
+}
+.hz-cart-ack input { margin: 2px 0 0; flex: 0 0 auto; }
+.hz-cart-ack--summary { margin: 4px 0 14px; }
+
+/* ---- summary ---- */
+.hz-cart-side { position: sticky; top: 16px; }
+.hz-cart-summary {
+  border: 1px solid var(--edge); border-radius: 8px; background: #fff; padding: 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hz-cart-summary-h {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 4px;
+}
+.hz-cart-sum-row {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  margin: 0 0 10px; font-size: 14.5px; color: var(--black-80);
+  font-size: 14.5px; margin: 0;
 }
-.hz-shop .order-summary-body .pull-right,
-.hz-shop .order-summary-total .pull-right {
-  float: none !important; font-variant-numeric: tabular-nums; color: var(--ink);
-}
-.hz-shop .order-summary-body .text-info { color: var(--black-80) !important; }
-.hz-shop .order-summary-total {
+.hz-cart-sum-row span:last-child { font-variant-numeric: tabular-nums; color: var(--ink); }
+.hz-cart-sum-total {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  border-top: 2px solid var(--ink); margin: 16px 0 0; padding-top: 16px;
-  font-size: 21px;
+  border-top: 2px solid var(--ink); margin-top: 8px; padding-top: 12px;
+  font-size: 19px; font-weight: 700; color: var(--ink);
 }
-/* The buttons live in a <ul>; it is a stack of actions, not a list. */
-.hz-shop .order-summary-container ul { list-style: none; margin: 0; padding: 0; }
-.hz-shop .order-summary-container li { padding: 0 !important; margin-top: 10px; }
-.hz-shop .order-summary-container .btn { display: block; width: 100%; text-align: center; }
-.hz-shop .checkoutBtn-cart { padding: 17px 22px !important; font-size: 16px !important; }
+.hz-cart-note { font-size: 12.5px; color: var(--muted); margin: 0; }
 
-/* The allotment confirmation is a routine step, not an error. Red framing on something
-   every shopper must tick trains people to ignore red, which is the one colour that has
-   to keep working. */
-.hz-shop .order-summary-container .alert-danger {
-  background: var(--surface-alt) !important;
-  border: 1px solid var(--rule) !important;
-  color: var(--black-80) !important;
-  text-align: left !important;
-  border-radius: 2px !important;
-  font-size: 13.5px; line-height: 1.5;
+.hz-cart-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  padding: 14px 18px; cursor: pointer; text-decoration: none;
 }
-.hz-shop .order-summary-container .alert-danger input[type="checkbox"] {
-  margin-right: 8px; transform: scale(1.15);
+.hz-cart-btn:hover, .hz-cart-btn:focus {
+  background: var(--sub); border-color: var(--ink); color: var(--ink); text-decoration: none;
 }
-
-/* ---- checkout: one column of steps, summary beside it ---- */
-.hz-shop--checkout .panel { margin-bottom: 18px; }
-.hz-shop--checkout .navbar-fixed-bottom {
-  position: sticky; bottom: 0; left: auto; right: auto;
-  border-top: 1px solid var(--rule);
-  margin: 24px -16px -24px; border-radius: 2px;
+.hz-cart-btn--primary {
+  background: var(--yellow); border-color: var(--yellow); color: #434244;
 }
-
-@media (max-width: 991px) {
-  .hz-shop .order-summary-container { position: static; margin-top: 20px; }
+.hz-cart-btn--primary:hover, .hz-cart-btn--primary:focus {
+  background: var(--yellow-press); border-color: var(--yellow-press); color: #434244;
 }
-
-/* ---------- checkout sections: the accordion ----------
-   Order, Shipping and Billing are `.panel-order > .panel-heading + .panel-body`, not
-   Bootstrap's `.panel`, so the card styling above never reached them — which is why they
-   rendered as disconnected white bands with the body floating underneath.
-
-   Each partial also ships its own <style>, injected when the partial renders and therefore
-   after custom.css: `.checkout-title` is 40px there, and `.checkout-container` sets an
-   inline white background. Those are the theme's, not new, but a 40px section heading is
-   what makes this page look unfinished once everything around it is tidy.
-   -------------------------------------------------- */
-.hz-shop .panel-order {
-  background: #fff;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  margin-bottom: 16px;
-  overflow: hidden;
+.hz-cart-btn--primary[disabled] {
+  background: #EDEFF2; border-color: var(--line); color: var(--muted); cursor: not-allowed;
 }
-/* The header is a row you click, not a banner. */
-.hz-shop .panel-order > .panel-heading,
-.hz-shop .panel-heading.checkout-container {
-  background: #fff !important;
-  border: 0 !important;
-  border-bottom: 1px solid var(--rule) !important;
-  padding: 16px 20px !important;
-  cursor: pointer;
-}
-.hz-shop .panel-order > .panel-body { padding: 20px !important; border: 0; }
-
-.hz-shop .panel-order > .panel-heading h3,
-.hz-shop .panel-title {
-  display: flex; align-items: center; gap: 10px;
-  margin: 0; font-size: 17px; font-weight: 800; color: var(--ink);
-}
-.hz-shop .checkout-title {
-  font-size: 17px !important; font-weight: 800 !important;
-  letter-spacing: -0.01em !important; padding-right: 0 !important;
-}
-/* Status and chevron: 16px marks beside a heading, not decoration competing with it. The
-   chevron's colour is pinned inline to a purple from another theme. */
-.hz-shop .panel-order .checkout-circle,
-.hz-shop .panel-order > .panel-heading .fa {
-  float: none !important; padding: 0 !important;
-  font-size: 15px !important; line-height: 1;
-}
-.hz-shop .panel-order .fa-check-circle { color: #1d6f4f !important; }
-.hz-shop .panel-order .fa-warning { color: var(--black-60) !important; }
-.hz-shop .panel-order .fa-caret-up,
-.hz-shop .panel-order .fa-caret-down {
-  color: var(--black-60) !important; margin-left: auto;
-}
-
-/* A required field is not a failed one. Red before anyone has typed reads as an error the
-   shopper has already made, and leaves nothing louder for a real one. */
-.hz-shop label.required,
-.hz-shop .required > label { color: var(--black-60) !important; }
-.hz-shop label.required::after { content: ' *'; color: var(--black-60); }
-.hz-shop .count {
-  display: block; font-size: 12.5px; font-weight: 400; letter-spacing: 0;
-  text-transform: none; color: var(--black-60); margin-top: 2px;
-}
-
-/* btn-info is the address controls; it was falling through to whatever was left. */
-.hz-shop .btn-info {
-  background: #fff !important; border: 1px solid var(--rule) !important;
-  color: var(--ink) !important; text-transform: none !important;
-  font-size: 14px !important; padding: 11px 16px !important;
-}
-.hz-shop .btn-info:hover, .hz-shop .btn-info:focus {
-  background: var(--surface-alt) !important; border-color: var(--ink) !important;
-}
-
 /* Cancelling is not the second half of checking out. */
-.hz-shop .order-summary-container .btn[ng-click*="cancel"],
-.hz-shop .order-summary-container .btn[ng-click*="Cancel"] {
-  background: transparent !important; border-color: transparent !important;
-  color: var(--black-60) !important; font-weight: 600 !important;
-  text-decoration: underline; padding: 10px !important;
+.hz-cart-cancel {
+  background: none; border: 0; font: inherit; font-size: 13px; font-weight: 600;
+  color: var(--muted); text-decoration: underline; padding: 6px; cursor: pointer;
 }
-.hz-shop .order-summary-container .btn[ng-click*="cancel"]:hover,
-.hz-shop .order-summary-container .btn[ng-click*="Cancel"]:hover {
-  color: #9b1c1c !important; background: transparent !important;
+.hz-cart-cancel:hover { color: #9b1c1c; }
+
+.hz-cart :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+.hz-cart-empty { padding: 40px 0; }
+.hz-cart-empty p { font-size: 16px; color: var(--body); margin: 0 0 16px; }
+.hz-cart-empty .hz-cart-btn { display: inline-block; width: auto; }
+
+.hz-cart-alert, .hz-cart-said { margin-top: 18px; font-size: 14px; }
+.hz-cart-alert p { color: #9b1c1c; margin: 0; }
+.hz-cart-said p { color: #1d6f4f; margin: 0; }
+
+@media (max-width: 900px) {
+  .hz-cart-grid { grid-template-columns: minmax(0, 1fr); }
+  .hz-cart-side { position: static; }
+}
+@media (max-width: 600px) {
+  .hz-cart-row { grid-template-columns: 64px minmax(0, 1fr); row-gap: 10px; padding: 16px; }
+  .hz-cart-thumb { width: 64px; height: 64px; }
+  .hz-cart-qty, .hz-cart-act { grid-column: 2; text-align: left; }
 }
 
-/* ---------- cart line items ----------
-   Each row is a Bootstrap col-sm-4 for the image and a col-sm-8 for everything else. A
-   third of the row is given to a thumbnail that is often not there — the products have no
-   imagery yet — so the name, quantity and price were squashed into the right two thirds
-   with a large empty column beside them.
-
-   Laying the row out with flex instead gives the image a fixed 96px and the rest of the
-   width to the content, whether or not an image loads. The Bootstrap classes stay on the
-   markup; only their widths stop applying.
+/* ---------- Checkout ----------
+   Same language as the cart. The three step cards come from the stock theme's form
+   partials, so this styles them from the outside as cards and leaves their internals
+   alone — that is where address, payment and approval behaviour lives.
    -------------------------------------------------- */
-.hz-shop .panel-lineitem {
-  display: flex; align-items: flex-start; gap: 20px;
-  border-top: 0;
+.hz-co {
+  --yellow: #FFCC00; --yellow-press: #E6B800;
+  --ink: #11172b; --body: #2c3140; --muted: #5f6778;
+  --line: #e3e7ef; --edge: #dae0ea; --sub: #f8f9fc;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: var(--body); background: #fff;
+  margin-left: -12.5%; margin-right: -12.5%;
+  padding: 28px clamp(16px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  min-height: calc(100vh - 150px);
 }
-/* Between items, not above the first: a rule under the panel's own top border reads as a
-   double line. */
-.hz-shop .panel-lineitem + .panel-lineitem { border-top: 1px solid var(--rule); }
-
-.hz-shop .panel-lineitem > [class*="col-"]:first-child {
-  flex: 0 0 96px; width: 96px; max-width: 96px; padding: 0; float: none;
-}
-.hz-shop .panel-lineitem > [class*="col-"]:last-child {
-  flex: 1 1 auto; width: auto; max-width: none; padding: 0; float: none;
-}
-/* Inner grids go back to behaving like rows within that content column. */
-.hz-shop .panel-lineitem .row { margin-left: -8px; margin-right: -8px; }
-.hz-shop .panel-lineitem .row > [class*="col-"] { padding-left: 8px; padding-right: 8px; }
-
-/* The price is the second most important thing in the row, not the largest. */
-.hz-shop .panel-lineitem h4,
-.hz-shop .panel-lineitem .text-right { font-size: 16px; font-weight: 700; color: var(--ink); }
-
-/* The products have no imagery yet, so the image cell is usually empty. Giving the cell
-   itself the placeholder — rather than a ::before that has to be removed again once an
-   image arrives — means a real thumbnail simply covers it, with no :has() support needed
-   and nothing to undo later. */
-.hz-shop .panel-lineitem > [class*="col-"]:first-child {
-  min-height: 96px;
-  background: var(--surface-alt);
-  border: 1px solid var(--rule); border-radius: 2px;
-  overflow: hidden;
-}
-.hz-shop .panel-lineitem > [class*="col-"]:first-child img {
-  display: block; width: 100%; height: auto; border: 0; border-radius: 0;
+.hz-co, .hz-co *, .hz-co *::before, .hz-co *::after { box-sizing: border-box; }
+@media screen and (max-width: 425px) {
+  .hz-co { margin-left: -2.0833%; margin-right: -2.0833%; }
 }
 
-/* Empty list rows in the summary leave a stray rule under the buttons. */
-.hz-shop .order-summary-container li:empty { display: none; }
-
-/* The ground was sized to a fixed share of the viewport, which left a field of grey under
-   a short cart. It only needs to reach past the content. */
-.hz-shop { min-height: 0; padding-bottom: clamp(40px, 6vw, 72px); }
-
-/* ---- cart and checkout: final pass ---- */
-
-/* The ground was sized to its content, so on a checkout whose sections are collapsed it
-   stopped a third of the way down and left the rest of the page white. It only has to
-   reach the footer. */
-/* Reaches the fold on a short page; the header and notice above are about 150px. */
-.hz-shop { min-height: calc(100vh - 150px); }
-
-/* The buttons in the order summary sit in a <ul>; the empty rows in it leave a stray rule
-   floating under the last button. */
-.hz-shop .order-summary-container li:empty { display: none; }
-
-/* .btn-info carries wide tracking from the legacy theme, which on a two-word label reads
-   as a heading rather than a control. */
-.hz-shop .btn-info { letter-spacing: 0 !important; }
-
-/* ---- cart line: lay out what is actually in it ----
-   For an ordinary employee the row holds a thumbnail, a name, a SKU, a size and a
-   quantity. Prices are hidden for them and Remove is champion-only, so the Bootstrap
-   col-sm-8 span stretched five short lines across two thirds of an empty card. The row is
-   laid out for its real contents instead: image, details, and the quantity held right. */
-.hz-shop .panel-lineitem > [class*="col-"]:last-child {
-  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 24px;
+.hz-co-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.hz-co-title {
+  font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.02; letter-spacing: -0.008em; color: var(--ink); margin: 0;
 }
-.hz-shop .panel-lineitem > [class*="col-"]:last-child > .row {
-  flex: 1 1 320px; min-width: 0; margin: 0;
-}
-/* The quantity/remove strip carries an inline display:inline-block and thirds-width
-   columns, both of which have to go for it to sit at the end of the row. */
-.hz-shop .panel-lineitem .cart-fields {
-  display: flex !important; align-items: center; gap: 18px;
-  margin: 0 0 0 auto; flex: 0 0 auto;
-}
-.hz-shop .panel-lineitem .cart-fields > [class*="col-"] {
-  width: auto; padding: 0; float: none;
-}
-.hz-shop .panel-lineitem .cart-fields span { white-space: nowrap; }
-.hz-shop .panel-lineitem h2 { font-size: 18px; margin: 0; }
+.hz-co-back { font-size: 13.5px; font-weight: 600; color: var(--body); }
+.hz-co-back:hover { color: var(--ink); }
 
-/* The validation strip at the foot of checkout renders as a white box with a lone red
-   badge in it when there is nothing to say. It should only appear when it has content. */
-.hz-shop .navbar-fixed-bottom:not(:has(li)) { display: none; }
+.hz-co-grid { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 24px; align-items: start; }
+.hz-co-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.hz-co-side { position: sticky; top: 16px; }
 
-/* A collapsed accordion section still renders its body, which reads as an empty strip
-   hanging under the header. */
-.hz-shop .panel-order > .panel-body > .ng-hide:only-child { display: none !important; }
-.hz-shop .panel-order > .panel-body:not(:has(*:not(.ng-hide))) {
-  padding: 0 !important; border: 0 !important;
+/* The step cards, styled from outside. */
+.hz-co .panel-order, .hz-co .panel {
+  background: #fff; border: 1px solid var(--edge) !important; border-radius: 8px;
+  box-shadow: none; overflow: hidden; margin: 0;
+}
+.hz-co .panel-heading, .hz-co .panel-heading.checkout-container {
+  background: #fff !important; border: 0 !important;
+  border-bottom: 1px solid var(--line) !important; padding: 15px 20px !important; cursor: pointer;
+}
+.hz-co .panel-body { padding: 20px !important; border: 0; }
+.hz-co .panel-heading h3, .hz-co .panel-title {
+  display: flex; align-items: center; gap: 10px; margin: 0;
+  font-family: 'Open Sans', Arial, sans-serif; font-size: 16px; font-weight: 700; color: var(--ink);
+}
+.hz-co .checkout-title {
+  font-size: 16px !important; font-weight: 700 !important;
+  letter-spacing: 0 !important; padding-right: 0 !important;
+}
+.hz-co .checkout-circle, .hz-co .panel-heading .fa {
+  float: none !important; padding: 0 !important; font-size: 14px !important; line-height: 1;
+}
+.hz-co .fa-check-circle { color: #1d6f4f !important; }
+.hz-co .fa-warning { color: var(--muted) !important; }
+.hz-co .fa-caret-up, .hz-co .fa-caret-down { color: var(--muted) !important; margin-left: auto; }
+
+/* Form controls inside the step cards. */
+.hz-co label.required { color: var(--muted) !important; }
+.hz-co label.required::after { content: ' *'; color: var(--muted); }
+.hz-co .control-label, .hz-co .form-group > label {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.hz-co .form-control, .hz-co input[type="text"], .hz-co select, .hz-co textarea {
+  font: inherit; font-size: 15px; color: var(--ink); height: auto; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: 2px; box-shadow: none; background: #fff;
+}
+.hz-co .form-control:focus { border-color: var(--ink); box-shadow: none; outline: 2px solid var(--yellow); outline-offset: 1px; }
+.hz-co .btn {
+  font: inherit; font-size: 14px; font-weight: 600; padding: 11px 16px;
+  border-radius: 2px; border: 1px solid var(--edge) !important;
+  background: #fff !important; color: var(--ink) !important;
+  box-shadow: none; text-transform: none !important; letter-spacing: 0 !important;
+}
+.hz-co .btn:hover { background: var(--sub) !important; border-color: var(--ink) !important; }
+.hz-co .btn span { color: inherit !important; }
+.hz-co .alert {
+  background: var(--sub) !important; border: 1px solid var(--line) !important;
+  color: var(--body) !important; border-radius: 4px; font-size: 13.5px;
 }
 
-/* Cancel Order pins color:white inline on its label, which was legible on the old dark
-   button and invisible on this one — all that showed was the button's bottom border,
-   which read as a stray rule under Save Order. */
-.hz-shop .checkoutBtn-cancel span,
-.hz-shop .checkoutBtn-cancel { color: var(--black-80) !important; }
-.hz-shop .checkoutBtn-cancel:hover span,
-.hz-shop .checkoutBtn-cancel:hover { color: #9b1c1c !important; }
+/* ---- summary ---- */
+.hz-co-summary {
+  border: 1px solid var(--edge); border-radius: 8px; background: #fff; padding: 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hz-co-summary-h {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 4px;
+}
+.hz-co-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: 14.5px; }
+.hz-co-row span:last-child { font-variant-numeric: tabular-nums; color: var(--ink); }
+.hz-co-total {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  border-top: 2px solid var(--ink); margin-top: 8px; padding-top: 12px;
+  font-size: 19px; font-weight: 700; color: var(--ink);
+}
+.hz-co-note { font-size: 12.5px; color: var(--muted); margin: 0; }
+.hz-co-blocked { font-size: 12.5px; color: var(--muted); margin: -4px 0 0; line-height: 1.45; }
 
-/* The details side of a line item is a nest of Bootstrap columns sized for a row that
-   also carried prices and controls. With those gone they squeeze a product name into a
-   third of the width and wrap it mid-phrase. Inside the line item the columns stop
-   constraining and the content flows. */
-.hz-shop .panel-lineitem > [class*="col-"]:last-child [class*="col-"] {
-  width: auto !important; max-width: none !important; float: none !important;
-  padding-left: 0; padding-right: 0;
+.hz-co-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  padding: 14px 18px; cursor: pointer; text-decoration: none;
 }
-.hz-shop .panel-lineitem > [class*="col-"]:last-child > .row {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; flex: 1 1 auto;
+.hz-co-btn:hover, .hz-co-btn:focus { background: var(--sub); border-color: var(--ink); text-decoration: none; }
+.hz-co-btn--primary { background: var(--yellow); border-color: var(--yellow); color: #434244; }
+.hz-co-btn--primary:hover { background: var(--yellow-press); border-color: var(--yellow-press); color: #434244; }
+.hz-co-btn--primary[disabled] { background: #EDEFF2; border-color: var(--line); color: var(--muted); cursor: not-allowed; }
+.hz-co-cancel {
+  background: none; border: 0; font: inherit; font-size: 13px; font-weight: 600;
+  color: var(--muted); text-decoration: underline; padding: 6px; cursor: pointer;
 }
-.hz-shop .panel-lineitem .product-name { font-size: 15.5px; }
+.hz-co-cancel:hover { color: #9b1c1c; }
+.hz-co :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.hz-co-alert p { color: #9b1c1c; margin: 0; font-size: 14px; }
+.hz-co-said p { color: #1d6f4f; margin: 0; font-size: 14px; }
+
+@media (max-width: 900px) {
+  .hz-co-grid { grid-template-columns: minmax(0,1fr); }
+  .hz-co-side { position: static; }
+}
