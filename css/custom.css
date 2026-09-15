@@ -1955,6 +1955,21 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
   color: var(--black-80);
   background: var(--surface);
+
+  /* Break out of .mainContainer's 10% side padding. This design runs edge to edge — the
+     bands and their rules are the layout — and inside that padding the hero image cell
+     lost about a fifth of its width, which is what made the photograph crop so hard.
+
+     The percentages cancel the padding exactly rather than using the 100vw trick: a
+     percentage margin resolves against the containing block's *content* width, so with
+     10% padding each side the content box is 80% of the whole and 10/80 = 12.5%. Exact,
+     and unlike 100vw it cannot overflow by the width of a scrollbar. */
+  margin-left: -12.5%;
+  margin-right: -12.5%;
+}
+@media screen and (max-width: 425px) {
+  /* .mainContainer drops to 2% there: 2/96 = 2.0833%. */
+  .hz-lp { margin-left: -2.0833%; margin-right: -2.0833%; }
 }
 
 /* Self-contained rather than inheriting Bootstrap's reset: the percentage flex-bases in
@@ -2019,6 +2034,12 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-hero-img {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover; max-width: 100%;
+  /* The three of them and the car sit between 36% and 87% of this frame, with empty
+     garage floor filling the left third. A centred crop therefore throws away people and
+     keeps floor. Anchoring at 72% keeps every subject in view at any cell shape from
+     square to the photograph's own 16:9 — checked at the ratios this cell actually takes
+     between phone and desktop. */
+  object-position: 72% center;
   /* §4.1 makes photography black and white, and §4.3 carves out yellow that is genuinely
      in the scene. This frame is the carve-out: the yellow is the uniform's own trim and
      the garage markings, and it is also the thing the page is about — grayscale takes the
