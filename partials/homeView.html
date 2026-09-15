@@ -117,7 +117,15 @@
   </div>
 
   <!-- ──────────────────────────────────────────────────────────────── start here -->
-  <div class="hz-lp-start" ng-if="home.categories.length">
+  <!--
+    Champions only.
+
+    An employee ordering their own allocation has no categories to browse — everything they
+    may take is in the picker, which "Start selecting" goes straight to. Showing them a
+    category grid offers a second, weaker route to the same place, and for most of them it
+    would be empty besides. Champions do have categories, because they also buy à la carte.
+  -->
+  <div class="hz-lp-start" ng-if="home.isChampion && home.categories.length">
     <div class="hz-lp-start-head">
       <h2 class="hz-lp-h2">Start here</h2>
       <a class="hz-lp-link" href="allocation">See what you have left</a>
@@ -133,11 +141,12 @@
     </div>
   </div>
 
-  <!-- Four51 scopes categories by group, so an empty list means the groups are not set up
-       rather than that this employee has nothing. Say which. -->
-  <div class="hz-lp-start" ng-if="!home.categories.length && !home.loading">
+  <!-- Four51 scopes categories by group, so for a champion an empty list means the groups
+       are not set up rather than that there is nothing to buy. Say which — but only to
+       them, since for an ordinary shopper an empty list is now the expected state. -->
+  <div class="hz-lp-start" ng-if="home.isChampion && !home.categories.length && !home.loading">
     <p class="hz-lp-empty">
-      No categories are assigned to your group yet. Your uniform champion can help.
+      No categories are assigned to your group yet.
     </p>
   </div>
 
