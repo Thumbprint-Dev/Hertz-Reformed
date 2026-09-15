@@ -185,7 +185,10 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
       },
 
       /**
-       * Ask the gatekeeper whether this cart may be saved.
+       * Ask the gatekeeper whether this cart may be saved, and **hold the units**.
+       *
+       * This is the cart path: it reserves, so it belongs with an actual save. Anything
+       * that only wants the answer must call `previewCart` instead.
        *
        * Resolves with `{ ok: true, ... }`, or rejects with a 409 whose body is a
        * Four51-shaped refusal. Read `Message` and `Errors[].Message` and show them
@@ -193,6 +196,20 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
        */
       validateCart: function(four51OrderId, lines) {
         return authed('POST', '/cart/validate', {
+          four51OrderId: four51OrderId,
+          lines: lines
+        });
+      },
+
+      /**
+       * Ask the same question and hold nothing.
+       *
+       * Same checks, same refusal shape, no reservation. The picker uses this: it is
+       * asking whether a selection fits, not saving a cart, and a reservation made on a
+       * question is one the employee never agreed to and cannot undo by leaving the page.
+       */
+      previewCart: function(four51OrderId, lines) {
+        return authed('POST', '/cart/preview', {
           four51OrderId: four51OrderId,
           lines: lines
         });

@@ -30,27 +30,24 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
     };
 
     /**
-     * The draft order id — stable for this employee, for the life of the account.
+     * The draft order id.
      *
-     * `validateCart` reconciles the reservation held against an order id TO the lines it
-     * is given; it does not add. So the id is what decides whether a second check
-     * *replaces* the first or *stacks on top of* it.
+     * The picker calls `previewCart`, which holds nothing — so this id no longer decides
+     * whether units are reserved. It still matters for what the preview *compares
+     * against*: the API measures a selection against what this id already holds, so a
+     * stable id means the preview is judged against this employee's own draft rather than
+     * an unrelated one.
      *
-     * A per-click or per-visit id stacks, and nothing ever gives those units back:
-     * `release` is only reachable through `validateCart` with the same id
-     * (`src/cart/validate.ts:275`), so a hold whose id is gone is held until the cycle
-     * closes. Keying on the employee means every check — this click, this reload, next
-     * week — reconciles the same draft, and the hold always equals what is currently on
-     * screen.
-     *
-     * When the real Four51 cart add is wired, the Four51 order id replaces this: the
-     * draft exists because the picker validates a selection that has no order behind it
-     * yet.
+     * It is keyed to the employee rather than the click for the reason the reserving
+     * version had to be: `release` is reachable only through `validateCart` with the same
+     * id, so any id that goes out of scope while holding units strands them until the
+     * nightly collector runs. When the real Four51 cart add is wired, that call uses the
+     * Four51 order id and this draft is only ever a preview key.
      */
     function draftOrderId() {
       var who = (Allocation.identity() || {}).employeeId;
-      // No identity means no session, and `check()` cannot have got this far — but fall
-      // back to something stable-per-visit rather than minting a fresh hold per click.
+      // No identity means no session, and `check()` cannot have got this far — but keep
+      // it stable rather than minting a fresh key per click.
       return 'picker-draft:' + (who || 'anon');
     }
 
@@ -279,7 +276,7 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
         return;
       }
 
-      Allocation.validateCart(draftOrderId(), lines)
+      Allocation.previewCart(draftOrderId(), lines)
         .then(function() {
           $scope.alloc.result = { ok: true, messages: ['Your selection fits your allocation.'] };
           $scope.alloc.submitting = false;
