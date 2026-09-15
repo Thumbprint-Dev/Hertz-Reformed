@@ -7,8 +7,22 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
-  function($scope, Allocation) {
+four51.app.controller('AllocationCtrl', ['$scope', '$location', 'Allocation',
+  function($scope, $location, Allocation) {
+
+    /**
+     * Whose allocation this page is spending.
+     *
+     * `?for=<employeeId>` means a Champion arrived from the team picker. It is read from
+     * the URL rather than held in a service so a reload, a bookmark or a second tab
+     * cannot quietly revert to the Champion's own allocation — that version of the bug
+     * spends the wrong person's year and looks like nothing happened.
+     *
+     * Empty for an ordinary employee, and every call below then behaves exactly as it did
+     * before. The server authorises the id on every request regardless; this only decides
+     * what to ask for.
+     */
+    var FOR = ($location.search() || {}).for || null;
 
     // Bound to an object, never bare primitives: anything under an `ng-if` gets a child
     // scope, and writing to a bare name there shadows rather than updates.
@@ -26,7 +40,15 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       totalPicked: 0,
       preview: null,
       submitting: false,
-      result: null
+      result: null,
+      /** True when a Champion is ordering for someone else. */
+      onBehalf: false,
+      beneficiaryId: null
+    };
+
+    /** Back to the team picker, dropping the beneficiary. */
+    $scope.alloc.leaveOnBehalf = function() {
+      $location.path('/champion').search({});
     };
 
     /**
@@ -45,7 +67,9 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
      * Four51 order id and this draft is only ever a preview key.
      */
     function draftOrderId() {
-      var who = (Allocation.identity() || {}).employeeId;
+      // Keyed on the beneficiary, not the caller: a Champion checking selections for two
+      // people in one session must not have the second compared against the first.
+      var who = FOR || (Allocation.identity() || {}).employeeId;
       // No identity means no session, and `check()` cannot have got this far — but keep
       // it stable rather than minting a fresh key per click.
       return 'picker-draft:' + (who || 'anon');
@@ -98,7 +122,14 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       if (err.noSession) return 'Please sign in to choose your uniform.';
       if (err.network || err.status === 0) return 'Could not reach the allocation service.';
       if (err.status === 403) return 'The allocation service refused this request.';
-      if (err.status === 401) return 'Your session could not be verified.';
+      if (err.status === 401) {
+        // The shim asserts a username; a 401 almost always means that login is not on the
+        // server's allowlist, and naming it is the difference between a dead end and a
+        // one-line fix.
+        return err.shimUsername
+          ? 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.'
+          : 'Your session could not be verified.';
+      }
       return 'Could not load your allocation.';
     }
 
@@ -276,7 +307,7 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
         return;
       }
 
-      Allocation.previewCart(draftOrderId(), lines)
+      Allocation.previewCart(draftOrderId(), lines, FOR)
         .then(function() {
           $scope.alloc.result = { ok: true, messages: ['Your selection fits your allocation.'] };
           $scope.alloc.submitting = false;
@@ -304,15 +335,17 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation',
       $scope.alloc.loading = true;
       $scope.alloc.error = null;
 
-      Allocation.eligibility()
+      Allocation.eligibility(FOR)
         .then(function(eligibility) {
           $scope.alloc.eligibility = eligibility;
           if (eligibility && eligibility.status !== 'eligible') return null;
-          return Allocation.entitlement();
+          return Allocation.entitlement(FOR);
         })
         .then(function(view) {
           if (view) {
             $scope.alloc.view = view;
+            $scope.alloc.onBehalf = !!view.onBehalf;
+            $scope.alloc.beneficiaryId = view.employeeId;
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = view.pools || [];

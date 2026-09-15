@@ -10,6 +10,21 @@
 <section class="hz-pick" data-brand="{{alloc.brandKey}}">
   <div class="hz-pick-shell">
 
+    <!--
+      Ordering for someone else. Persistent, not a toast: it must be true for as long as it
+      is true, because the mistake it prevents - spending the wrong person's year - is
+      silent and only discovered by them.
+    -->
+    <div class="hz-onbehalf" ng-if="alloc.onBehalf">
+      <span class="hz-onbehalf-tag">Ordering on behalf</span>
+      <span class="hz-onbehalf-who">
+        {{alloc.view.groupName}} &middot; employee <b>{{alloc.beneficiaryId}}</b>
+      </span>
+      <button class="hz-onbehalf-x" type="button" ng-click="alloc.leaveOnBehalf()">
+        Choose someone else
+      </button>
+    </div>
+
     <header class="hz-pick-head">
       <h1 class="hz-pick-title">Choose your uniform</h1>
       <p class="hz-pick-sub" ng-if="alloc.view">

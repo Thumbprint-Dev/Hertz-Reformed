@@ -42,6 +42,10 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         when('/address/:id', { templateUrl: 'partials/addressView.html', controller: 'AddressViewCtrl' }).
         when('/home', { templateUrl: 'partials/homeView.html', controller: 'HomeCtrl' }).
         when('/allocation', { templateUrl: 'partials/allocationView.html', controller: 'AllocationCtrl' }).
+        // The beneficiary travels as ?for= on /allocation rather than in the path, so
+        // `reloadOnSearch` staying default means changing who you are ordering for
+        // re-runs the controller rather than leaving the previous person's pools on screen.
+        when('/champion', { templateUrl: 'partials/championView.html', controller: 'ChampionCtrl' }).
         when('/cart', { templateUrl: 'partials/cartView.html', controller: 'CartViewCtrl'}).
         when('/checkout', { templateUrl: 'partials/checkOutView.html', controller: 'CheckOutViewCtrl' }).
         when('/checkout/:id', { templateUrl: 'partials/checkOutView.html', controller: 'CheckOutViewCtrl' }).

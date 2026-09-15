@@ -160,13 +160,23 @@
     </div>
 
     <div class="hz-lp-cells hz-lp-cells--two">
-      <a class="hz-lp-cell hz-lp-cell--text" href="catalog">
-        <span class="hz-lp-cell-name">Buy &agrave; la carte</span>
-        <span class="hz-lp-cell-sub">Order outside a standard allocation, charged to your location.</span>
-      </a>
-      <a class="hz-lp-cell hz-lp-cell--text" href="allocation">
+      <a class="hz-lp-cell hz-lp-cell--text" href="champion">
         <span class="hz-lp-cell-name">Order for an employee</span>
-        <span class="hz-lp-cell-sub">Choose someone in your scope and order against their allocation.</span>
+        <span class="hz-lp-cell-sub">
+          Search your team by employee ID or name, then order against their allocation.
+        </span>
+        <span class="hz-lp-cell-go">Find someone &rarr;</span>
+      </a>
+
+      <!-- Points at the Four51 category once it exists. Until then it lands on the first
+           category the tree returns, which is the catalogue a champion already has. -->
+      <a class="hz-lp-cell hz-lp-cell--text"
+         ng-href="{{home.alaCarteHref}}">
+        <span class="hz-lp-cell-name">Buy &agrave; la carte</span>
+        <span class="hz-lp-cell-sub">
+          Order outside a standard allocation, charged to your location.
+        </span>
+        <span class="hz-lp-cell-go">Browse &rarr;</span>
       </a>
     </div>
   </div>

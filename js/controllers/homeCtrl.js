@@ -51,8 +51,20 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       /** Width of the progress bar, as a percentage. */
       percentLeft: 0,
       closed: [],
-      heroImage: HERO_IMAGE
+      heroImage: HERO_IMAGE,
+      /**
+       * Where "Buy à la carte" goes.
+       *
+       * Hertz will author a dedicated à la carte category in the Four51 admin; when it
+       * exists, name its InteropID in A_LA_CARTE_CATEGORY below and this points at it.
+       * Until then it falls back to the first category the tree returns, so the entry
+       * works rather than leading nowhere.
+       */
+      alaCarteHref: 'catalog'
     };
+
+    /** InteropID of the à la carte category, once Hertz creates it. */
+    var A_LA_CARTE_CATEGORY = '';
 
     /**
      * Brand to a CSS-safe key, so the theme can swap hero art and accents per brand.
@@ -95,7 +107,14 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       if (err.noSession) return 'Please sign in to see your uniform allocation.';
       if (err.network || err.status === 0) return 'Could not reach the allocation service.';
       if (err.status === 403) return 'The allocation service refused this request.';
-      if (err.status === 401) return 'Your session could not be verified.';
+      if (err.status === 401) {
+        // The shim asserts a username; a 401 almost always means that login is not on the
+        // server's allowlist, and naming it is the difference between a dead end and a
+        // one-line fix.
+        return err.shimUsername
+          ? 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.'
+          : 'Your session could not be verified.';
+      }
       return 'Could not load your allocation.';
     }
 
@@ -128,6 +147,12 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         d.resolve([]);
       }
       return d.promise;
+    }
+
+    function alaCarteHref(list) {
+      if (A_LA_CARTE_CATEGORY) return 'catalog/' + A_LA_CARTE_CATEGORY;
+      var first = (list || [])[0];
+      return first ? first.href : 'catalog';
     }
 
     $scope.home.load = function() {
@@ -170,6 +195,7 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
         })
         .then(function(list) {
           if (list) $scope.home.categories = list;
+          $scope.home.alaCarteHref = alaCarteHref(list);
           $scope.home.loading = false;
         })
         .catch(function(err) {

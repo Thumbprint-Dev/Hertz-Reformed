@@ -115,15 +115,47 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
      * gate both want a token on the same page load, and two exchanges would be two
      * pointless round trips against a shopper's first paint.
      */
+    /**
+     * The signed-in Four51 username, for the local auth shim.
+     *
+     * `isAuthenticated()` is what repopulates `currentUser` from the cookie after a page
+     * load — reading `currentUser` without calling it first gets `undefined` on every
+     * fresh load, which would silently fall back to the real token the stub cannot
+     * resolve. Calling it is the documented way to get the value, not a side effect being
+     * relied on by accident.
+     */
+    function shimUsername() {
+      if (!AllocationConfig.localAuthShim) return null;
+      try {
+        Security.isAuthenticated();
+        var u = Security.currentUser && Security.currentUser.Username;
+        return u || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /**
+     * Query string for a beneficiary read, or nothing at all.
+     *
+     * Encoded rather than concatenated: an employee id is external input, and the one
+     * place it reaches a URL is the one place to be careful about it.
+     */
+    function beneficiaryQuery(employeeId) {
+      if (!employeeId) return '';
+      return '?beneficiaryEmployeeId=' + encodeURIComponent(employeeId);
+    }
+
     function session() {
       var fresh = _token && (Date.now() - _tokenAt) / 1000 < AllocationConfig.tokenRefreshSeconds;
       if (fresh) return $q.when(_token);
       if (_pending) return _pending;
 
-      // The shim wins when set, because the point of it is to work when the real session
-      // token cannot be resolved. See the note on AllocationConfig.devToken — it is
-      // bounded server-side by an allowlist and must be null before real data exists.
-      var four51Token = AllocationConfig.devToken || Security.auth();
+      // The shim wins when on, because the point of it is to work when the real session
+      // token cannot be resolved. See the note on AllocationConfig.localAuthShim — it is
+      // bounded server-side by an allowlist and must be off before real data exists.
+      var shimUser = shimUsername();
+      var four51Token = shimUser ? 'local:' + shimUser : Security.auth();
       if (!four51Token) return $q.reject({ status: 401, body: null, noSession: true });
 
       _pending = request('POST', '/auth/session', { four51Token: four51Token }, null)
@@ -137,6 +169,9 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
         .catch(function(err) {
           _pending = null;
           _token = null;
+          if (err && err.status === 401 && shimUser) {
+            err.shimUsername = shimUser;
+          }
           return $q.reject(err);
         });
 
@@ -169,8 +204,8 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
       },
 
       /** Whether this employee may order today, and if not, the exact date they can. */
-      eligibility: function() {
-        return authed('GET', '/me/eligibility', null);
+      eligibility: function(forEmployeeId) {
+        return authed('GET', '/me/eligibility' + beneficiaryQuery(forEmployeeId), null);
       },
 
       /**
@@ -180,8 +215,19 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
        * orderable, but it carries `opensOn` so the UI can say "available 1 October"
        * rather than showing nothing at all.
        */
-      entitlement: function() {
-        return authed('GET', '/me/entitlement', null);
+      /**
+       * @param forEmployeeId optional — a Champion reading a beneficiary's allocation.
+       *   The server authorises it with the same scope rule the cart uses, so passing an
+       *   id you may not order for is a 403 rather than a disclosure.
+       */
+      entitlement: function(forEmployeeId) {
+        return authed('GET', '/me/entitlement' + beneficiaryQuery(forEmployeeId), null);
+      },
+
+      /** Everyone this Champion may order for. `{ champion: false, beneficiaries: [] }`
+       *  for an ordinary employee — not an error. */
+      beneficiaries: function() {
+        return authed('GET', '/champion/beneficiaries', null);
       },
 
       /**
@@ -194,11 +240,10 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
        * Four51-shaped refusal. Read `Message` and `Errors[].Message` and show them
        * verbatim — see `refusalText` below for why `LineItems` must be ignored.
        */
-      validateCart: function(four51OrderId, lines) {
-        return authed('POST', '/cart/validate', {
-          four51OrderId: four51OrderId,
-          lines: lines
-        });
+      validateCart: function(four51OrderId, lines, forEmployeeId) {
+        var body = { four51OrderId: four51OrderId, lines: lines };
+        if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
+        return authed('POST', '/cart/validate', body);
       },
 
       /**
@@ -208,11 +253,12 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
        * asking whether a selection fits, not saving a cart, and a reservation made on a
        * question is one the employee never agreed to and cannot undo by leaving the page.
        */
-      previewCart: function(four51OrderId, lines) {
-        return authed('POST', '/cart/preview', {
-          four51OrderId: four51OrderId,
-          lines: lines
-        });
+      previewCart: function(four51OrderId, lines, forEmployeeId) {
+        var body = { four51OrderId: four51OrderId, lines: lines };
+        // Only sent when there is one: an absent key is an ordinary self-service check,
+        // and the server treats an empty string the same way.
+        if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
+        return authed('POST', '/cart/preview', body);
       },
 
       /**
