@@ -2688,3 +2688,139 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 @media (max-width: 991px) {
   .hz-shop .order-summary-container { position: static; margin-top: 20px; }
 }
+
+/* ---------- checkout sections: the accordion ----------
+   Order, Shipping and Billing are `.panel-order > .panel-heading + .panel-body`, not
+   Bootstrap's `.panel`, so the card styling above never reached them — which is why they
+   rendered as disconnected white bands with the body floating underneath.
+
+   Each partial also ships its own <style>, injected when the partial renders and therefore
+   after custom.css: `.checkout-title` is 40px there, and `.checkout-container` sets an
+   inline white background. Those are the theme's, not new, but a 40px section heading is
+   what makes this page look unfinished once everything around it is tidy.
+   -------------------------------------------------- */
+.hz-shop .panel-order {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+/* The header is a row you click, not a banner. */
+.hz-shop .panel-order > .panel-heading,
+.hz-shop .panel-heading.checkout-container {
+  background: #fff !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--rule) !important;
+  padding: 16px 20px !important;
+  cursor: pointer;
+}
+.hz-shop .panel-order > .panel-body { padding: 20px !important; border: 0; }
+
+.hz-shop .panel-order > .panel-heading h3,
+.hz-shop .panel-title {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0; font-size: 17px; font-weight: 800; color: var(--ink);
+}
+.hz-shop .checkout-title {
+  font-size: 17px !important; font-weight: 800 !important;
+  letter-spacing: -0.01em !important; padding-right: 0 !important;
+}
+/* Status and chevron: 16px marks beside a heading, not decoration competing with it. The
+   chevron's colour is pinned inline to a purple from another theme. */
+.hz-shop .panel-order .checkout-circle,
+.hz-shop .panel-order > .panel-heading .fa {
+  float: none !important; padding: 0 !important;
+  font-size: 15px !important; line-height: 1;
+}
+.hz-shop .panel-order .fa-check-circle { color: #1d6f4f !important; }
+.hz-shop .panel-order .fa-warning { color: var(--black-60) !important; }
+.hz-shop .panel-order .fa-caret-up,
+.hz-shop .panel-order .fa-caret-down {
+  color: var(--black-60) !important; margin-left: auto;
+}
+
+/* A required field is not a failed one. Red before anyone has typed reads as an error the
+   shopper has already made, and leaves nothing louder for a real one. */
+.hz-shop label.required,
+.hz-shop .required > label { color: var(--black-60) !important; }
+.hz-shop label.required::after { content: ' *'; color: var(--black-60); }
+.hz-shop .count {
+  display: block; font-size: 12.5px; font-weight: 400; letter-spacing: 0;
+  text-transform: none; color: var(--black-60); margin-top: 2px;
+}
+
+/* btn-info is the address controls; it was falling through to whatever was left. */
+.hz-shop .btn-info {
+  background: #fff !important; border: 1px solid var(--rule) !important;
+  color: var(--ink) !important; text-transform: none !important;
+  font-size: 14px !important; padding: 11px 16px !important;
+}
+.hz-shop .btn-info:hover, .hz-shop .btn-info:focus {
+  background: var(--surface-alt) !important; border-color: var(--ink) !important;
+}
+
+/* Cancelling is not the second half of checking out. */
+.hz-shop .order-summary-container .btn[ng-click*="cancel"],
+.hz-shop .order-summary-container .btn[ng-click*="Cancel"] {
+  background: transparent !important; border-color: transparent !important;
+  color: var(--black-60) !important; font-weight: 600 !important;
+  text-decoration: underline; padding: 10px !important;
+}
+.hz-shop .order-summary-container .btn[ng-click*="cancel"]:hover,
+.hz-shop .order-summary-container .btn[ng-click*="Cancel"]:hover {
+  color: #9b1c1c !important; background: transparent !important;
+}
+
+/* ---------- cart line items ----------
+   Each row is a Bootstrap col-sm-4 for the image and a col-sm-8 for everything else. A
+   third of the row is given to a thumbnail that is often not there — the products have no
+   imagery yet — so the name, quantity and price were squashed into the right two thirds
+   with a large empty column beside them.
+
+   Laying the row out with flex instead gives the image a fixed 96px and the rest of the
+   width to the content, whether or not an image loads. The Bootstrap classes stay on the
+   markup; only their widths stop applying.
+   -------------------------------------------------- */
+.hz-shop .panel-lineitem {
+  display: flex; align-items: flex-start; gap: 20px;
+  border-top: 0;
+}
+/* Between items, not above the first: a rule under the panel's own top border reads as a
+   double line. */
+.hz-shop .panel-lineitem + .panel-lineitem { border-top: 1px solid var(--rule); }
+
+.hz-shop .panel-lineitem > [class*="col-"]:first-child {
+  flex: 0 0 96px; width: 96px; max-width: 96px; padding: 0; float: none;
+}
+.hz-shop .panel-lineitem > [class*="col-"]:last-child {
+  flex: 1 1 auto; width: auto; max-width: none; padding: 0; float: none;
+}
+/* Inner grids go back to behaving like rows within that content column. */
+.hz-shop .panel-lineitem .row { margin-left: -8px; margin-right: -8px; }
+.hz-shop .panel-lineitem .row > [class*="col-"] { padding-left: 8px; padding-right: 8px; }
+
+/* The price is the second most important thing in the row, not the largest. */
+.hz-shop .panel-lineitem h4,
+.hz-shop .panel-lineitem .text-right { font-size: 16px; font-weight: 700; color: var(--ink); }
+
+/* The products have no imagery yet, so the image cell is usually empty. Giving the cell
+   itself the placeholder — rather than a ::before that has to be removed again once an
+   image arrives — means a real thumbnail simply covers it, with no :has() support needed
+   and nothing to undo later. */
+.hz-shop .panel-lineitem > [class*="col-"]:first-child {
+  min-height: 96px;
+  background: var(--surface-alt);
+  border: 1px solid var(--rule); border-radius: 2px;
+  overflow: hidden;
+}
+.hz-shop .panel-lineitem > [class*="col-"]:first-child img {
+  display: block; width: 100%; height: auto; border: 0; border-radius: 0;
+}
+
+/* Empty list rows in the summary leave a stray rule under the buttons. */
+.hz-shop .order-summary-container li:empty { display: none; }
+
+/* The ground was sized to a fixed share of the viewport, which left a field of grey under
+   a short cart. It only needs to reach past the content. */
+.hz-shop { min-height: 0; padding-bottom: clamp(40px, 6vw, 72px); }
