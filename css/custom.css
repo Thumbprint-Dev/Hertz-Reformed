@@ -2156,3 +2156,106 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-lp-btn { padding: 16px 24px; }
   .hz-lp-cat { flex-basis: 50%; min-width: 0; }
 }
+
+/* =========================================================================
+   Site header — Hertz brand guidelines v2.0
+
+   Logo top left at 34px with clear space; nav at a 28px gap with the active
+   item underlined 3px yellow; name and avatar right. A 1px rule at 20% black
+   closes the bar and the 3px yellow rule sits under it.
+
+   Tokens are repeated rather than inherited from .hz-lp: the header renders on
+   every page, including the ones still on the old theme.
+   ========================================================================= */
+.hz-hd {
+  --yellow: #FFCC00;
+  --black-80: #58595B;
+  --black-60: #808285;
+  --rule: rgba(0,0,0,0.2);
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  background: #fff;
+  border-bottom: 1px solid var(--rule);
+  box-shadow: inset 0 -4px 0 -1px var(--yellow);
+}
+.hz-hd, .hz-hd *, .hz-hd *::before, .hz-hd *::after { box-sizing: border-box; }
+
+.hz-hd-bar {
+  display: flex; align-items: center; gap: 28px;
+  padding: 22px clamp(16px, 4vw, 56px);
+}
+
+/* Clear space on all sides is at least the width of the wordmark's z (§2.1). */
+.hz-hd-logo { display: block; flex: 0 0 auto; margin-right: 12px; }
+.hz-hd-logo img { display: block; height: 34px; width: auto; }
+
+.hz-hd-nav { display: flex; align-items: center; gap: 28px; flex: 1 1 auto; flex-wrap: wrap; }
+
+.hz-hd-link {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 600; line-height: 1;
+  color: #000; text-decoration: none; padding: 6px 0; white-space: nowrap;
+}
+.hz-hd-link:hover, .hz-hd-link:focus { color: #000; text-decoration: none; }
+/* The underline is drawn rather than a border so it does not move the text. */
+.hz-hd-link::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 3px;
+  background: var(--yellow); opacity: 0; transition: opacity .12s ease-out;
+}
+.hz-hd-link:hover::after { opacity: .45; }
+.hz-hd-link.active::after,
+.hz-hd-drop.active > .hz-hd-link::after { opacity: 1; }
+
+.hz-hd-caret {
+  width: 0; height: 0; margin-left: 2px;
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+}
+.hz-hd-badge {
+  background: var(--yellow); color: #434244;
+  font-size: 11px; font-weight: 700; border-radius: 2px; padding: 2px 6px;
+}
+.hz-hd-drop { position: relative; display: inline-flex; }
+.hz-hd-menu { border-radius: 2px; border: 1px solid var(--rule); box-shadow: none; margin-top: 8px; }
+.hz-hd-menu > li > a { font-size: 14px; padding: 8px 16px; color: #000; }
+
+.hz-hd-you { display: flex; align-items: center; gap: 14px; margin-left: auto; flex: 0 0 auto; }
+.hz-hd-name { font-size: 14px; font-weight: 600; color: var(--black-80); white-space: nowrap; }
+.hz-hd-spend { font-size: 13px; color: var(--black-60); white-space: nowrap; }
+.hz-hd-cart { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+
+/* 2px radius, matching every other control on the site (§5.2). */
+.hz-hd-avatar {
+  width: 38px; height: 38px; border: 1px solid var(--rule); border-radius: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #000; flex: 0 0 auto;
+}
+.hz-hd-avatar:hover, .hz-hd-avatar:focus { border-color: #000; color: #000; }
+.hz-hd-avatar svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+.hz-hd a:focus-visible,
+.hz-lp a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+/* The header is hidden below 768px, where hamburgernavigation takes over. */
+@media (max-width: 767px) { .hz-hd { display: none; } }
+
+/* ---- eligibility notice, directly under the header ---- */
+.hz-notice {
+  background: #FAFAFA;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  padding: 14px clamp(16px, 4vw, 56px);
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.hz-notice-i {
+  flex: 0 0 auto; width: 18px; height: 18px; border: 1.5px solid #808285;
+  border-radius: 50%; color: #808285; font-size: 12px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.hz-notice-t { margin: 0; font-size: 13.5px; line-height: 1.5; color: #58595B; max-width: 96ch; }
+.hz-notice-t b { color: #000; font-weight: 700; }
+.hz-notice-t a { color: #000; font-weight: 700; border-bottom: 2px solid #FFCC00; }
+.hz-notice-t a:hover, .hz-notice-t a:focus { color: #000; border-bottom-color: #000; }

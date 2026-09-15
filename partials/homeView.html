@@ -35,7 +35,10 @@
 
       <div class="hz-lp-ctas">
         <a class="hz-lp-btn" href="allocation">Choose your uniform</a>
-        <a class="hz-lp-btn hz-lp-btn--ghost" href="catalog">Browse the catalog</a>
+        <a class="hz-lp-btn hz-lp-btn--ghost" href="faq"
+           ng-show="hertzChampionUser || dollarChampionUser || thriftyChampionUser">Uniform FAQ</a>
+        <a class="hz-lp-btn hz-lp-btn--ghost" href="allofaq"
+           ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">Uniform FAQ</a>
       </div>
     </div>
 
@@ -117,7 +120,7 @@
   <div class="hz-lp-start" ng-if="home.categories.length">
     <div class="hz-lp-start-head">
       <h2 class="hz-lp-h2">Start here</h2>
-      <a class="hz-lp-link" href="catalog">Browse the full catalog</a>
+      <a class="hz-lp-link" href="allocation">See what you have left</a>
     </div>
 
     <!-- Rules are drawn on the cells, not with gap + a container background: a partial

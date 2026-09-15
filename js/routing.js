@@ -12,7 +12,12 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
     $routeProvider.
         when('/listOrders', { templateUrl: 'partials/listOrders.html', controller: 'ListOrdersCtrl' }).
         when('/orderdetails/:orderid', {templateUrl: 'partials/orderDetails.html', controller: 'OrderDetailsCtrl'}).
-        when('/catalog', { templateUrl: 'partials/categoryView.html', controller: 'CategoryCtrl' }).
+        // `/catalog` is where sign-in lands and where `otherwise` sends everything, so it
+        // is the front door and carries the landing page. A specific category still goes
+        // to the product listing; only the bare path changed. The old bare-`/catalog`
+        // view was a list of the top-level categories, which is exactly what the landing
+        // page's "Start here" cells are, so nothing is unreachable.
+        when('/catalog', { templateUrl: 'partials/homeView.html', controller: 'HomeCtrl' }).
         when('/catalog/:categoryInteropID', { templateUrl: 'partials/categoryView.html', controller: 'CategoryCtrl' }).
         when('/kit/:id', {templateUrl: 'partials/kitView.html', controller: 'KitCtrl'}).
         when('/kit/:id/:lineitemid', {templateUrl: 'partials/kitView.html', controller: 'KitCtrl'}).
