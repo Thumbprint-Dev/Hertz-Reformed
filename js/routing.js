@@ -35,6 +35,7 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         when('/addresses', { templateUrl: 'partials/addressListView.html', controller: 'AddressListCtrl' }).
         when('/address', { templateUrl: 'partials/addressView.html', controller: 'AddressViewCtrl' }).
         when('/address/:id', { templateUrl: 'partials/addressView.html', controller: 'AddressViewCtrl' }).
+        when('/home', { templateUrl: 'partials/homeView.html', controller: 'HomeCtrl' }).
         when('/allocation', { templateUrl: 'partials/allocationView.html', controller: 'AllocationCtrl' }).
         when('/cart', { templateUrl: 'partials/cartView.html', controller: 'CartViewCtrl'}).
         when('/checkout', { templateUrl: 'partials/checkOutView.html', controller: 'CheckOutViewCtrl' }).
@@ -76,5 +77,5 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
             }
         }).
         
-        otherwise({redirectTo: '/catalog'});
+        otherwise({redirectTo: '/home'});
 }]);

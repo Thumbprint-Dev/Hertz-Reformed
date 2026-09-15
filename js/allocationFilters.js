@@ -38,3 +38,18 @@ four51.app.filter('hzDate', function() {
     return withYear === false ? day + ' ' + month : day + ' ' + month + ' ' + year;
   };
 });
+
+/**
+ * Display name for an allocation pool.
+ *
+ * The database calls it "Polos" and so do the ledger, the reports and eventually Zoho.
+ * Employees call them tops, and Hertz asked for that word on screen. Mapping here rather
+ * than renaming the pool keeps one name in the data and one in the interface, so a report
+ * and a screen can never disagree about what was ordered.
+ */
+four51.app.filter('hzPool', function() {
+  var LABELS = { 'Polos': 'Tops' };
+  return function(value) {
+    return LABELS[value] || value;
+  };
+});

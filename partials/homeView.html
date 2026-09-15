@@ -1,0 +1,85 @@
+<!--
+  The landing page. One question, answered above the fold: what can I order, and how much
+  of it is left?
+
+  Every custom element carries an explicit closing tag. A self-closed custom tag is parsed
+  as an unclosed opener and silently swallows its siblings.
+-->
+<section class="hz-home">
+  <div class="hz-shell">
+
+    <header class="hz-hero">
+      <p class="hz-eyebrow">Hertz Uniform Program</p>
+      <h1 class="hz-hero-title">Your uniform allocation</h1>
+      <p class="hz-hero-sub" ng-if="home.view">
+        {{home.view.groupName}}
+      </p>
+    </header>
+
+    <div class="hz-note" ng-if="!home.enabled">
+      <p>Live allocation is not switched on for this environment yet.</p>
+    </div>
+
+    <div ng-if="home.enabled">
+
+      <!-- Skeleton in the shape of the card that follows, so nothing jumps on arrival. -->
+      <div class="hz-card hz-skeleton-card" ng-show="home.loading" aria-busy="true">
+        <span class="hz-sr-only">Loading your allocation</span>
+        <div class="hz-skel" style="width:120px;height:52px"></div>
+        <div class="hz-skel" style="width:220px;height:12px"></div>
+        <div class="hz-skel" style="width:100%;height:36px"></div>
+      </div>
+
+      <div class="hz-alert" ng-show="home.error">
+        <p>{{home.error}}</p>
+      </div>
+
+      <!-- Before day 90. The date is the whole answer, so it gets the card to itself. -->
+      <div class="hz-card hz-card-wait"
+           ng-show="!home.loading && !home.error && home.eligibility && home.eligibility.status !== 'eligible'">
+        <h2 class="hz-card-title">Not yet</h2>
+        <p class="hz-card-body">{{home.eligibility.message}}</p>
+      </div>
+
+      <div ng-show="!home.loading && !home.error && home.view">
+
+        <!-- The number people came for. -->
+        <div class="hz-card hz-card-lead">
+          <div class="hz-lead">
+            <div class="hz-lead-n">{{home.totalRemaining}}</div>
+            <div class="hz-lead-label">
+              <strong>items still available</strong>
+              <span>of {{home.totalGranted}} in your allocation this year</span>
+            </div>
+          </div>
+
+          <div class="hz-chips">
+            <span class="hz-chip" ng-repeat="pool in home.pools">
+              {{pool.name | hzPool}}
+              <b>{{pool.remaining}}</b>
+            </span>
+          </div>
+
+          <a class="hz-btn" href="allocation">Choose your uniform</a>
+        </div>
+
+        <!-- Seasonal items are named rather than hidden, so nobody wonders where the
+             cold-weather kit went. -->
+        <div class="hz-seasonal" ng-if="home.closed.length">
+          <span ng-repeat="item in home.closed">
+            <strong>{{item.categoryName || item.poolName | hzPool}}</strong>
+            <span ng-if="item.opensOn">opens {{item.opensOn | hzDate:false}}</span>
+            <span ng-if="!item.opensOn">is not available at your location</span>
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="hz-foot">
+      Quantities are limits, not requirements — take what you need now and the rest
+      whenever you need it. Questions? Speak to your uniform champion.
+    </p>
+
+  </div>
+</section>

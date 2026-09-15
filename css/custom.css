@@ -1178,3 +1178,185 @@ contentmodal2 a:hover{
   margin-top: 22px;
   margin-bottom: 18px;
 }
+
+/* ------------------- Uniform Program: shared shell ------------------- */
+/*
+   Foundations for the allocation screens. Colours are this theme's own — #fc0 accent,
+   #11172b navy, Open Sans — with neutrals biased cool toward the navy rather than flat
+   greys, so nothing here introduces a second palette.
+
+   Barlow Semi Condensed carries the figures only. It nods to Hertz's condensed brand type
+   and earns its place on dense numerals; everything else stays Open Sans.
+*/
+.hz-home, .hz-alloc2 {
+  --hz-ground: #f4f6fa;
+  --hz-surface: #fff;
+  --hz-sub: #f8f9fc;
+  --hz-line: #e3e7ef;
+  --hz-line-firm: #c9d0dd;
+  --hz-ink: #11172b;
+  --hz-body: #2c3140;
+  --hz-muted: #5f6778;
+  --hz-accent: #fc0;
+  --hz-accent-deep: #e8b800;
+  --hz-warn-bg: #fdf4e2;
+  --hz-warn-ink: #8a5a10;
+  --hz-stop-bg: #fcebed;
+  --hz-stop-ink: #a4192d;
+  --hz-ok: #1d6f4f;
+  --hz-display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: var(--hz-body);
+  background: var(--hz-ground);
+  padding-top: 40px;
+  padding-bottom: 72px;
+}
+
+.hz-shell {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.hz-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--hz-muted);
+  margin: 0 0 10px;
+}
+
+.hz-hero { margin-bottom: 26px; }
+
+.hz-hero-title {
+  font-family: var(--hz-display);
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 1.04;
+  letter-spacing: -0.008em;
+  color: var(--hz-ink);
+  margin: 0;
+}
+
+.hz-hero-sub { color: var(--hz-muted); font-size: 14.5px; margin: 8px 0 0; }
+
+.hz-card {
+  background: var(--hz-surface);
+  border: 1px solid var(--hz-line);
+  border-radius: 8px;
+  padding: 26px 28px;
+}
+
+.hz-card-title {
+  font-family: var(--hz-display);
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--hz-ink);
+  margin: 0 0 6px;
+}
+.hz-card-body { margin: 0; color: var(--hz-body); font-size: 15px; }
+.hz-card-wait { border-left: 3px solid var(--hz-accent); }
+
+/* The lead figure. Big on purpose: it is the reason anyone opens this page. */
+.hz-lead { display: flex; align-items: center; gap: 18px; }
+
+.hz-lead-n {
+  font-family: var(--hz-display);
+  font-weight: 600;
+  font-size: 72px;
+  line-height: 0.9;
+  color: var(--hz-ink);
+  font-variant-numeric: tabular-nums;
+}
+.hz-lead-label { display: flex; flex-direction: column; gap: 2px; }
+.hz-lead-label strong { color: var(--hz-ink); font-size: 16px; font-weight: 700; }
+.hz-lead-label span { color: var(--hz-muted); font-size: 13.5px; }
+
+.hz-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 24px; }
+
+.hz-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  background: var(--hz-sub);
+  border: 1px solid var(--hz-line);
+  border-radius: 20px;
+  padding: 5px 13px;
+  font-size: 13px;
+  color: var(--hz-body);
+}
+.hz-chip b {
+  font-family: var(--hz-display);
+  font-size: 15px;
+  color: var(--hz-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.hz-btn {
+  display: inline-block;
+  background: var(--hz-accent);
+  color: var(--hz-ink);
+  border: 1px solid var(--hz-accent-deep);
+  border-radius: 4px;
+  padding: 13px 26px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.hz-btn:hover, .hz-btn:focus { background: var(--hz-accent-deep); color: var(--hz-ink); text-decoration: none; }
+.hz-btn:focus { outline: 2px solid var(--hz-ink); outline-offset: 2px; }
+
+.hz-seasonal {
+  margin-top: 16px;
+  font-size: 13.5px;
+  color: var(--hz-warn-ink);
+  background: var(--hz-warn-bg);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+.hz-seasonal strong { font-weight: 700; }
+
+.hz-note, .hz-alert {
+  background: var(--hz-sub);
+  border-left: 3px solid var(--hz-accent);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 18px;
+}
+.hz-alert { border-left-color: var(--hz-stop-ink); background: var(--hz-stop-bg); }
+.hz-alert p { margin: 0; color: var(--hz-stop-ink); }
+.hz-note p { margin: 0; }
+
+.hz-foot {
+  margin-top: 30px;
+  font-size: 13px;
+  color: var(--hz-muted);
+  line-height: 1.6;
+}
+
+/* Skeleton: the shape of what is coming, so the page does not jump. */
+.hz-skeleton-card { display: flex; flex-direction: column; gap: 16px; }
+.hz-skel { background: #eceef3; border-radius: 4px; position: relative; overflow: hidden; }
+.hz-skel::after {
+  content: ""; position: absolute; top: 0; left: 0; height: 100%; width: 200%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.85) 50%, rgba(255,255,255,0) 100%);
+  animation: hz-sweep 1.25s ease-in-out infinite;
+}
+@keyframes hz-sweep { from { transform: translateX(-60%); } to { transform: translateX(60%); } }
+@media (prefers-reduced-motion: reduce) { .hz-skel::after { animation: none; } }
+
+.hz-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+@media (max-width: 600px) {
+  .hz-hero-title { font-size: 34px; }
+  .hz-lead-n { font-size: 56px; }
+  .hz-card { padding: 20px; }
+  .hz-home, .hz-alloc2 { padding-top: 26px; }
+}

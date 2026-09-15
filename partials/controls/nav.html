@@ -8,8 +8,12 @@
                             <i class="fa fa-arrow-left navArrow"></i>
                         </a>
                     </li>
-                    <li class="products navHover" ng-class="{'active': isInPath('catalog') || isInPath('product') || isInPath('cart/default') || isInPath('search')}">
-                        <a id="451qa_home_link" ng-show="Four51User.isAuthenticated()" href="catalog">
+                    <!-- Points at /home, not /catalog. This link already reads "Home" to
+                         users via the white-label replacement, but sent them to the product
+                         grid, which is empty for anyone whose groups are not yet configured
+                         — a blank screen as the first thing after signing in. -->
+                    <li class="products navHover" ng-class="{'active': isActive('home')}">
+                        <a id="451qa_home_link" ng-show="Four51User.isAuthenticated()" href="home">
                             <!-- <i class="fa fa-home"></i> -->
                             <span class="hidden-xs">{{'Products' | rc | xlat}}</span>
                         </a>
