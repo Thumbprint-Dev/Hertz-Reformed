@@ -42,6 +42,19 @@
  * catches and an operator can see, and the cost of failing closed is a storefront that does
  * not work. Recorded as decision 51.
  *
+ * ## Giving units back
+ *
+ * Reserving is only half of it. Cancelling a cart and deleting a line both bypass `save`
+ * entirely — they call `order/:id` DELETE and `order/:id/lineitem/:id` DELETE — so without
+ * the wrappers below, emptying a cart left the allocation held until the nightly collector
+ * ran. Someone who changed their mind watched their allocation stay spent, which reads as
+ * the system losing their items.
+ *
+ * Both release *after* Four51 confirms, and neither blocks on our answer. Releasing first
+ * would hand back units for a line that is still in the cart if the delete then failed, and
+ * holding a delete on our bookkeeping would make a cancel feel broken when our service is
+ * slow.
+ *
  * ## Products we do not own
  *
  * Lines whose product is not in `catalog_map` come back in `unmapped` and are not metered.
@@ -52,6 +65,8 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
 
     var save = Order.save;
     var submit = Order.submit;
+    var remove = Order.delete;
+    var removeLine = Order.deletelineitem;
 
     /** The lines the gate meters, in the shape the API takes. */
     function linesOf(order) {
@@ -109,6 +124,52 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
           }
           save(order, success, error);
         });
+    };
+
+    /**
+     * Cancelling the cart gives everything back.
+     *
+     * `validateCart` reconciles an order's hold *to* the lines it is given, so an empty
+     * list is the release — the same path a cart edited down to nothing already takes.
+     */
+    Order.delete = function(order, success, error) {
+      var orderId = order && order.ID;
+
+      remove(order, function(result) {
+        if (Allocation.isEnabled() && orderId) {
+          Allocation.validateCart(orderId, [], Allocation.orderBeneficiary(orderId))
+            .catch(function(err) {
+              if (window.console && console.warn) {
+                console.warn('allocation release failed; the collector will catch it', err);
+              }
+            })
+            .finally(function() {
+              Allocation.clearOrderBeneficiary(orderId);
+            });
+        }
+        if (angular.isFunction(success)) success(result);
+      }, error);
+    };
+
+    /**
+     * Removing one line reconciles to what is left.
+     *
+     * Four51 returns the updated order, or nothing at all when that was the last line. The
+     * hold follows whatever came back rather than being decremented, because a subtraction
+     * can drift from the cart and the reconcile-to-target cannot.
+     */
+    Order.deletelineitem = function(id, lineitemid, success, error) {
+      removeLine(id, lineitemid, function(updated) {
+        if (Allocation.isEnabled() && id) {
+          Allocation.validateCart(id, linesOf(updated), Allocation.orderBeneficiary(id))
+            .catch(function(err) {
+              if (window.console && console.warn) {
+                console.warn('allocation release failed; the collector will catch it', err);
+              }
+            });
+        }
+        if (angular.isFunction(success)) success(updated);
+      }, error);
     };
 
     /**
