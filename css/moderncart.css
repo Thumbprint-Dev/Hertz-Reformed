@@ -3481,3 +3481,40 @@ Template: Howdy
 .mt-cart .alert-danger, .mt-checkout .alert-danger {
   background: #FDF3F3 !important; border-color: #F0D4D4 !important; color: #9b1c1c !important;
 }
+
+/* ---- fitting the page into this theme's shell ----
+   ModernTheme's pages own the full width: `.mt-cart` pulls itself out by -5px and lets
+   `.mt-container` centre a 1200px column inside that. This theme nests the view in
+   `.mainContainer`, which has 10% side padding, so the grey ground stopped 10% short on
+   both sides while the header and footer ran edge to edge — the page looked inset and
+   off-centre rather than full width.
+
+   Cancelling that padding is the same arithmetic the landing page uses: a percentage
+   margin resolves against the containing block's content width, so with 10% each side the
+   content box is 80% of the whole and 10/80 = 12.5%. `.mt-container` then centres the
+   column properly, because it is finally centring within the real page width. */
+.mt-cart, .mt-checkout {
+  margin-left: -12.5% !important;
+  margin-right: -12.5% !important;
+  /* Short carts otherwise end the ground abruptly with white below it. */
+  min-height: calc(100vh - 260px);
+}
+@media screen and (max-width: 425px) {
+  /* .mainContainer drops to 2% there: 2/96 = 2.0833%. */
+  .mt-cart, .mt-checkout { margin-left: -2.0833% !important; margin-right: -2.0833% !important; }
+}
+
+/* Disabled has to be stated after the accent rules and match their specificity, or the
+   accent wins and a disabled Proceed to Checkout renders as washed-out yellow — which
+   reads as a broken button rather than one that is not ready yet. */
+.mt-cart .mt-btn-accent[disabled],
+.mt-cart .mt-cart-checkout-btn[disabled],
+.mt-checkout .mt-btn-accent[disabled],
+.mt-checkout .mt-checkout-submit-btn[disabled],
+.mt-btn-accent[disabled], .mt-cart-checkout-btn[disabled] {
+  background: #EDEFF2 !important;
+  border-color: #E3E7EF !important;
+  color: #808285 !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
