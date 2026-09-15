@@ -48,7 +48,9 @@ four51.app.filter('hzDate', function() {
  * and a screen can never disagree about what was ordered.
  */
 four51.app.filter('hzPool', function() {
-  var LABELS = { 'Polos': 'Tops' };
+  // "Seasonal Outerwear" sits beside its own reopening date wherever it appears, so the
+  // word "Seasonal" restates what the date already says and costs a narrow cell a line.
+  var LABELS = { 'Polos': 'Tops', 'Seasonal Outerwear': 'Outerwear' };
   return function(value) {
     return LABELS[value] || value;
   };

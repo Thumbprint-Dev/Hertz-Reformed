@@ -1,107 +1,171 @@
 <!--
-  The front door.
+  The landing page.
 
-  Brand is a data attribute on the root, so hero art and accent swap per brand without a
-  second template. Every custom element carries an explicit closing tag — a self-closed
-  custom tag is parsed as an unclosed opener and silently swallows its siblings.
+  Built to the Hertz brand guidelines v2.0 handoff: a flat ruled grid, no cards, no
+  shadows, no radius beyond the 2px on buttons. Yellow is the only accent and is never
+  type — it is a fill (§3.2). Every rule between major bands is 2px black; every divider
+  inside one is 1px at 20% black.
+
+  Everything numeric on this page comes from the allocation API. Nothing is hardcoded:
+  the counter, the bar, the per-category counts and the seasonal reopening date are all
+  read from `/me/entitlement`, so what an employee sees here is the same number the cart
+  gate will enforce.
+
+  The header is deliberately untouched — it is Four51's nav in `branding.html`, along with
+  the eligibility notice, which renders site-wide rather than only here.
+
+  Every custom element carries an explicit closing tag: a self-closed custom tag parses as
+  an unclosed opener and silently swallows its siblings.
 -->
-<section class="hz-home" data-brand="{{home.brandKey}}">
+<section class="hz-lp">
 
-  <!-- ─────────────────────────────────────────────── hero -->
-  <div class="hz-hero">
-    <div class="hz-hero-art" aria-hidden="true"></div>
-    <div class="hz-hero-inner">
-      <p class="hz-kicker">{{home.brand || 'Hertz'}} Uniform Program</p>
-      <h1 class="hz-h1">Choose the apparel<br>that matches your&nbsp;style</h1>
+  <!-- ───────────────────────────────────────────────────────────────────── hero -->
+  <div class="hz-lp-hero">
 
-      <!-- The figure is the hero's real content: what you can still order. -->
-      <div class="hz-hero-stat" ng-show="!home.loading && home.view">
-        <span class="hz-stat-n">{{home.totalRemaining}}</span>
-        <span class="hz-stat-t">
-          <b>items still available</b>
-          <i>of {{home.totalGranted}} in your allocation</i>
-        </span>
-        <a class="hz-cta" href="allocation">View my allocation</a>
-      </div>
+    <div class="hz-lp-hero-text">
+      <p class="hz-lp-kicker">Official marketplace</p>
 
-      <div class="hz-hero-stat hz-hero-stat--flat" ng-show="home.loading">
-        <span class="hz-skel" style="width:210px;height:44px"></span>
-      </div>
+      <h1 class="hz-lp-h1">Choose the apparel that matches your&nbsp;style.</h1>
+      <span class="hz-lp-bar" aria-hidden="true"></span>
 
-      <p class="hz-hero-note"
-         ng-show="!home.loading && home.eligibility && home.eligibility.status !== 'eligible'">
-        {{home.eligibility.message}}
+      <p class="hz-lp-sub">
+        Build a kit from your allocation &mdash; tops, layering, bottoms and headwear.
+        Take what you need now; the rest stays available. Let&rsquo;s go!
       </p>
+
+      <div class="hz-lp-ctas">
+        <a class="hz-lp-btn" href="allocation">Choose your uniform</a>
+        <a class="hz-lp-btn hz-lp-btn--ghost" href="catalog">Browse the catalog</a>
+      </div>
+    </div>
+
+    <!--
+      HERO IMAGE — set `heroImage` at the top of js/controllers/homeCtrl.js to the file
+      you get from Hertz and this whole placeholder disappears. Per §4.1 the photograph is
+      black and white with noticeable contrast; the grayscale filter is applied in CSS so
+      a colour original can be dropped in unedited.
+    -->
+    <div class="hz-lp-hero-media">
+      <img class="hz-lp-hero-img" ng-if="home.heroImage" ng-src="{{home.heroImage}}" alt="" />
+
+      <div class="hz-lp-hero-ph" ng-if="!home.heroImage" aria-hidden="true">
+        <span class="hz-lp-ph-icon"></span>
+        <span class="hz-lp-ph-text">Uniform hero photograph (B&amp;W)</span>
+      </div>
     </div>
   </div>
 
-  <div class="hz-shell">
+  <!-- ─────────────────────────────────────────────────────────── allocation band -->
+  <div class="hz-lp-alloc" ng-if="home.enabled">
 
-    <div class="hz-alert" ng-show="home.error">
-      <p>{{home.error}}</p>
+    <div class="hz-lp-alloc-skel" ng-show="home.loading">
+      <span class="hz-sr-only">Loading your allocation</span>
+      <span class="hz-skel" style="width:120px;height:56px"></span>
+      <span class="hz-skel" style="width:70%;height:30px"></span>
     </div>
 
-    <!-- ─────────────────────────────────────────────── categories -->
-    <div ng-if="home.categories.length">
-      <h2 class="hz-h2">Shop your uniform</h2>
-      <div class="hz-grid">
-        <a class="hz-tile" ng-repeat="cat in home.categories" ng-href="{{cat.href}}">
-          <span class="hz-tile-art" aria-hidden="true"></span>
-          <span class="hz-tile-body">
-            <span class="hz-tile-name">{{cat.name}}</span>
-            <span class="hz-tile-go">Shop now</span>
-          </span>
+    <!-- Before day 90 there is no allocation to count, and the date is the whole answer. -->
+    <div class="hz-lp-alloc-wait"
+         ng-show="!home.loading && home.eligibility && home.eligibility.status !== 'eligible'">
+      <p>{{home.eligibility.message}}</p>
+    </div>
+
+    <div class="hz-lp-alloc-grid" ng-show="!home.loading && !home.error && home.view">
+
+      <div class="hz-lp-count">
+        <p class="hz-lp-count-n">
+          {{home.totalRemaining}}<span>items<br />available</span>
+        </p>
+        <span class="hz-lp-track" aria-hidden="true">
+          <i ng-style="{width: home.percentLeft + '%'}"></i>
+        </span>
+        <p class="hz-lp-count-of">of {{home.totalGranted}} in your allocation</p>
+      </div>
+
+      <div class="hz-lp-cats">
+        <!-- One cell per orderable pool, labelled the way employees speak (Polos → Tops)
+             and counted by what is actually left. -->
+        <a class="hz-lp-cat" ng-repeat="pool in home.pools" href="allocation"
+           ng-class="{'is-out': pool.remaining === 0}"
+           ng-attr-aria-disabled="{{pool.remaining === 0 ? 'true' : undefined}}">
+          <span class="hz-lp-cat-l">{{pool.name | hzPool}}</span>
+          <span class="hz-lp-cat-n">{{pool.remaining}}</span>
+          <span class="hz-lp-cat-sub" ng-if="pool.remaining === 0">none left</span>
         </a>
+
+        <!-- Seasonal: shown, not hidden, carrying the date it returns. Not a link, and it
+             says why in words rather than by colour alone. -->
+        <span class="hz-lp-cat hz-lp-cat--shut" ng-repeat="item in home.closed"
+              aria-disabled="true">
+          <span class="hz-lp-cat-l">{{(item.categoryName || item.poolName) | hzPool}}</span>
+          <span class="hz-lp-cat-sub hz-lp-cat-when" ng-if="item.opensOn">
+            <span>Opens</span><span>{{item.opensOn | hzDate:false}}</span>
+          </span>
+          <span class="hz-lp-cat-sub" ng-if="!item.opensOn">Not at your location</span>
+        </span>
+      </div>
+
+      <div class="hz-lp-alloc-go">
+        <a class="hz-lp-btn" href="allocation">Start selecting <b aria-hidden="true">&rarr;</b></a>
       </div>
     </div>
 
-    <!-- Four51 categories are group-scoped, so an empty list means the groups are not set
-         up rather than that this employee has nothing. Say which. -->
-    <div class="hz-note" ng-if="!home.categories.length && !home.loading">
-      <p>No categories are assigned to your group yet. Your uniform champion can help.</p>
+    <div class="hz-lp-alert" ng-show="home.error"><p>{{home.error}}</p></div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────────── start here -->
+  <div class="hz-lp-start" ng-if="home.categories.length">
+    <div class="hz-lp-start-head">
+      <h2 class="hz-lp-h2">Start here</h2>
+      <a class="hz-lp-link" href="catalog">Browse the full catalog</a>
     </div>
 
-    <!-- ─────────────────────────────────────────────── champion -->
-    <!-- A separate band, not another tile in the grid above. These are a different kind of
-         action — one spends someone else's allocation — and burying them among the
-         shopping categories would make that read as ordinary. -->
-    <div class="hz-champ" ng-if="home.isChampion">
-      <div class="hz-champ-head">
-        <span class="hz-badge">Uniform Champion</span>
-        <h2 class="hz-h2 hz-h2--tight">Tools for your team</h2>
-      </div>
-      <div class="hz-grid hz-grid--two">
-        <a class="hz-tile hz-tile--alt" href="catalog">
-          <span class="hz-tile-body">
-            <span class="hz-tile-name">Buy à la carte</span>
-            <span class="hz-tile-sub">Order outside a standard allocation, charged to your location.</span>
-            <span class="hz-tile-go">Open</span>
-          </span>
-        </a>
-        <a class="hz-tile hz-tile--alt" href="allocation">
-          <span class="hz-tile-body">
-            <span class="hz-tile-name">Order for an employee</span>
-            <span class="hz-tile-sub">Choose someone in your scope and order against their allocation.</span>
-            <span class="hz-tile-go">Open</span>
-          </span>
-        </a>
-      </div>
+    <!-- Rules are drawn on the cells, not with gap + a container background: a partial
+         last row would otherwise leave a grey void where the missing cells are. -->
+    <div class="hz-lp-cells">
+      <a class="hz-lp-cell" ng-repeat="cat in home.categories" ng-href="{{cat.href}}">
+        <span class="hz-lp-cell-art" aria-hidden="true"></span>
+        <span class="hz-lp-cell-name">{{cat.name}}</span>
+      </a>
     </div>
+  </div>
 
-    <!-- Seasonal items are named rather than hidden, so nobody wonders where the
-         cold-weather kit went. -->
-    <div class="hz-seasonal" ng-if="home.closed.length">
-      <span ng-repeat="item in home.closed">
-        <strong>{{(item.categoryName || item.poolName) | hzPool}}</strong>
-        <span ng-if="item.opensOn">opens {{item.opensOn | hzDate:false}}</span>
-        <span ng-if="!item.opensOn">is not available at your location</span>
-      </span>
-    </div>
-
-    <p class="hz-foot">
-      Quantities are limits, not requirements — take what you need now and the rest
-      whenever you need it.
+  <!-- Four51 scopes categories by group, so an empty list means the groups are not set up
+       rather than that this employee has nothing. Say which. -->
+  <div class="hz-lp-start" ng-if="!home.categories.length && !home.loading">
+    <p class="hz-lp-empty">
+      No categories are assigned to your group yet. Your uniform champion can help.
     </p>
-
   </div>
+
+  <!-- ───────────────────────────────────────────────────────────────── champion -->
+  <!-- A band of its own rather than more cells above: one of these spends someone else's
+       allocation, and sitting it among the shopping categories would read as ordinary. -->
+  <div class="hz-lp-champ" ng-if="home.isChampion">
+    <div class="hz-lp-start-head">
+      <h2 class="hz-lp-h2">Uniform champion</h2>
+      <span class="hz-lp-tag">Your team</span>
+    </div>
+
+    <div class="hz-lp-cells hz-lp-cells--two">
+      <a class="hz-lp-cell hz-lp-cell--text" href="catalog">
+        <span class="hz-lp-cell-name">Buy &agrave; la carte</span>
+        <span class="hz-lp-cell-sub">Order outside a standard allocation, charged to your location.</span>
+      </a>
+      <a class="hz-lp-cell hz-lp-cell--text" href="allocation">
+        <span class="hz-lp-cell-name">Order for an employee</span>
+        <span class="hz-lp-cell-sub">Choose someone in your scope and order against their allocation.</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────── reset band -->
+  <!-- Type on yellow is 90% black, never pure black and never yellow (§3.2). -->
+  <div class="hz-lp-reset" ng-if="home.view.cycleEnd">
+    <p class="hz-lp-reset-t">
+      Your allocation year ends {{home.view.cycleEnd | hzDate}}.
+    </p>
+    <a class="hz-lp-btn hz-lp-btn--onyellow" href="order">Review my orders</a>
+  </div>
+
 </section>

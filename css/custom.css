@@ -1925,3 +1925,234 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-item-ctrl { grid-column: 1 / -1; justify-content: flex-start; }
 }
 @media (prefers-reduced-motion: reduce) { .hz-chev { transition: none; } }
+
+/* =========================================================================
+   Landing page — Hertz brand guidelines v2.0
+
+   A flat ruled grid. No cards, no shadows, no radius beyond the 2px on buttons
+   (§5.2). Yellow is the only accent and never carries type: #FFCC00 on white is
+   about 1.5:1, so it is a fill. Type on yellow is 90% black (§3.2), body type on
+   white is 80% black, and 60% black is reserved for labels and fine print.
+
+   Scoped to .hz-lp throughout — the rest of the theme is Bootstrap 3 and shares
+   very generic class names.
+   ========================================================================= */
+.hz-lp {
+  --yellow:      #FFCC00;   /* Pantone 7406 */
+  --yellow-press:#E6B800;
+  --black-90:    #434244;   /* type on yellow */
+  --black-80:    #58595B;   /* type on white */
+  --black-60:    #808285;   /* labels, legal, fine print only */
+  --rule:        rgba(0,0,0,0.2);
+  --ink:         #000;
+  --surface:     #fff;
+  --surface-alt: #FAFAFA;
+  --gutter:      clamp(16px, 4vw, 56px);
+
+  /* Proxima Nova is the brand face and ships from an Adobe Fonts kit; Arial is the
+     sanctioned substitute until that kit exists (§3.2), so it is a real fallback
+     rather than a silent one. */
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  color: var(--black-80);
+  background: var(--surface);
+}
+
+/* Self-contained rather than inheriting Bootstrap's reset: the percentage flex-bases in
+   the allocation band only add up if padding is inside the box. */
+.hz-lp, .hz-lp *, .hz-lp *::before, .hz-lp *::after { box-sizing: border-box; }
+
+.hz-lp a { text-decoration: none; }
+.hz-lp :focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+/* ---- buttons: 2px radius, label never wraps (§5.2) ---- */
+.hz-lp-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--yellow); color: var(--black-90);
+  font-weight: 700; font-size: 15px; line-height: 1;
+  padding: 15px 22px; border: 1px solid var(--yellow); border-radius: 2px;
+  white-space: nowrap; cursor: pointer;
+}
+.hz-lp-btn:hover,
+.hz-lp-btn:focus { background: var(--yellow-press); border-color: var(--yellow-press); color: var(--black-90); }
+.hz-lp-btn b { font-weight: 700; }
+.hz-lp-btn--ghost { background: var(--surface); border-color: var(--rule); color: var(--ink); }
+.hz-lp-btn--ghost:hover,
+.hz-lp-btn--ghost:focus { background: var(--surface-alt); border-color: var(--ink); color: var(--ink); }
+.hz-lp-btn--onyellow { background: var(--surface); border-color: var(--ink); color: var(--ink); }
+.hz-lp-btn--onyellow:hover,
+.hz-lp-btn--onyellow:focus { background: var(--black-90); border-color: var(--black-90); color: #fff; }
+
+/* ---- hero ---- */
+.hz-lp-hero {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  border-bottom: 2px solid var(--ink);
+}
+.hz-lp-hero-text {
+  padding: clamp(28px, 5vw, 72px) var(--gutter);
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.hz-lp-kicker {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--black-60); margin: 0 0 18px;
+}
+.hz-lp-h1 {
+  font-size: clamp(34px, 4.6vw, 58px); font-weight: 800; line-height: 1.0;
+  letter-spacing: -0.02em; color: var(--ink); margin: 0; text-align: left;
+  text-wrap: balance;
+}
+.hz-lp-bar { display: block; width: 120px; height: 8px; background: var(--yellow); margin: 26px 0 0; }
+.hz-lp-sub {
+  font-size: 16px; line-height: 1.55; max-width: 46ch; margin: 22px 0 0;
+  color: var(--black-80);
+}
+.hz-lp-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+/* The image cell is full-bleed: the photograph is the content, not a framed picture. */
+.hz-lp-hero-media {
+  position: relative; min-height: 340px;
+  border-left: 1px solid var(--rule);
+  background: var(--surface-alt);
+}
+.hz-lp-hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; max-width: 100%;
+  /* §4.1 — black and white with noticeable contrast, so a colour original can be
+     dropped in without being edited first. */
+  filter: grayscale(1) contrast(1.12);
+}
+.hz-lp-hero-ph {
+  position: absolute; inset: 16px;
+  border: 1px dashed var(--rule);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  color: var(--black-60); font-size: 13px; text-align: center; padding: 16px;
+}
+.hz-lp-ph-icon {
+  width: 40px; height: 40px; opacity: .55;
+  background: currentColor;
+  -webkit-mask: var(--ph-glyph) center/contain no-repeat;
+          mask: var(--ph-glyph) center/contain no-repeat;
+}
+.hz-lp {
+  --ph-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='8.5' cy='9.5' r='1.6'/%3E%3Cpath d='M21 16l-5-5-4.5 5-2.5-2.5L3 19'/%3E%3C/svg%3E");
+}
+
+/* ---- allocation band ---- */
+.hz-lp-alloc { border-bottom: 2px solid var(--ink); }
+.hz-lp-alloc-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(300px, 2fr) auto;
+  align-items: stretch;
+}
+.hz-lp-count {
+  padding: clamp(22px, 3vw, 34px) var(--gutter);
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; justify-content: center; gap: 14px;
+}
+.hz-lp-count-n {
+  margin: 0; display: flex; align-items: flex-end; gap: 12px;
+  font-size: clamp(44px, 6vw, 74px); font-weight: 800; line-height: .9; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.hz-lp-count-n span {
+  font-size: 14px; font-weight: 400; line-height: 1.25; color: var(--black-80);
+  padding-bottom: 6px;
+}
+.hz-lp-track { display: block; height: 6px; background: #EEE; overflow: hidden; }
+.hz-lp-track i { display: block; height: 100%; background: var(--yellow); }
+.hz-lp-count-of { margin: 0; font-size: 12px; color: var(--black-60); }
+
+.hz-lp-cats { display: flex; flex-wrap: nowrap; }
+.hz-lp-cat {
+  flex: 1 1 0; min-width: 0;
+  padding: clamp(22px, 3vw, 34px) clamp(12px, 1.2vw, 20px);
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; gap: 10px; justify-content: center;
+  color: inherit;
+}
+.hz-lp-cat-l {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--black-60);
+}
+.hz-lp-cat-n { font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+.hz-lp-cat-sub { font-size: 12px; color: var(--black-60); line-height: 1.35; }
+.hz-lp-cat-when { display: flex; flex-direction: column; }
+
+.hz-lp-cat:hover .hz-lp-cat-n { color: var(--black-90); }
+/* Unavailable is said in words as well as weight — never colour alone. */
+.hz-lp-cat.is-out { background: var(--surface-alt); cursor: default; }
+.hz-lp-cat.is-out .hz-lp-cat-n { color: var(--black-60); }
+.hz-lp-cat--shut { background: var(--surface-alt); cursor: default; }
+
+.hz-lp-alloc-go { display: flex; align-items: center; padding: 20px var(--gutter); }
+.hz-lp-alloc-skel { padding: 28px var(--gutter); display: flex; flex-direction: column; gap: 12px; }
+.hz-lp-alloc-wait { padding: 26px var(--gutter); }
+.hz-lp-alloc-wait p { margin: 0; font-size: 15px; color: var(--black-80); }
+.hz-lp-alert { padding: 20px var(--gutter); }
+.hz-lp-alert p { margin: 0; color: #9b1c1c; font-size: 14px; }
+
+/* ---- start here / champion ---- */
+.hz-lp-start,
+.hz-lp-champ { padding: clamp(28px, 4vw, 54px) var(--gutter); border-bottom: 2px solid var(--ink); }
+.hz-lp-start-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 22px;
+}
+.hz-lp-h2 { font-size: clamp(22px, 2.4vw, 30px); font-weight: 800; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.hz-lp-link { font-size: 14px; font-weight: 700; color: var(--ink); border-bottom: 2px solid var(--yellow); }
+.hz-lp-link:hover, .hz-lp-link:focus { color: var(--ink); border-bottom-color: var(--ink); }
+.hz-lp-tag {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--black-90); background: var(--yellow); padding: 6px 10px;
+}
+.hz-lp-empty { margin: 0; font-size: 15px; color: var(--black-80); }
+
+/* Rules live on the cells, with the top and left edge on the container: gap + a
+   container background leaves a grey void wherever the last row is partial. */
+.hz-lp-cells {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  border-top: 1px solid var(--rule); border-left: 1px solid var(--rule);
+}
+.hz-lp-cells--two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.hz-lp-cell {
+  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  padding: 16px; display: flex; flex-direction: column; gap: 10px; color: inherit;
+}
+.hz-lp-cell:hover { background: var(--surface-alt); }
+.hz-lp-cell-art {
+  display: block; aspect-ratio: 4 / 5; max-width: 100%;
+  /* Capped because the cells are empty until Hertz supplies the photography: at
+     full-bleed width a 4:5 box is ~460px tall, and four of those read as a wall of grey
+     rather than a row of products. A real photograph fills the box and the cap stops
+     mattering. */
+  max-height: 300px;
+  background: var(--surface-alt);
+}
+.hz-lp-cell-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+.hz-lp-cell-sub { font-size: 13px; line-height: 1.5; color: var(--black-80); }
+.hz-lp-cell--text { padding: 22px; gap: 8px; }
+
+/* ---- reset band ---- */
+.hz-lp-reset {
+  background: var(--yellow);
+  padding: 22px var(--gutter);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.hz-lp-reset-t { margin: 0; font-size: 16px; font-weight: 700; color: var(--black-90); }
+
+@media (max-width: 860px) {
+  .hz-lp-cats { flex-wrap: wrap; }
+  .hz-lp-cat { flex: 1 1 33%; }
+  .hz-lp-alloc-grid { grid-template-columns: 1fr; }
+  .hz-lp-count { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .hz-lp-cats { border-bottom: 1px solid var(--rule); }
+  .hz-lp-hero-media { min-height: 260px; border-left: 0; border-top: 1px solid var(--rule); }
+}
+@media (max-width: 600px) {
+  /* 44px minimum touch target. */
+  .hz-lp-btn { padding: 16px 24px; }
+  .hz-lp-cat { flex-basis: 50%; min-width: 0; }
+}
