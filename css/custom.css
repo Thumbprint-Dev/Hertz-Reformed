@@ -2830,7 +2830,8 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 /* The ground was sized to its content, so on a checkout whose sections are collapsed it
    stopped a third of the way down and left the rest of the page white. It only has to
    reach the footer. */
-.hz-shop { min-height: calc(100vh - 240px); }
+/* Reaches the fold on a short page; the header and notice above are about 150px. */
+.hz-shop { min-height: calc(100vh - 150px); }
 
 /* The buttons in the order summary sit in a <ul>; the empty rows in it leave a stray rule
    floating under the last button. */
@@ -2839,3 +2840,58 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 /* .btn-info carries wide tracking from the legacy theme, which on a two-word label reads
    as a heading rather than a control. */
 .hz-shop .btn-info { letter-spacing: 0 !important; }
+
+/* ---- cart line: lay out what is actually in it ----
+   For an ordinary employee the row holds a thumbnail, a name, a SKU, a size and a
+   quantity. Prices are hidden for them and Remove is champion-only, so the Bootstrap
+   col-sm-8 span stretched five short lines across two thirds of an empty card. The row is
+   laid out for its real contents instead: image, details, and the quantity held right. */
+.hz-shop .panel-lineitem > [class*="col-"]:last-child {
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 24px;
+}
+.hz-shop .panel-lineitem > [class*="col-"]:last-child > .row {
+  flex: 1 1 320px; min-width: 0; margin: 0;
+}
+/* The quantity/remove strip carries an inline display:inline-block and thirds-width
+   columns, both of which have to go for it to sit at the end of the row. */
+.hz-shop .panel-lineitem .cart-fields {
+  display: flex !important; align-items: center; gap: 18px;
+  margin: 0 0 0 auto; flex: 0 0 auto;
+}
+.hz-shop .panel-lineitem .cart-fields > [class*="col-"] {
+  width: auto; padding: 0; float: none;
+}
+.hz-shop .panel-lineitem .cart-fields span { white-space: nowrap; }
+.hz-shop .panel-lineitem h2 { font-size: 18px; margin: 0; }
+
+/* The validation strip at the foot of checkout renders as a white box with a lone red
+   badge in it when there is nothing to say. It should only appear when it has content. */
+.hz-shop .navbar-fixed-bottom:not(:has(li)) { display: none; }
+
+/* A collapsed accordion section still renders its body, which reads as an empty strip
+   hanging under the header. */
+.hz-shop .panel-order > .panel-body > .ng-hide:only-child { display: none !important; }
+.hz-shop .panel-order > .panel-body:not(:has(*:not(.ng-hide))) {
+  padding: 0 !important; border: 0 !important;
+}
+
+/* Cancel Order pins color:white inline on its label, which was legible on the old dark
+   button and invisible on this one — all that showed was the button's bottom border,
+   which read as a stray rule under Save Order. */
+.hz-shop .checkoutBtn-cancel span,
+.hz-shop .checkoutBtn-cancel { color: var(--black-80) !important; }
+.hz-shop .checkoutBtn-cancel:hover span,
+.hz-shop .checkoutBtn-cancel:hover { color: #9b1c1c !important; }
+
+/* The details side of a line item is a nest of Bootstrap columns sized for a row that
+   also carried prices and controls. With those gone they squeeze a product name into a
+   third of the width and wrap it mid-phrase. Inside the line item the columns stop
+   constraining and the content flows. */
+.hz-shop .panel-lineitem > [class*="col-"]:last-child [class*="col-"] {
+  width: auto !important; max-width: none !important; float: none !important;
+  padding-left: 0; padding-right: 0;
+}
+.hz-shop .panel-lineitem > [class*="col-"]:last-child > .row {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; flex: 1 1 auto;
+}
+.hz-shop .panel-lineitem .product-name { font-size: 15.5px; }
