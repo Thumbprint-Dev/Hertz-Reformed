@@ -1,0 +1,107 @@
+<!--
+  The front door.
+
+  Brand is a data attribute on the root, so hero art and accent swap per brand without a
+  second template. Every custom element carries an explicit closing tag — a self-closed
+  custom tag is parsed as an unclosed opener and silently swallows its siblings.
+-->
+<section class="hz-home" data-brand="{{home.brandKey}}">
+
+  <!-- ─────────────────────────────────────────────── hero -->
+  <div class="hz-hero">
+    <div class="hz-hero-art" aria-hidden="true"></div>
+    <div class="hz-hero-inner">
+      <p class="hz-kicker">{{home.brand || 'Hertz'}} Uniform Program</p>
+      <h1 class="hz-h1">Choose the apparel<br>that matches your&nbsp;style</h1>
+
+      <!-- The figure is the hero's real content: what you can still order. -->
+      <div class="hz-hero-stat" ng-show="!home.loading && home.view">
+        <span class="hz-stat-n">{{home.totalRemaining}}</span>
+        <span class="hz-stat-t">
+          <b>items still available</b>
+          <i>of {{home.totalGranted}} in your allocation</i>
+        </span>
+        <a class="hz-cta" href="allocation">View my allocation</a>
+      </div>
+
+      <div class="hz-hero-stat hz-hero-stat--flat" ng-show="home.loading">
+        <span class="hz-skel" style="width:210px;height:44px"></span>
+      </div>
+
+      <p class="hz-hero-note"
+         ng-show="!home.loading && home.eligibility && home.eligibility.status !== 'eligible'">
+        {{home.eligibility.message}}
+      </p>
+    </div>
+  </div>
+
+  <div class="hz-shell">
+
+    <div class="hz-alert" ng-show="home.error">
+      <p>{{home.error}}</p>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── categories -->
+    <div ng-if="home.categories.length">
+      <h2 class="hz-h2">Shop your uniform</h2>
+      <div class="hz-grid">
+        <a class="hz-tile" ng-repeat="cat in home.categories" ng-href="{{cat.href}}">
+          <span class="hz-tile-art" aria-hidden="true"></span>
+          <span class="hz-tile-body">
+            <span class="hz-tile-name">{{cat.name}}</span>
+            <span class="hz-tile-go">Shop now</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Four51 categories are group-scoped, so an empty list means the groups are not set
+         up rather than that this employee has nothing. Say which. -->
+    <div class="hz-note" ng-if="!home.categories.length && !home.loading">
+      <p>No categories are assigned to your group yet. Your uniform champion can help.</p>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── champion -->
+    <!-- A separate band, not another tile in the grid above. These are a different kind of
+         action — one spends someone else's allocation — and burying them among the
+         shopping categories would make that read as ordinary. -->
+    <div class="hz-champ" ng-if="home.isChampion">
+      <div class="hz-champ-head">
+        <span class="hz-badge">Uniform Champion</span>
+        <h2 class="hz-h2 hz-h2--tight">Tools for your team</h2>
+      </div>
+      <div class="hz-grid hz-grid--two">
+        <a class="hz-tile hz-tile--alt" href="catalog">
+          <span class="hz-tile-body">
+            <span class="hz-tile-name">Buy à la carte</span>
+            <span class="hz-tile-sub">Order outside a standard allocation, charged to your location.</span>
+            <span class="hz-tile-go">Open</span>
+          </span>
+        </a>
+        <a class="hz-tile hz-tile--alt" href="allocation">
+          <span class="hz-tile-body">
+            <span class="hz-tile-name">Order for an employee</span>
+            <span class="hz-tile-sub">Choose someone in your scope and order against their allocation.</span>
+            <span class="hz-tile-go">Open</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Seasonal items are named rather than hidden, so nobody wonders where the
+         cold-weather kit went. -->
+    <div class="hz-seasonal" ng-if="home.closed.length">
+      <span ng-repeat="item in home.closed">
+        <strong>{{(item.categoryName || item.poolName) | hzPool}}</strong>
+        <span ng-if="item.opensOn">opens {{item.opensOn | hzDate:false}}</span>
+        <span ng-if="!item.opensOn">is not available at your location</span>
+      </span>
+    </div>
+
+    <p class="hz-foot">
+      Quantities are limits, not requirements — take what you need now and the rest
+      whenever you need it.
+    </p>
+
+  </div>
+</section>

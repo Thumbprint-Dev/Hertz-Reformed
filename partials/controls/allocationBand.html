@@ -1,0 +1,53 @@
+<!--
+  Allocation summary, above the catalogue.
+
+  The landing page is the brand hero and category tiles Hertz already designed, authored in
+  the Four51 admin as category content. This band sits above it and answers the one thing
+  that page cannot: how much of your allocation is left.
+
+  Deliberately a band rather than a card — it belongs to the page it sits on rather than
+  competing with the hero beneath it. Renders nothing at all until there is something to
+  say, so it never pushes the hero down for a spinner.
+-->
+<div class="hz-band" data-brand="{{home.brandKey}}" ng-if="home.enabled">
+
+  <div class="hz-band-inner" ng-show="home.loading">
+    <span class="hz-sr-only">Loading your allocation</span>
+    <span class="hz-skel" style="width:52px;height:38px"></span>
+    <span class="hz-skel" style="width:190px;height:13px"></span>
+  </div>
+
+  <!-- Before day 90. The date is the answer, so nothing else shares the row. -->
+  <div class="hz-band-inner hz-band-inner--wait"
+       ng-show="!home.loading && home.eligibility && home.eligibility.status !== 'eligible'">
+    <span class="hz-band-text">{{home.eligibility.message}}</span>
+  </div>
+
+  <div class="hz-band-inner" ng-show="!home.loading && !home.error && home.view">
+    <span class="hz-band-n">{{home.totalRemaining}}</span>
+
+    <span class="hz-band-text">
+      <b>items still available</b>
+      <i>of {{home.totalGranted}} in your allocation</i>
+    </span>
+
+    <span class="hz-band-chips">
+      <span class="hz-band-chip" ng-repeat="pool in home.pools">
+        {{pool.name | hzPool}} <b>{{pool.remaining}}</b>
+      </span>
+    </span>
+
+    <a class="hz-band-cta" href="allocation">View my allocation</a>
+  </div>
+
+  <!-- Seasonal items get a line of their own rather than a chip: "opens 1 October" is a
+       sentence, and squeezing it into the chip row would make it read as a quantity. -->
+  <div class="hz-band-season" ng-if="!home.loading && home.closed.length">
+    <span ng-repeat="item in home.closed">
+      <strong>{{(item.categoryName || item.poolName) | hzPool}}</strong>
+      <span ng-if="item.opensOn">opens {{item.opensOn | hzDate:false}}</span>
+      <span ng-if="!item.opensOn">is not available at your location</span>
+    </span>
+  </div>
+
+</div>

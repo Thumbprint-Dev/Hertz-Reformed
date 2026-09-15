@@ -14,6 +14,11 @@
                             <span class="hidden-xs">{{'Products' | rc | xlat}}</span>
                         </a>
                     </li>
+                    <li class="allocation navHover" ng-class="{'active': isActive('allocation')}">
+                        <a id="451qa_allocation_link" ng-show="Four51User.isAuthenticated()" href="allocation">
+                            <span class="hidden-xs">{{'My Allocation' | r | xlat}}</span>
+                        </a>
+                    </li>
                     <li class="order navHover" ng-if="user.Type == 'Customer'" ng-class="{'active': isActive('order'), 'active-xs': isActive('favoriteorders')}">
                         <a id="451qa_order_link" href="order">
                             <!-- <i class="fa fa-clipboard"></i> -->

@@ -22,7 +22,8 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation', 'AllocationConf
       // null = nothing went wrong. A string = something the user can act on.
       error: null,
       eligibility: null,
-      view: null
+      view: null,
+      anyReserved: false
     };
 
     /**
@@ -65,7 +66,15 @@ four51.app.controller('AllocationCtrl', ['$scope', 'Allocation', 'AllocationConf
           return Allocation.entitlement();
         })
         .then(function(view) {
-          if (view) $scope.alloc.view = view;
+          if (view) {
+            $scope.alloc.view = view;
+            // A column of zeroes is noise. Shown only once something is actually held,
+            // which is also the only time the number tells the employee anything.
+            $scope.alloc.anyReserved = false;
+            angular.forEach(view.pools, function(p) {
+              if (p.reserved > 0) $scope.alloc.anyReserved = true;
+            });
+          }
           $scope.alloc.loading = false;
         })
         .catch(function(err) {
