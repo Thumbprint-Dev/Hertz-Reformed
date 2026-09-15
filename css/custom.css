@@ -1585,3 +1585,110 @@ contentmodal2 a:hover{
   .hz-band-inner { padding: 14px 18px; }
   .hz-band-n { font-size: 32px; }
 }
+
+/* ------------------- Footer ------------------- */
+/*
+   Moved out of a <style> block inside partials/copyrightView.html. A partial can be
+   injected more than once, and duplicated inline styles fight each other in the cascade.
+
+   Light, per the brighter direction: a hairline rule and the Hertz wordmark treatment
+   carry it rather than a heavy grey slab. Four columns on desktop, stacking to one on a
+   phone, with the brand column given more room than the link columns because it holds a
+   sentence rather than a list.
+*/
+.hz-footer {
+  background: #fff;
+  border-top: 1px solid #e3e7ef;
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: #2c3140;
+  margin-top: 64px;
+  position: relative;
+  z-index: 1;
+  clear: both;
+}
+
+.hz-footer-inner {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 48px 24px 40px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* The wordmark, with the yellow underline the brand uses. Set in the condensed display
+   face so it reads as a mark rather than as another heading. */
+.hz-footer-mark {
+  font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 30px;
+  line-height: 1;
+  color: #11172b;
+  display: inline-block;
+  border-bottom: 4px solid #fc0;
+  padding-bottom: 2px;
+  margin-bottom: 16px;
+}
+
+.hz-footer-tag {
+  font-size: 14px;
+  font-weight: 700;
+  color: #11172b;
+  margin: 0 0 4px;
+}
+
+.hz-footer-blurb {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #5f6778;
+  margin: 0;
+  max-width: 34ch;
+}
+
+.hz-footer-h {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5f6778;
+  margin: 0 0 14px;
+}
+.hz-footer-help .hz-footer-h { text-transform: none; letter-spacing: 0; font-size: 14px; color: #11172b; }
+
+.hz-footer-nav ul { list-style: none; padding: 0; margin: 0; }
+.hz-footer-nav li { margin-bottom: 10px; }
+
+.hz-footer-nav a {
+  font-size: 14px;
+  color: #2c3140;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+}
+.hz-footer-nav a:hover { color: #11172b; text-decoration: none; border-bottom-color: #fc0; }
+.hz-footer-nav a:focus { outline: 2px solid #11172b; outline-offset: 3px; text-decoration: none; }
+
+/* A quieter base bar, separated by a rule rather than a colour change. */
+.hz-footer-base { border-top: 1px solid #eef0f5; }
+
+.hz-footer-inner--base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 18px 24px 22px;
+  font-size: 12.5px;
+  color: #5f6778;
+}
+.hz-footer-by { color: #8a90a0; }
+
+@media (max-width: 900px) {
+  .hz-footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 560px) {
+  .hz-footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 20px 28px; }
+  .hz-footer-inner--base { justify-content: flex-start; padding: 16px 20px 20px; }
+}

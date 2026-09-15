@@ -31,6 +31,8 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       brandKey: 'hertz',
       isChampion: false,
       categories: [],
+      /** Orderable pools, for the per-pool chips. */
+      pools: [],
       totalRemaining: 0,
       totalGranted: 0,
       closed: []
@@ -114,6 +116,7 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
             $scope.home.brand = view.brand;
             $scope.home.brandKey = brandKeyFor(view.brand);
             $scope.home.closed = view.seasonalClosed || [];
+            $scope.home.pools = view.pools || [];
             var remaining = 0, granted = 0;
             angular.forEach(view.pools || [], function(p) {
               remaining += p.remaining;
