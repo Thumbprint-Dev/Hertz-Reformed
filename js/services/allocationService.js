@@ -175,6 +175,19 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
      * Encoded rather than concatenated: an employee id is external input, and the one
      * place it reaches a URL is the one place to be careful about it.
      */
+    /** sessionStorage prefix for the per-order beneficiary. */
+    var BENEFICIARY_KEY = 'hz.alloc.for.';
+
+    /**
+     * Reading order for pools, wherever they are listed.
+     *
+     * The API returns them alphabetically, which puts Belt — one item — first and buries
+     * the two pools carrying most of the allocation. This is the order Hertz's design uses
+     * and the order people get dressed in. Anything not named keeps its API position at the
+     * end, so a new pool appears rather than disappearing.
+     */
+    var POOL_ORDER = ['Polos', 'Bottoms', 'Layering', 'Headwear', 'Belt'];
+
     function beneficiaryQuery(employeeId) {
       if (!employeeId) return '';
       return '?beneficiaryEmployeeId=' + encodeURIComponent(employeeId);
@@ -263,6 +276,68 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
        */
       entitlement: function(forEmployeeId) {
         return authed('GET', '/me/entitlement' + beneficiaryQuery(forEmployeeId), null);
+      },
+
+      /**
+       * Turn this order's reservations into consumption. Called after Four51 accepts a
+       * submit — see the note in allocationGate.js on why after rather than before.
+       */
+      checkout: function(four51OrderId, lines, forEmployeeId) {
+        var body = { four51OrderId: four51OrderId, lines: lines };
+        if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
+        return authed('POST', '/checkout', body);
+      },
+
+      /**
+       * Who a Four51 order is being built for, when it is not the signed-in user.
+       *
+       * A Champion's on-behalf order is still *their* Four51 order — Four51 has no notion
+       * of ordering as someone else — so the beneficiary is ours to remember, and it has
+       * to survive the page reloads a cart goes through between adding a line and checking
+       * out. Held per order id in sessionStorage: per order because a Champion may build
+       * one for Ana and then one for Ben, and sessionStorage because it should not outlive
+       * the browser session that created it.
+       *
+       * Every write is still authorised server-side on each call, so a tampered value buys
+       * nothing: it produces a 403 rather than someone else's allocation.
+       */
+      orderBeneficiary: function(four51OrderId) {
+        if (!four51OrderId) return null;
+        try {
+          return window.sessionStorage.getItem(BENEFICIARY_KEY + four51OrderId) || null;
+        } catch (e) {
+          return null;
+        }
+      },
+
+      setOrderBeneficiary: function(four51OrderId, employeeId) {
+        if (!four51OrderId) return;
+        try {
+          if (employeeId) {
+            window.sessionStorage.setItem(BENEFICIARY_KEY + four51OrderId, employeeId);
+          } else {
+            window.sessionStorage.removeItem(BENEFICIARY_KEY + four51OrderId);
+          }
+        } catch (e) {
+          // Private browsing, or storage disabled. The order still validates against the
+          // signed-in user, which is a refusal rather than a wrong charge.
+        }
+      },
+
+      clearOrderBeneficiary: function(four51OrderId) {
+        this.setOrderBeneficiary(four51OrderId, null);
+      },
+
+      inDisplayOrder: function(pools) {
+        var known = [];
+        var rest = [];
+        angular.forEach(pools || [], function(p) {
+          (POOL_ORDER.indexOf(p.name) > -1 ? known : rest).push(p);
+        });
+        known.sort(function(a, b) {
+          return POOL_ORDER.indexOf(a.name) - POOL_ORDER.indexOf(b.name);
+        });
+        return known.concat(rest);
       },
 
       /** Everyone this Champion may order for. `{ champion: false, beneficiaries: [] }`

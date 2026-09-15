@@ -80,28 +80,6 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       return 'hertz';
     }
 
-    /**
-     * Reading order for the allocation cells.
-     *
-     * The API returns pools alphabetically, which puts Belt — one item — first and buries
-     * the two pools carrying two thirds of the allocation. This is the order Hertz's
-     * design uses and the order people get dressed in. Anything not named here keeps its
-     * API position at the end, so a new pool appears rather than disappearing.
-     */
-    var POOL_ORDER = ['Polos', 'Bottoms', 'Layering', 'Headwear', 'Belt'];
-
-    function inDisplayOrder(pools) {
-      var known = [];
-      var rest = [];
-      angular.forEach(pools || [], function(p) {
-        (POOL_ORDER.indexOf(p.name) > -1 ? known : rest).push(p);
-      });
-      known.sort(function(a, b) {
-        return POOL_ORDER.indexOf(a.name) - POOL_ORDER.indexOf(b.name);
-      });
-      return known.concat(rest);
-    }
-
     function describe(err) {
       if (!err) return 'Could not load your allocation.';
       if (err.noSession) return 'Please sign in to see your uniform allocation.';
@@ -190,7 +168,7 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
             $scope.home.brand = view.brand;
             $scope.home.brandKey = brandKeyFor(view.brand);
             $scope.home.closed = view.seasonalClosed || [];
-            $scope.home.pools = inDisplayOrder(view.pools);
+            $scope.home.pools = Allocation.inDisplayOrder(view.pools);
             var remaining = 0, granted = 0;
             angular.forEach(view.pools || [], function(p) {
               remaining += p.remaining;

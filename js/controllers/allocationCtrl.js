@@ -7,8 +7,8 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', '$location', '$q', 'Allocation',
-  function($scope, $location, $q, Allocation) {
+four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', 'Allocation', 'Order', 'Product',
+  function($scope, $rootScope, $location, $q, Allocation, Order, Product) {
 
     /**
      * Whose allocation this page is spending.
@@ -285,52 +285,151 @@ four51.app.controller('AllocationCtrl', ['$scope', '$location', '$q', 'Allocatio
      * past order with no client code running at all. Both reach checkout without any of
      * this UI being involved.
      */
-    $scope.alloc.check = function() {
-      if (!$scope.alloc.totalPicked) return;
+    /**
+     * The Four51 product id for a chosen row.
+     *
+     * Sizes are not variants in this theme — each size is its own product, and the size is
+     * the last segment of the InteropID (`HTZ-POLOSS-M-HZ` + `-L`). `categoryCtrl.js:926`
+     * relies on the same shape when it reads a size back out of one. Our API resolves the
+     * sized id onto the base product by longest prefix, so the ledger still meters the
+     * product rather than the size.
+     */
+    function sizedId(productId, size) {
+      return size ? productId + '-' + size : productId;
+    }
+
+    /** Everything picked, as { productId, size, qty }. */
+    function chosen() {
+      var out = [];
+      angular.forEach($scope.alloc.picked, function(row, productId) {
+        if (!row || row.qty < 1) return;
+        out.push({ productId: productId, size: row.size, qty: row.qty });
+      });
+      return out;
+    }
+
+    /**
+     * Fetch the Four51 product for each chosen row.
+     *
+     * A product our catalogue knows about may simply not exist in Four51 yet — the mapping
+     * is maintained on our side and the catalogue on theirs. Rather than dropping such a
+     * line silently, which would put a short order in the cart and look like the employee
+     * mis-clicked, the missing ids are collected and named.
+     */
+    function fetchProducts(rows) {
+      var found = {};
+      var missing = [];
+      var work = rows.map(function(row) {
+        var d = $q.defer();
+        var id = sizedId(row.productId, row.size);
+        try {
+          Product.get(id, function(product) {
+            if (product && product.InteropID) found[id] = product;
+            else missing.push(id);
+            d.resolve();
+            $rootScope.$evalAsync();
+          });
+        } catch (e) {
+          missing.push(id);
+          d.resolve();
+        }
+        return d.promise;
+      });
+      return $q.all(work).then(function() {
+        return { found: found, missing: missing };
+      });
+    }
+
+    /**
+     * Put the selection in the Four51 cart and go there.
+     *
+     * Three steps, in this order for a reason:
+     *
+     *   1. **Preview.** Holds nothing, so a selection that does not fit is refused before
+     *      the Four51 order is touched at all. Without it a refusal would leave half a
+     *      cart behind for the employee to clean up.
+     *   2. **Resolve the products.** A missing one is named rather than dropped.
+     *   3. **Save.** This is where the allocation is actually reserved — `Order.save` goes
+     *      through the gate in `allocationGate.js`, which is also what catches anything
+     *      that changed between the preview and now.
+     *
+     * Then to the cart, because the cart is where someone checks the order over before
+     * checking out. This button fills the cart; it does not place an order.
+     */
+    $scope.alloc.addToCart = function() {
+      var rows = chosen();
+      if (!rows.length || $scope.alloc.submitting) return;
+
       $scope.alloc.submitting = true;
       $scope.alloc.result = null;
 
-      // Only what was actually chosen. `setSize` seeds a { qty: 0 } row for every product
-      // as it renders, so iterating `picked` blindly posts zero-quantity lines — which the
-      // API rejects outright, because a zero would silently reduce a reservation rather
-      // than express an intent.
-      var lines = [];
-      var i = 0;
-      angular.forEach($scope.alloc.picked, function(row, productId) {
-        if (!row || row.qty < 1) return;
-        i++;
-        lines.push({
-          four51LineId: 'pick-' + i,
-          four51ProductId: productId,
+      var lines = rows.map(function(row, i) {
+        return {
+          four51LineId: 'pick-' + (i + 1),
+          four51ProductId: sizedId(row.productId, row.size),
           quantity: row.qty
-        });
+        };
       });
-
-      if (!lines.length) {
-        $scope.alloc.submitting = false;
-        return;
-      }
 
       Allocation.previewCart(draftOrderId(), lines, FOR)
         .then(function() {
-          $scope.alloc.result = { ok: true, messages: ['Your selection fits your allocation.'] };
+          return fetchProducts(rows);
+        })
+        .then(function(resolved) {
+          if (resolved.missing.length) {
+            return $q.reject({
+              local: 'These are not in the catalogue yet: ' + resolved.missing.join(', ') +
+                     '. Your uniform champion can help.'
+            });
+          }
+
+          var order = $scope.currentOrder || {};
+          if (!order.LineItems) order.LineItems = [];
+
+          angular.forEach(rows, function(row) {
+            order.LineItems.push({
+              Product: resolved.found[sizedId(row.productId, row.size)],
+              Quantity: row.qty,
+              ShipAccount: null,
+              ShipAddressID: null,
+              ShipFirstName: null,
+              ShipLastName: null,
+              Shipper: null,
+              ShipperID: null,
+              ShipperName: null,
+              // Sizes are separate products here, so there is no variant to choose.
+              Variant: null
+            });
+          });
+
+          // A champion's on-behalf order is still their Four51 order, so the beneficiary
+          // has to be remembered against it for the gate and for checkout.
+          if (FOR && order.ID) Allocation.setOrderBeneficiary(order.ID, FOR);
+
+          var d = $q.defer();
+          Order.save(order, function(saved) { d.resolve(saved); }, function(message) {
+            d.reject({ local: message || 'That order could not be saved.' });
+          });
+          return d.promise;
+        })
+        .then(function(saved) {
+          if (FOR && saved && saved.ID) Allocation.setOrderBeneficiary(saved.ID, FOR);
           $scope.alloc.submitting = false;
+          $location.path('/cart').search({});
         })
         .catch(function(err) {
-          // A 409 body is a Four51-shaped refusal. Read Message and Errors only — never
-          // LineItems[].Errors, which the storefront rewrites to "out of stock".
+          $scope.alloc.submitting = false;
           var messages;
-          if (err && err.status === 409) {
+          if (err && err.local) {
+            messages = [err.local];
+          } else if (err && err.status === 409) {
             messages = Allocation.refusalText(err.body);
-          } else if (err && err.status === 400) {
-            messages = ['That selection could not be read. Please adjust it and try again.'];
           } else if (err && (err.network || err.status === 0)) {
             messages = ['Could not reach the allocation service. Please try again.'];
           } else {
-            messages = ['Your selection could not be checked just now. Please try again.'];
+            messages = ['Your selection could not be added just now. Please try again.'];
           }
           $scope.alloc.result = { ok: false, messages: messages };
-          $scope.alloc.submitting = false;
         });
     };
 
@@ -361,7 +460,7 @@ four51.app.controller('AllocationCtrl', ['$scope', '$location', '$q', 'Allocatio
             $scope.alloc.beneficiaryId = view.employeeId;
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
-            $scope.alloc.pools = view.pools || [];
+            $scope.alloc.pools = Allocation.inDisplayOrder(view.pools);
             // Open the largest pool: the page should show what it does at rest rather
             // than a column of closed rows.
             var biggest = null;
