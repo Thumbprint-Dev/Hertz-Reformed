@@ -140,12 +140,17 @@
             </button>
           </div>
 
+          <!-- Fills the cart; it does not place the order. The cart is where someone
+               checks it over, and checkout is the step after that. -->
           <button class="hz-btn hz-btn--block" type="button"
-                  ng-click="alloc.check()"
+                  ng-click="alloc.addToCart()"
                   ng-disabled="!alloc.totalPicked || alloc.submitting">
-            <span ng-if="!alloc.submitting">Check my selection</span>
-            <span ng-if="alloc.submitting">Checking&hellip;</span>
+            <span ng-if="!alloc.submitting">Add to cart</span>
+            <span ng-if="alloc.submitting">Adding&hellip;</span>
           </button>
+          <p class="hz-rail-note" ng-if="!alloc.submitting">
+            You can review everything in your cart before checking out.
+          </p>
 
           <div class="hz-result" ng-if="alloc.result" ng-class="{bad: !alloc.result.ok}">
             <p ng-repeat="m in alloc.result.messages">{{m}}</p>

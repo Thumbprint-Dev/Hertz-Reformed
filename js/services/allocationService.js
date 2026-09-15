@@ -178,6 +178,16 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
     /** sessionStorage prefix for the per-order beneficiary. */
     var BENEFICIARY_KEY = 'hz.alloc.for.';
 
+    /**
+     * Reading order for pools, wherever they are listed.
+     *
+     * The API returns them alphabetically, which puts Belt — one item — first and buries
+     * the two pools carrying most of the allocation. This is the order Hertz's design uses
+     * and the order people get dressed in. Anything not named keeps its API position at the
+     * end, so a new pool appears rather than disappearing.
+     */
+    var POOL_ORDER = ['Polos', 'Bottoms', 'Layering', 'Headwear', 'Belt'];
+
     function beneficiaryQuery(employeeId) {
       if (!employeeId) return '';
       return '?beneficiaryEmployeeId=' + encodeURIComponent(employeeId);
@@ -316,6 +326,18 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
 
       clearOrderBeneficiary: function(four51OrderId) {
         this.setOrderBeneficiary(four51OrderId, null);
+      },
+
+      inDisplayOrder: function(pools) {
+        var known = [];
+        var rest = [];
+        angular.forEach(pools || [], function(p) {
+          (POOL_ORDER.indexOf(p.name) > -1 ? known : rest).push(p);
+        });
+        known.sort(function(a, b) {
+          return POOL_ORDER.indexOf(a.name) - POOL_ORDER.indexOf(b.name);
+        });
+        return known.concat(rest);
       },
 
       /** Everyone this Champion may order for. `{ champion: false, beneficiaries: [] }`
