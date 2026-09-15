@@ -1502,7 +1502,10 @@ contentmodal2 a:hover{
 .hz-band {
   --hz-accent: #fc0;
   font-family: 'Open Sans', Arial, sans-serif;
-  background: #fff;
+  /* A tinted ground so it reads as its own section rather than a caption under the hero,
+     with the brand accent as a top rule tying it to the banner above. */
+  background: linear-gradient(180deg, #fbfcfe 0%, #f4f6fa 100%);
+  border-top: 3px solid var(--hz-accent);
   border-bottom: 1px solid #e3e7ef;
 }
 .hz-band[data-brand="dollar"]  { --hz-accent: #e51937; }
@@ -1512,26 +1515,26 @@ contentmodal2 a:hover{
   max-width: 1080px;
   margin-left: auto;
   margin-right: auto;
-  padding: 16px 24px;
+  padding: 30px 24px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 18px;
+  gap: 14px 26px;
 }
 .hz-band-inner--wait { border-left: 3px solid var(--hz-accent); background: #fdf4e2; }
 
 .hz-band-n {
   font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
   font-weight: 600;
-  font-size: 40px;
-  line-height: 0.9;
+  font-size: 76px;
+  line-height: 0.82;
   color: #11172b;
   font-variant-numeric: tabular-nums;
 }
 
 .hz-band-text { display: flex; flex-direction: column; gap: 1px; }
-.hz-band-text b { color: #11172b; font-size: 14px; font-weight: 700; }
-.hz-band-text i { color: #5f6778; font-size: 12.5px; font-style: normal; }
+.hz-band-text b { color: #11172b; font-size: 19px; font-weight: 700; line-height: 1.25; }
+.hz-band-text i { color: #5f6778; font-size: 14px; font-style: normal; }
 
 /* Pushed right on a wide row; wraps to its own line before it would crowd the button. */
 .hz-band-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
@@ -1540,17 +1543,17 @@ contentmodal2 a:hover{
   display: inline-flex;
   align-items: baseline;
   gap: 5px;
-  background: #f4f6fa;
-  border: 1px solid #e3e7ef;
-  border-radius: 14px;
-  padding: 3px 11px;
-  font-size: 12px;
+  background: #fff;
+  border: 1px solid #dfe4ee;
+  border-radius: 18px;
+  padding: 7px 16px;
+  font-size: 13.5px;
   color: #2c3140;
   white-space: nowrap;
 }
 .hz-band-chip b {
   font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
-  font-size: 14px;
+  font-size: 17px;
   color: #11172b;
   font-variant-numeric: tabular-nums;
 }
@@ -1559,9 +1562,9 @@ contentmodal2 a:hover{
   background: var(--hz-accent);
   color: #11172b;
   border-radius: 4px;
-  padding: 9px 18px;
+  padding: 15px 30px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 16px;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -1582,8 +1585,9 @@ contentmodal2 a:hover{
 
 @media (max-width: 760px) {
   .hz-band-chips { margin-left: 0; width: 100%; }
-  .hz-band-inner { padding: 14px 18px; }
-  .hz-band-n { font-size: 32px; }
+  .hz-band-inner { padding: 22px 18px; }
+  .hz-band-n { font-size: 54px; }
+  .hz-band-cta { width: 100%; text-align: center; }
 }
 
 /* ------------------- Footer ------------------- */
@@ -1692,3 +1696,618 @@ contentmodal2 a:hover{
   .hz-footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 20px 28px; }
   .hz-footer-inner--base { justify-content: flex-start; padding: 16px 20px 20px; }
 }
+
+/* ------------------- Choose your uniform (the picker) ------------------- */
+.hz-pick {
+  --a: #fc0; --a-deep: #e8b800; --on-a: #11172b;
+  --ink: #11172b; --body: #2c3140; --muted: #5f6778;
+  --line: #e3e7ef; --firm: #c9d0dd; --sub: #f8f9fc;
+  /* The page ground is white to match the rest of the site, so the pool and rail cards
+     are white on white and the ground can no longer separate them. Their outer edge has
+     to carry that on its own, which is why it is a step firmer than the --line used for
+     dividers inside a card. */
+  --edge: #dae0ea;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: var(--body);
+  background: #fff;
+  padding-top: 34px;
+  padding-bottom: 80px;
+}
+.hz-pick[data-brand="dollar"]  { --a: #e51937; --a-deep: #c4142e; --on-a: #fff; }
+.hz-pick[data-brand="thrifty"] { --a: #0071ce; --a-deep: #005ba8; --on-a: #fff; }
+
+.hz-pick-shell { max-width: 1120px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
+.hz-pick-head { margin-bottom: 24px; }
+.hz-pick-title {
+  font-family: var(--display); font-weight: 600; font-size: 42px; line-height: 1.02;
+  color: var(--ink); margin: 0; letter-spacing: -0.008em;
+}
+.hz-pick-sub { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
+
+.hz-pick-grid { display: grid; grid-template-columns: minmax(0,1fr) 268px; gap: 24px; align-items: start; }
+.hz-pools { display: flex; flex-direction: column; gap: 10px; }
+.hz-pick-skel { display: flex; flex-direction: column; gap: 10px; }
+
+/* ---- pool ---- */
+.hz-pool { background: #fff; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; }
+
+.hz-pool-head {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center;
+  width: 100%; padding: 18px 20px; background: none; border: 0; text-align: left;
+  font: inherit; color: inherit; cursor: pointer;
+}
+.hz-pool-head--static { cursor: default; grid-template-columns: 1fr auto; }
+.hz-pool-head:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+
+.hz-pool-name { font-weight: 700; font-size: 17px; color: var(--ink); }
+.hz-pool-n {
+  font-family: var(--display); font-weight: 600; font-size: 30px; line-height: 1;
+  color: var(--ink); font-variant-numeric: tabular-nums; text-align: right;
+}
+.hz-pool-n i {
+  display: block; font-family: 'Open Sans', Arial, sans-serif; font-style: normal;
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 4px;
+}
+.hz-pool-n--shut { font-size: 13px; color: var(--muted); }
+.hz-pool-n--shut i { font-size: 13px; text-transform: none; letter-spacing: 0; margin: 0; font-weight: 600; }
+.hz-pool--shut { background: var(--sub); border-color: var(--edge); }
+.hz-pool--shut .hz-pool-name { color: var(--muted); }
+
+.hz-chev {
+  width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg); transition: transform .16s ease;
+}
+.hz-pool.open .hz-chev { transform: rotate(-135deg); }
+
+.hz-meter { height: 3px; background: var(--line); }
+.hz-meter i { display: block; height: 100%; background: var(--a); }
+
+.hz-items { padding: 4px 20px 16px; border-top: 1px solid var(--line); }
+.hz-cat-empty { font-size: 13px; color: var(--muted); padding: 12px 0 4px; margin: 0; font-style: italic; }
+
+/* ---- item ---- */
+.hz-item {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  padding: 14px 0; border-top: 1px solid var(--line);
+}
+.hz-item:first-child { border-top: 0; }
+
+.hz-thumb {
+  width: 58px; height: 58px; border: 1px solid var(--line); border-radius: 5px;
+  background: var(--sub); padding: 0; cursor: pointer; display: grid; place-items: center;
+}
+.hz-thumb:hover { border-color: var(--firm); }
+.hz-thumb:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.hz-item-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hz-item-name { font-weight: 600; font-size: 14.5px; color: var(--ink); }
+.hz-item-sku { font-family: var(--display); font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
+
+.hz-link {
+  align-self: flex-start; background: none; border: 0; padding: 0; margin-top: 3px;
+  font: inherit; font-size: 12.5px; font-weight: 600; color: var(--ink);
+  text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+}
+.hz-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.hz-item-ctrl { display: flex; align-items: center; gap: 8px; }
+.hz-item-ctrl select {
+  font: inherit; font-size: 13.5px; padding: 7px 8px; border: 1px solid var(--firm);
+  border-radius: 3px; background: #fff; color: var(--body);
+}
+
+.hz-step { display: inline-flex; align-items: center; border: 1px solid var(--firm); border-radius: 3px; }
+.hz-step button {
+  width: 32px; height: 34px; border: 0; background: #fff; color: var(--ink);
+  font-size: 18px; line-height: 1; cursor: pointer; font-family: 'Open Sans', Arial, sans-serif;
+}
+.hz-step button:hover:not([disabled]) { background: var(--sub); }
+.hz-step button[disabled] { color: var(--firm); cursor: not-allowed; }
+.hz-step output {
+  min-width: 32px; text-align: center; font-family: var(--display); font-size: 17px;
+  font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums;
+}
+
+/* ---- rail ---- */
+.hz-rail {
+  position: sticky; top: 16px; background: #fff; border: 1px solid var(--edge);
+  border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 14px;
+}
+.hz-rail-h { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.hz-rail-total { margin: -6px 0 0; display: flex; align-items: baseline; gap: 7px; }
+.hz-rail-total b { font-family: var(--display); font-size: 36px; font-weight: 600; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.hz-rail-total span { font-size: 13px; color: var(--muted); }
+
+.hz-rail-list { display: flex; flex-direction: column; gap: 11px; }
+.hz-rail-row {
+  display: grid; grid-template-columns: 1fr auto; gap: 3px 8px; width: 100%;
+  background: none; border: 0; padding: 0; text-align: left; font: inherit; cursor: pointer; color: inherit;
+}
+.hz-rail-row:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.hz-rail-name { font-size: 13px; font-weight: 600; color: var(--body); }
+.hz-rail-n { font-family: var(--display); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hz-rail-row.done .hz-rail-n { color: #1d6f4f; font-weight: 700; }
+.hz-rail-bar { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.hz-rail-bar i { display: block; height: 100%; background: var(--a); }
+
+.hz-btn {
+  background: var(--a); color: var(--on-a); border: 1px solid var(--a-deep); border-radius: 4px;
+  padding: 12px 24px; font-weight: 700; font-size: 14.5px; cursor: pointer;
+  font-family: 'Open Sans', Arial, sans-serif; text-decoration: none; display: inline-block;
+}
+.hz-btn:hover:not([disabled]) { background: var(--a-deep); color: var(--on-a); text-decoration: none; }
+.hz-btn[disabled] { background: var(--line); border-color: var(--firm); color: var(--muted); cursor: not-allowed; }
+.hz-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.hz-btn--block { width: 100%; text-align: center; }
+
+.hz-result { font-size: 13px; border-radius: 4px; padding: 11px 13px; background: #e5f3ec; color: #1d6f4f; }
+.hz-result.bad { background: #fcebed; color: #a4192d; }
+.hz-result p { margin: 0 0 6px; }
+.hz-result p:last-child { margin: 0; }
+
+/* ---- preview ---- */
+.hz-modal {
+  position: fixed; inset: 0; background: rgba(17,23,43,.45); z-index: 1050;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.hz-modal-box {
+  background: #fff; border-radius: 9px; width: min(640px, 100%);
+  max-height: 90vh; overflow-y: auto;
+}
+.hz-modal-head { display: flex; justify-content: space-between; gap: 14px; padding: 20px 22px 0; }
+.hz-modal-title { font-weight: 700; font-size: 18px; color: var(--ink); margin: 0; }
+.hz-modal-sku { font-family: var(--display); font-size: 13px; color: var(--muted); margin: 2px 0 0; }
+.hz-modal-x {
+  width: 32px; height: 32px; border: 1px solid var(--firm); background: #fff; color: var(--ink);
+  border-radius: 3px; font-size: 18px; line-height: 1; cursor: pointer; flex: 0 0 auto;
+}
+.hz-modal-body { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 18px; }
+.hz-modal-art { background: var(--sub); border: 1px solid var(--line); border-radius: 6px; padding: 26px; text-align: center; }
+.hz-modal-cap { font-size: 12px; color: var(--muted); margin: 12px 0 0; }
+
+.hz-chart-h { font-weight: 700; font-size: 14px; color: var(--ink); margin: 0 0 9px; }
+.hz-chart-h em {
+  font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: #8a5a10; background: #fdf4e2; border-radius: 2px;
+  padding: 2px 7px; margin-left: 8px;
+}
+.hz-chart-scroll { overflow-x: auto; }
+table.hz-chart { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.hz-chart th, table.hz-chart td {
+  border: 1px solid var(--line); padding: 7px 10px; text-align: right;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+table.hz-chart th:first-child, table.hz-chart td:first-child { text-align: left; }
+table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight: 700; }
+
+.hz-modal-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; border-top: 1px solid var(--line); padding-top: 16px;
+}
+.hz-modal-note { font-size: 13px; color: var(--muted); }
+
+/* ---- garment outlines ---- */
+/* CSS masks rather than inline SVG: one sprite, no markup per row, and the colour is a
+   token so a brand change does not need new artwork. */
+.hz-art { display: block; width: 34px; height: 34px; background: #aab2c2; }
+.hz-art--lg { width: 132px; height: 132px; margin: 0 auto; }
+.hz-art--polo    { -webkit-mask: var(--m-polo) center/contain no-repeat; mask: var(--m-polo) center/contain no-repeat; }
+.hz-art--poloLs  { -webkit-mask: var(--m-polols) center/contain no-repeat; mask: var(--m-polols) center/contain no-repeat; }
+.hz-art--pants   { -webkit-mask: var(--m-pants) center/contain no-repeat; mask: var(--m-pants) center/contain no-repeat; }
+.hz-art--shorts  { -webkit-mask: var(--m-shorts) center/contain no-repeat; mask: var(--m-shorts) center/contain no-repeat; }
+.hz-art--skirt   { -webkit-mask: var(--m-skirt) center/contain no-repeat; mask: var(--m-skirt) center/contain no-repeat; }
+.hz-art--layer   { -webkit-mask: var(--m-layer) center/contain no-repeat; mask: var(--m-layer) center/contain no-repeat; }
+.hz-art--cap     { -webkit-mask: var(--m-cap) center/contain no-repeat; mask: var(--m-cap) center/contain no-repeat; }
+.hz-art--beanie  { -webkit-mask: var(--m-beanie) center/contain no-repeat; mask: var(--m-beanie) center/contain no-repeat; }
+.hz-art--belt    { -webkit-mask: var(--m-belt) center/contain no-repeat; mask: var(--m-belt) center/contain no-repeat; }
+
+.hz-pick {
+  --m-polo:   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M22 20 L34 14 q6 7 12 0 L58 20 l6 10 -9 6 -1 34 H26 l-1-34 -9-6 z'/%3E%3C/svg%3E");
+  --m-polols: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M24 20 L34 14 q6 7 12 0 L56 20 l8 12 -4 24 -8-3 -1 27H29l-1-27 -8 3 -4-24 z'/%3E%3C/svg%3E");
+  --m-pants:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M28 14h24l3 18 -3 38h-9l-3-30 -3 30h-9l-3-38 z'/%3E%3C/svg%3E");
+  --m-shorts: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M28 16h24l3 14 -2 22h-9l-3-18 -3 18h-9l-2-22 z'/%3E%3C/svg%3E");
+  --m-skirt:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M30 16h20l8 42 -36 0 z'/%3E%3C/svg%3E");
+  --m-layer:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M22 20 L33 14 h14 L58 20 l6 12 -8 5 -1 33H25l-1-33 -8-5 z'/%3E%3C/svg%3E");
+  --m-cap:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M16 46 q4-26 24-26 t24 26 z M14 46 h40 q10 0 12 6 H14 z'/%3E%3C/svg%3E");
+  --m-beanie: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M18 46 q2-28 22-28 t22 28 z M16 46 h48 v9 H16 z'/%3E%3C/svg%3E");
+  --m-belt:   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M10 34 h44 v12 H10 z M56 30 h12 v20 H56 z'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 900px) {
+  .hz-pick-grid { grid-template-columns: minmax(0,1fr); }
+  .hz-rail { position: static; order: -1; }
+}
+@media (max-width: 560px) {
+  .hz-pick-title { font-size: 32px; }
+  .hz-item { grid-template-columns: auto 1fr; }
+  .hz-item-ctrl { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .hz-chev { transition: none; } }
+
+/* =========================================================================
+   Landing page — Hertz brand guidelines v2.0
+
+   A flat ruled grid. No cards, no shadows, no radius beyond the 2px on buttons
+   (§5.2). Yellow is the only accent and never carries type: #FFCC00 on white is
+   about 1.5:1, so it is a fill. Type on yellow is 90% black (§3.2), body type on
+   white is 80% black, and 60% black is reserved for labels and fine print.
+
+   Scoped to .hz-lp throughout — the rest of the theme is Bootstrap 3 and shares
+   very generic class names.
+   ========================================================================= */
+.hz-lp {
+  --yellow:      #FFCC00;   /* Pantone 7406 */
+  --yellow-press:#E6B800;
+  --black-90:    #434244;   /* type on yellow */
+  --black-80:    #58595B;   /* type on white */
+  --black-60:    #808285;   /* labels, legal, fine print only */
+  --rule:        rgba(0,0,0,0.2);
+  --ink:         #000;
+  --surface:     #fff;
+  --surface-alt: #FAFAFA;
+  --gutter:      clamp(16px, 4vw, 56px);
+
+  /* Proxima Nova is the brand face and ships from an Adobe Fonts kit; Arial is the
+     sanctioned substitute until that kit exists (§3.2), so it is a real fallback
+     rather than a silent one. */
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  color: var(--black-80);
+  background: var(--surface);
+
+  /* Break out of .mainContainer's 10% side padding. This design runs edge to edge — the
+     bands and their rules are the layout — and inside that padding the hero image cell
+     lost about a fifth of its width, which is what made the photograph crop so hard.
+
+     The percentages cancel the padding exactly rather than using the 100vw trick: a
+     percentage margin resolves against the containing block's *content* width, so with
+     10% padding each side the content box is 80% of the whole and 10/80 = 12.5%. Exact,
+     and unlike 100vw it cannot overflow by the width of a scrollbar. */
+  margin-left: -12.5%;
+  margin-right: -12.5%;
+}
+@media screen and (max-width: 425px) {
+  /* .mainContainer drops to 2% there: 2/96 = 2.0833%. */
+  .hz-lp { margin-left: -2.0833%; margin-right: -2.0833%; }
+}
+
+/* Self-contained rather than inheriting Bootstrap's reset: the percentage flex-bases in
+   the allocation band only add up if padding is inside the box. */
+.hz-lp, .hz-lp *, .hz-lp *::before, .hz-lp *::after { box-sizing: border-box; }
+
+.hz-lp a { text-decoration: none; }
+.hz-lp :focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+/* ---- buttons: 2px radius, label never wraps (§5.2) ---- */
+.hz-lp-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--yellow); color: var(--black-90);
+  font-weight: 700; font-size: 15px; line-height: 1;
+  padding: 15px 22px; border: 1px solid var(--yellow); border-radius: 2px;
+  white-space: nowrap; cursor: pointer;
+}
+.hz-lp-btn:hover,
+.hz-lp-btn:focus { background: var(--yellow-press); border-color: var(--yellow-press); color: var(--black-90); }
+.hz-lp-btn b { font-weight: 700; }
+.hz-lp-btn--ghost { background: var(--surface); border-color: var(--rule); color: var(--ink); }
+.hz-lp-btn--ghost:hover,
+.hz-lp-btn--ghost:focus { background: var(--surface-alt); border-color: var(--ink); color: var(--ink); }
+.hz-lp-btn--onyellow { background: var(--surface); border-color: var(--ink); color: var(--ink); }
+.hz-lp-btn--onyellow:hover,
+.hz-lp-btn--onyellow:focus { background: var(--black-90); border-color: var(--black-90); color: #fff; }
+
+/* ---- hero ---- */
+.hz-lp-hero {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  border-bottom: 2px solid var(--ink);
+}
+.hz-lp-hero-text {
+  padding: clamp(28px, 5vw, 72px) var(--gutter);
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.hz-lp-kicker {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--black-60); margin: 0 0 18px;
+}
+.hz-lp-h1 {
+  font-size: clamp(34px, 4.6vw, 58px); font-weight: 800; line-height: 1.0;
+  letter-spacing: -0.02em; color: var(--ink); margin: 0; text-align: left;
+  text-wrap: balance;
+}
+.hz-lp-bar { display: block; width: 120px; height: 8px; background: var(--yellow); margin: 26px 0 0; }
+.hz-lp-sub {
+  font-size: 16px; line-height: 1.55; max-width: 46ch; margin: 22px 0 0;
+  color: var(--black-80);
+}
+.hz-lp-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+/* The image cell is full-bleed: the photograph is the content, not a framed picture. */
+.hz-lp-hero-media {
+  position: relative; min-height: 340px;
+  border-left: 1px solid var(--rule);
+  background: var(--surface-alt);
+}
+.hz-lp-hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; max-width: 100%;
+  /* The three of them and the car sit between 36% and 87% of this frame, with empty
+     garage floor filling the left third. A centred crop therefore throws away people and
+     keeps floor. Anchoring at 72% keeps every subject in view at any cell shape from
+     square to the photograph's own 16:9 — checked at the ratios this cell actually takes
+     between phone and desktop. */
+  object-position: 72% center;
+  /* §4.1 makes photography black and white, and §4.3 carves out yellow that is genuinely
+     in the scene. This frame is the carve-out: the yellow is the uniform's own trim and
+     the garage markings, and it is also the thing the page is about — grayscale takes the
+     detail that distinguishes one polo from another out of a picture whose job is to show
+     the uniforms. Restore the brand default by uncommenting the line below. */
+  /* filter: grayscale(1) contrast(1.12); */
+}
+.hz-lp-hero-ph {
+  position: absolute; inset: 16px;
+  border: 1px dashed var(--rule);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  color: var(--black-60); font-size: 13px; text-align: center; padding: 16px;
+}
+.hz-lp-ph-icon {
+  width: 40px; height: 40px; opacity: .55;
+  background: currentColor;
+  -webkit-mask: var(--ph-glyph) center/contain no-repeat;
+          mask: var(--ph-glyph) center/contain no-repeat;
+}
+.hz-lp {
+  --ph-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='8.5' cy='9.5' r='1.6'/%3E%3Cpath d='M21 16l-5-5-4.5 5-2.5-2.5L3 19'/%3E%3C/svg%3E");
+}
+
+/* ---- allocation band ---- */
+.hz-lp-alloc { border-bottom: 2px solid var(--ink); }
+.hz-lp-alloc-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(300px, 2fr) auto;
+  align-items: stretch;
+}
+.hz-lp-count {
+  padding: clamp(22px, 3vw, 34px) var(--gutter);
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; justify-content: center; gap: 14px;
+}
+.hz-lp-count-n {
+  margin: 0; display: flex; align-items: flex-end; gap: 12px;
+  font-size: clamp(44px, 6vw, 74px); font-weight: 800; line-height: .9; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.hz-lp-count-n span {
+  font-size: 14px; font-weight: 400; line-height: 1.25; color: var(--black-80);
+  padding-bottom: 6px;
+}
+.hz-lp-track { display: block; height: 6px; background: #EEE; overflow: hidden; }
+.hz-lp-track i { display: block; height: 100%; background: var(--yellow); }
+.hz-lp-count-of { margin: 0; font-size: 12px; color: var(--black-60); }
+
+.hz-lp-cats { display: flex; flex-wrap: nowrap; }
+.hz-lp-cat {
+  flex: 1 1 0; min-width: 0;
+  padding: clamp(22px, 3vw, 34px) clamp(12px, 1.2vw, 20px);
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; gap: 10px; justify-content: center;
+  color: inherit;
+}
+.hz-lp-cat-l {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--black-60);
+}
+.hz-lp-cat-n { font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+.hz-lp-cat-sub { font-size: 12px; color: var(--black-60); line-height: 1.35; }
+.hz-lp-cat-when { display: flex; flex-direction: column; }
+
+.hz-lp-cat:hover .hz-lp-cat-n { color: var(--black-90); }
+/* Unavailable is said in words as well as weight — never colour alone. */
+.hz-lp-cat.is-out { background: var(--surface-alt); cursor: default; }
+.hz-lp-cat.is-out .hz-lp-cat-n { color: var(--black-60); }
+.hz-lp-cat--shut { background: var(--surface-alt); cursor: default; }
+
+.hz-lp-alloc-go { display: flex; align-items: center; padding: 20px var(--gutter); }
+.hz-lp-alloc-skel { padding: 28px var(--gutter); display: flex; flex-direction: column; gap: 12px; }
+.hz-lp-alloc-wait { padding: 26px var(--gutter); }
+.hz-lp-alloc-wait p { margin: 0; font-size: 15px; color: var(--black-80); }
+.hz-lp-alert { padding: 20px var(--gutter); }
+.hz-lp-alert p { margin: 0; color: #9b1c1c; font-size: 14px; }
+
+/* ---- start here / champion ---- */
+.hz-lp-start,
+.hz-lp-champ { padding: clamp(28px, 4vw, 54px) var(--gutter); border-bottom: 2px solid var(--ink); }
+.hz-lp-start-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 22px;
+}
+.hz-lp-h2 { font-size: clamp(22px, 2.4vw, 30px); font-weight: 800; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.hz-lp-link { font-size: 14px; font-weight: 700; color: var(--ink); border-bottom: 2px solid var(--yellow); }
+.hz-lp-link:hover, .hz-lp-link:focus { color: var(--ink); border-bottom-color: var(--ink); }
+.hz-lp-tag {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--black-90); background: var(--yellow); padding: 6px 10px;
+}
+.hz-lp-empty { margin: 0; font-size: 15px; color: var(--black-80); }
+
+/* Rules live on the cells, with the top and left edge on the container: gap + a
+   container background leaves a grey void wherever the last row is partial. */
+.hz-lp-cells {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  border-top: 1px solid var(--rule); border-left: 1px solid var(--rule);
+}
+.hz-lp-cells--two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.hz-lp-cell {
+  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  padding: 16px; display: flex; flex-direction: column; gap: 10px; color: inherit;
+}
+.hz-lp-cell:hover { background: var(--surface-alt); }
+.hz-lp-cell-art {
+  display: block; aspect-ratio: 4 / 5; max-width: 100%;
+  /* Capped because the cells are empty until Hertz supplies the photography: at
+     full-bleed width a 4:5 box is ~460px tall, and four of those read as a wall of grey
+     rather than a row of products. A real photograph fills the box and the cap stops
+     mattering. */
+  max-height: 300px;
+  background: var(--surface-alt);
+}
+.hz-lp-cell-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+.hz-lp-cell-sub { font-size: 13px; line-height: 1.5; color: var(--black-80); }
+.hz-lp-cell--text { padding: 22px; gap: 8px; }
+
+/* ---- reset band ---- */
+.hz-lp-reset {
+  background: var(--yellow);
+  padding: 22px var(--gutter);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.hz-lp-reset-t { margin: 0; font-size: 16px; font-weight: 700; color: var(--black-90); }
+
+@media (max-width: 860px) {
+  .hz-lp-cats { flex-wrap: wrap; }
+  .hz-lp-cat { flex: 1 1 33%; }
+  .hz-lp-alloc-grid { grid-template-columns: 1fr; }
+  .hz-lp-count { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .hz-lp-cats { border-bottom: 1px solid var(--rule); }
+  .hz-lp-hero-media { min-height: 260px; border-left: 0; border-top: 1px solid var(--rule); }
+}
+@media (max-width: 600px) {
+  /* 44px minimum touch target. */
+  .hz-lp-btn { padding: 16px 24px; }
+  .hz-lp-cat { flex-basis: 50%; min-width: 0; }
+}
+
+/* =========================================================================
+   Site header — Hertz brand guidelines v2.0
+
+   Logo top left at 34px with clear space; nav at a 28px gap with the active
+   item underlined 3px yellow; name and avatar right. A 1px rule at 20% black
+   closes the bar and the 3px yellow rule sits under it.
+
+   Tokens are repeated rather than inherited from .hz-lp: the header renders on
+   every page, including the ones still on the old theme.
+   ========================================================================= */
+.hz-hd {
+  --yellow: #FFCC00;
+  --black-80: #58595B;
+  --black-60: #808285;
+  --rule: rgba(0,0,0,0.2);
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  background: #fff;
+  border-bottom: 1px solid var(--rule);
+  box-shadow: inset 0 -4px 0 -1px var(--yellow);
+}
+.hz-hd, .hz-hd *, .hz-hd *::before, .hz-hd *::after { box-sizing: border-box; }
+
+.hz-hd-bar {
+  display: flex; align-items: center; gap: 28px;
+  padding: 22px clamp(16px, 4vw, 56px);
+}
+
+/* Clear space on all sides is at least the width of the wordmark's z (§2.1). */
+.hz-hd-logo { display: block; flex: 0 0 auto; margin-right: 12px; }
+.hz-hd-logo img { display: block; height: 34px; width: auto; }
+
+.hz-hd-nav { display: flex; align-items: center; gap: 28px; flex: 1 1 auto; flex-wrap: wrap; }
+
+.hz-hd-link {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 600; line-height: 1;
+  color: #000; text-decoration: none; padding: 6px 0; white-space: nowrap;
+}
+.hz-hd-link:hover, .hz-hd-link:focus { color: #000; text-decoration: none; }
+/* The underline is drawn rather than a border so it does not move the text. */
+.hz-hd-link::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 3px;
+  background: var(--yellow); opacity: 0; transition: opacity .12s ease-out;
+}
+.hz-hd-link:hover::after { opacity: .45; }
+.hz-hd-link.active::after,
+.hz-hd-drop.active > .hz-hd-link::after { opacity: 1; }
+
+.hz-hd-caret {
+  width: 0; height: 0; margin-left: 2px;
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+}
+.hz-hd-badge {
+  background: var(--yellow); color: #434244;
+  font-size: 11px; font-weight: 700; border-radius: 2px; padding: 2px 6px;
+}
+.hz-hd-drop { position: relative; display: inline-flex; }
+/* The theme paints every .dropdown-menu black with white items. This one is white with
+   dark items, so BOTH have to be restated together — setting only the text colour is what
+   produced a black panel with black text. Selectors carry the .hz-hd ancestor so they beat
+   the theme's single-class rules without !important. */
+.hz-hd .hz-hd-menu {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  margin-top: 10px;
+  padding: 6px 0;
+  min-width: 232px;
+}
+.hz-hd .hz-hd-menu > li > a {
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: 0; line-height: 1.3;
+  color: #000; background: transparent;
+  padding: 10px 18px; white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+.hz-hd .hz-hd-menu > li > a:hover,
+.hz-hd .hz-hd-menu > li > a:focus {
+  background: #FAFAFA; color: #000;
+  /* The accent marks the item without becoming type: yellow is a fill (§3.2). */
+  box-shadow: inset 3px 0 0 var(--yellow);
+}
+.hz-hd .hz-hd-menu > li.divider {
+  height: 1px; margin: 6px 0; background: var(--rule); overflow: hidden;
+}
+.hz-hd .hz-hd-menu > li > a .fa { font-size: 13px; }
+
+.hz-hd-you { display: flex; align-items: center; gap: 14px; margin-left: auto; flex: 0 0 auto; }
+.hz-hd-name { font-size: 14px; font-weight: 600; color: var(--black-80); white-space: nowrap; }
+.hz-hd-spend { font-size: 13px; color: var(--black-60); white-space: nowrap; }
+.hz-hd-cart { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+
+/* 2px radius, matching every other control on the site (§5.2). */
+.hz-hd-avatar {
+  width: 38px; height: 38px; border: 1px solid var(--rule); border-radius: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #000; flex: 0 0 auto;
+}
+.hz-hd-avatar:hover, .hz-hd-avatar:focus { border-color: #000; color: #000; }
+.hz-hd-avatar svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+.hz-hd a:focus-visible,
+.hz-lp a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+/* The header is hidden below 768px, where hamburgernavigation takes over. */
+@media (max-width: 767px) { .hz-hd { display: none; } }
+
+/* ---- eligibility notice, directly under the header ---- */
+.hz-notice {
+  background: #FAFAFA;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  padding: 14px clamp(16px, 4vw, 56px);
+  font-family: "proxima-nova", "Proxima Nova", Arial, Helvetica, sans-serif;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.hz-notice-i {
+  flex: 0 0 auto; width: 18px; height: 18px; border: 1.5px solid #808285;
+  border-radius: 50%; color: #808285; font-size: 12px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.hz-notice-t { margin: 0; font-size: 13.5px; line-height: 1.5; color: #58595B; max-width: 96ch; }
+.hz-notice-t b { color: #000; font-weight: 700; }
+.hz-notice-t a { color: #000; font-weight: 700; border-bottom: 2px solid #FFCC00; }
+.hz-notice-t a:hover, .hz-notice-t a:focus { color: #000; border-bottom-color: #000; }

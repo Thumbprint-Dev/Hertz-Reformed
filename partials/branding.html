@@ -672,22 +672,25 @@
       </style>
       
       
-<div class="alert alert-danger" role="alert" ng-show="isActive('catalog')" style="text-align: center; margin-bottom: 0px;">
-  <strong>If you’re seeing a blank screen, you may not be eligible to order uniforms at this time. New hires are not eligible for uniforms until after 90 days. Please reach out to your uniform champion for more information.</strong><br>
-  <strong>Replenishment orders have been placed and we anticipate backordered items will begin shipping in early October.</strong>
+<!--
+  Eligibility and shipping notice. Renders directly under the header on the landing page.
+
+  Styled flat per the brand handoff rather than as a Bootstrap danger alert: nothing here
+  is an error, and red on arrival reads as one. role="status" with aria-live="polite" so a
+  screen reader announces it without interrupting.
+-->
+<div class="hz-notice" role="status" aria-live="polite" ng-show="isActive('catalog')">
+  <span class="hz-notice-i" aria-hidden="true">i</span>
+  <p class="hz-notice-t">
+    <b>Eligibility &amp; shipping.</b>
+    New hires become eligible for uniforms after 90 days &mdash; a blank catalog means you
+    are not eligible yet. Replenishment orders are placed; backordered items begin shipping
+    in early October.
+    <a href="contactus">Contact your uniform champion</a>
+  </p>
 </div>
       
-<div class="heroImage-home row" ng-show="isActive('catalog') && (hertzUser || hertzChampionUser || dollarUser || dollarChampionUser || thriftyUser || thriftyChampionUser)" style="background-color: #1e3f75; color: white; padding: 0; margin: 0; border-top: 5px solid #fc0;">
-  <div class="container-fluid" style="padding: 0; margin: 0;">
-    <img 
-      src="https://thumbprint.com/four51_images/hertz_banner_main.png" 
-      alt="Hertz Banner" 
-      style="width: 100%; height: auto; display: block;">
-  </div>
-</div>
-
-<div class="heroImage-home row" ng-hide="isActive('catalog') || isActive('catalog/dt_uniform') || isActive('catalog/htz_uniform')" >
-</div>
+<!-- The catalogue banner image was removed: the landing page carries its own hero. -->
 <div class="dollar" ng-show="isActive('catalog/dt_uniform')" style="border:20px solid #ef0731;">
 </div>
 <div class="hertz" ng-show="isActive('catalog/htz_uniform')" style="border:20px solid #fc0;">

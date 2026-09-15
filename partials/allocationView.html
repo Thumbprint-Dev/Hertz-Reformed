@@ -1,106 +1,195 @@
 <!--
-  My Uniform Allocation.
+  Choose your uniform — the picker.
 
-  Every custom element below uses an explicit closing tag. A self-closed custom tag
-  (<loadingindicator />) is parsed by the browser as an unclosed opener, and every sibling
-  after it becomes a silently swallowed hidden child until the parser meets a real close —
-  which is how an entire table can vanish with no error anywhere.
+  Replaced a read-only summary table, which told an employee what they had and then made
+  them navigate elsewhere to act on it.
 
-  Deliberately plain markup: one heading, one table, one note. Nothing here needs to be
-  decorative, and an allocation an employee cannot read at a glance is a support call.
+  Every custom element carries an explicit closing tag: a self-closed custom tag is parsed
+  as an unclosed opener and silently swallows its siblings.
 -->
-<section class="hz-alloc">
-  <div class="hz-alloc-inner">
+<section class="hz-pick" data-brand="{{alloc.brandKey}}">
+  <div class="hz-pick-shell">
 
-    <h1 class="hz-alloc-title">My Uniform Allocation</h1>
+    <header class="hz-pick-head">
+      <h1 class="hz-pick-title">Choose your uniform</h1>
+      <p class="hz-pick-sub" ng-if="alloc.view">
+        {{alloc.view.groupName}} &middot; allocation year ends {{alloc.view.cycleEnd | hzDate}}
+      </p>
+    </header>
 
-    <!-- Turned off until the API is reachable from a browser and Four51 credentials
-         exist. Says which, rather than rendering an empty page. -->
-    <div class="hz-alloc-note" ng-if="!alloc.enabled">
+    <div class="hz-note" ng-if="!alloc.enabled">
       <p>Live allocation is not switched on for this environment yet.</p>
     </div>
 
     <div ng-if="alloc.enabled">
 
-      <!-- Skeleton rather than a spinner or a line of text: it occupies the shape the
-           real table will take, so the page does not jump when the data lands, and it
-           reads as "your allocation is coming" rather than "something is happening". -->
-      <div class="hz-alloc-skeleton" ng-show="alloc.loading" aria-busy="true" aria-live="polite">
+      <div class="hz-pick-skel" ng-show="alloc.loading" aria-busy="true">
         <span class="hz-sr-only">Loading your allocation</span>
-        <div class="hz-skel hz-skel-meta"></div>
-        <div class="hz-skel-row" ng-repeat="n in [1,2,3,4,5]">
-          <div class="hz-skel hz-skel-label"></div>
-          <div class="hz-skel hz-skel-num"></div>
-        </div>
+        <div class="hz-skel" ng-repeat="n in [1,2,3,4,5]" style="height:62px"></div>
       </div>
 
-      <div class="hz-alloc-error" ng-show="alloc.error">
-        <p>{{alloc.error}}</p>
-      </div>
+      <div class="hz-alert" ng-show="alloc.error"><p>{{alloc.error}}</p></div>
 
-      <!-- Not eligible yet. Scenarios 3 and 4: two distinct messages, and always the
-           exact date rather than a shrug. -->
-      <div class="hz-alloc-note"
+      <div class="hz-note"
            ng-show="!alloc.loading && !alloc.error && alloc.eligibility && alloc.eligibility.status !== 'eligible'">
         <p>{{alloc.eligibility.message}}</p>
       </div>
 
-      <div ng-show="!alloc.loading && !alloc.error && alloc.view">
+      <div class="hz-pick-grid" ng-show="!alloc.loading && !alloc.error && alloc.view">
 
-        <p class="hz-alloc-muted">
-          {{alloc.view.groupName}}
-          &middot; your allocation year ends {{alloc.view.cycleEnd | hzDate}}
-        </p>
+        <div class="hz-pools">
 
-        <table class="hz-alloc-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th class="hz-alloc-num">Remaining</th>
-              <th class="hz-alloc-num" ng-if="alloc.anyReserved">In cart</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="pool in alloc.view.pools">
-              <td>{{pool.name}}</td>
-              <td class="hz-alloc-num">{{pool.remaining}}</td>
-              <td class="hz-alloc-num" ng-if="alloc.anyReserved">{{pool.reserved}}</td>
-            </tr>
-          </tbody>
-        </table>
+          <section class="hz-pool" ng-repeat="pool in alloc.pools" ng-class="{open: pool.open}">
+            <button class="hz-pool-head" type="button"
+                    ng-click="alloc.toggle(pool)"
+                    aria-expanded="{{pool.open ? 'true' : 'false'}}">
+              <span class="hz-pool-name">{{pool.name | hzPool}}</span>
+              <span class="hz-pool-n">{{alloc.leftIn(pool)}}<i>remaining</i></span>
+              <span class="hz-chev" aria-hidden="true"></span>
+            </button>
 
-        <!-- Withheld by a seasonal window, not by allocation. Shown rather than hidden so
-             the employee is told when it returns instead of wondering where it went.
-             `opensOn` is null when nothing will ever open it for them — a cold-weather
-             item at a warm location — and saying a date there would be a lie. -->
-        <div ng-if="alloc.view.seasonalClosed.length">
-          <h2 class="hz-alloc-subtitle">Not available right now</h2>
-          <p class="hz-alloc-muted">
-            These are seasonal items. You still have this allocation &mdash; it simply
-            cannot be ordered outside its season.
-          </p>
-          <table class="hz-alloc-table">
-            <tbody>
-              <tr ng-repeat="item in alloc.view.seasonalClosed">
-                <td>{{item.categoryName || item.poolName}}</td>
-                <td class="hz-alloc-num">
-                  <span ng-if="item.opensOn">Available from {{item.opensOn | hzDate:false}}</span>
-                  <span ng-if="!item.opensOn">Not available at your location</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <div class="hz-meter" aria-hidden="true">
+              <i ng-style="{width: (alloc.usedIn(pool) / pool.remaining * 100) + '%'}"></i>
+            </div>
+
+            <div class="hz-items" ng-if="pool.open">
+              <div ng-repeat="cat in pool.categories">
+
+                <!-- A category with no product mapped is our gap, not the employee's, so
+                     it is named rather than silently absent (decision 42). -->
+                <p class="hz-cat-empty" ng-if="!cat.products.length">
+                  {{cat.name}} &mdash; not available yet
+                </p>
+
+                <div class="hz-item" ng-repeat="product in cat.products">
+                  <button class="hz-thumb" type="button"
+                          ng-click="alloc.openPreview(pool, cat, product)"
+                          aria-label="Preview {{alloc.labelFor(product.productId, cat.name)}}">
+                    <span class="hz-art hz-art--{{alloc.artFor(cat.name)}}" aria-hidden="true"></span>
+                  </button>
+
+                  <div class="hz-item-text">
+                    <span class="hz-item-name">{{alloc.labelFor(product.productId, cat.name)}}</span>
+                    <span class="hz-item-sku">{{product.productId}}</span>
+                    <button class="hz-link" type="button"
+                            ng-click="alloc.openPreview(pool, cat, product)">Size chart</button>
+                  </div>
+
+                  <div class="hz-item-ctrl">
+                    <select ng-model="alloc.picked[product.productId].size"
+                            ng-init="alloc.setSize(product.productId, 'L')"
+                            ng-options="s for s in alloc.sizes"
+                            aria-label="Size"></select>
+
+                    <span class="hz-step">
+                      <button type="button" ng-click="alloc.remove(product)"
+                              ng-disabled="!alloc.qtyOf(product.productId)"
+                              aria-label="One fewer">&minus;</button>
+                      <output>{{alloc.qtyOf(product.productId)}}</output>
+                      <button type="button" ng-click="alloc.add(pool, product)"
+                              ng-disabled="!alloc.canAdd(pool)"
+                              aria-label="One more">+</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Seasonal: present but shut, carrying the date it returns. Hiding it invites
+               "where did my parka go"; showing it answers before the question is asked. -->
+          <section class="hz-pool hz-pool--shut" ng-repeat="item in alloc.closed">
+            <div class="hz-pool-head hz-pool-head--static">
+              <span class="hz-pool-name">{{(item.categoryName || item.poolName) | hzPool}}</span>
+              <span class="hz-pool-n hz-pool-n--shut">
+                <i ng-if="item.opensOn">opens {{item.opensOn | hzDate:false}}</i>
+                <i ng-if="!item.opensOn">not at your location</i>
+              </span>
+            </div>
+          </section>
         </div>
 
-        <p class="hz-alloc-footnote hz-alloc-muted">
-          Quantities are limits, not requirements &mdash; order fewer now and the rest
-          whenever you need them.
-        </p>
+        <aside class="hz-rail" aria-label="Your selection">
+          <p class="hz-rail-h">Your selection</p>
+          <p class="hz-rail-total"><b>{{alloc.totalPicked}}</b> <span>items chosen</span></p>
 
-        <!-- The page was a dead end: it told an employee what they had and gave them no
-             way to act on it. -->
-        <a class="hz-alloc-cta" href="catalog">Shop uniforms</a>
+          <div class="hz-rail-list">
+            <button class="hz-rail-row" type="button" ng-repeat="pool in alloc.pools"
+                    ng-click="alloc.toggle(pool)"
+                    ng-class="{done: alloc.leftIn(pool) === 0}">
+              <span class="hz-rail-name">{{pool.name | hzPool}}</span>
+              <span class="hz-rail-n">{{alloc.usedIn(pool)}} / {{pool.remaining}}</span>
+              <span class="hz-rail-bar">
+                <i ng-style="{width: (alloc.usedIn(pool) / pool.remaining * 100) + '%'}"></i>
+              </span>
+            </button>
+          </div>
 
+          <button class="hz-btn hz-btn--block" type="button"
+                  ng-click="alloc.check()"
+                  ng-disabled="!alloc.totalPicked || alloc.submitting">
+            <span ng-if="!alloc.submitting">Check my selection</span>
+            <span ng-if="alloc.submitting">Checking&hellip;</span>
+          </button>
+
+          <div class="hz-result" ng-if="alloc.result" ng-class="{bad: !alloc.result.ok}">
+            <p ng-repeat="m in alloc.result.messages">{{m}}</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="hz-modal" ng-if="alloc.preview" ng-click="alloc.closePreview()">
+    <div class="hz-modal-box" ng-click="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <div class="hz-modal-head">
+        <div>
+          <p class="hz-modal-title">{{alloc.preview.name}}</p>
+          <p class="hz-modal-sku">{{alloc.preview.product.productId}}</p>
+        </div>
+        <button class="hz-modal-x" type="button" ng-click="alloc.closePreview()"
+                aria-label="Close">&times;</button>
+      </div>
+
+      <div class="hz-modal-body">
+        <div class="hz-modal-art">
+          <span class="hz-art hz-art--lg hz-art--{{alloc.preview.art}}" aria-hidden="true"></span>
+          <p class="hz-modal-cap">Illustration. Product photography comes from the catalogue.</p>
+        </div>
+
+        <div>
+          <p class="hz-chart-h">Size chart <em>Example measurements</em></p>
+          <div class="hz-chart-scroll">
+            <table class="hz-chart">
+              <thead>
+                <tr>
+                  <th>Measurement</th>
+                  <th ng-repeat="s in alloc.sizes">{{s}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="row in alloc.chartRows(alloc.preview.chart)">
+                  <td>{{row.label}}</td>
+                  <td ng-repeat="v in row.values">{{v}}&quot;</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="hz-modal-foot">
+          <span class="hz-modal-note">
+            Draws on {{alloc.preview.pool.name | hzPool}} &mdash;
+            {{alloc.leftIn(alloc.preview.pool)}} remaining.
+          </span>
+          <button class="hz-btn" type="button"
+                  ng-click="alloc.add(alloc.preview.pool, alloc.preview.product); alloc.closePreview()"
+                  ng-disabled="!alloc.canAdd(alloc.preview.pool)">
+            <span ng-if="alloc.canAdd(alloc.preview.pool)">Add to selection</span>
+            <span ng-if="!alloc.canAdd(alloc.preview.pool)">No allocation left</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -19,6 +19,19 @@
 four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
   function($scope, $q, Allocation, Category) {
 
+    /**
+     * The hero photograph, top right of the landing page.
+     *
+     * Put the file's path here and the placeholder disappears — that is the whole change.
+     * Relative paths resolve against the theme root, so a file dropped in `css/img/`
+     * is `'css/img/hero.jpg'`.
+     *
+     * §4.1 asks for black and white; this one runs in colour under the §4.3 carve-out for
+     * yellow that is really in the scene. See `.hz-lp-hero-img` in custom.css, where the
+     * grayscale filter is one uncommented line away.
+     */
+    var HERO_IMAGE = 'css/img/hero-lifestyle.jpg';
+
     // An object, never bare primitives: anything under an `ng-if` gets a child scope, and
     // writing to a bare name there shadows rather than updates.
     $scope.home = {
@@ -31,11 +44,14 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       brandKey: 'hertz',
       isChampion: false,
       categories: [],
-      /** Orderable pools, for the per-pool chips. */
+      /** Orderable pools — one landing-page cell each. */
       pools: [],
       totalRemaining: 0,
       totalGranted: 0,
-      closed: []
+      /** Width of the progress bar, as a percentage. */
+      percentLeft: 0,
+      closed: [],
+      heroImage: HERO_IMAGE
     };
 
     /**
@@ -50,6 +66,28 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       if (b.indexOf('dollar') > -1) return 'dollar';
       if (b.indexOf('thrifty') > -1) return 'thrifty';
       return 'hertz';
+    }
+
+    /**
+     * Reading order for the allocation cells.
+     *
+     * The API returns pools alphabetically, which puts Belt — one item — first and buries
+     * the two pools carrying two thirds of the allocation. This is the order Hertz's
+     * design uses and the order people get dressed in. Anything not named here keeps its
+     * API position at the end, so a new pool appears rather than disappearing.
+     */
+    var POOL_ORDER = ['Polos', 'Bottoms', 'Layering', 'Headwear', 'Belt'];
+
+    function inDisplayOrder(pools) {
+      var known = [];
+      var rest = [];
+      angular.forEach(pools || [], function(p) {
+        (POOL_ORDER.indexOf(p.name) > -1 ? known : rest).push(p);
+      });
+      known.sort(function(a, b) {
+        return POOL_ORDER.indexOf(a.name) - POOL_ORDER.indexOf(b.name);
+      });
+      return known.concat(rest);
     }
 
     function describe(err) {
@@ -116,7 +154,7 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
             $scope.home.brand = view.brand;
             $scope.home.brandKey = brandKeyFor(view.brand);
             $scope.home.closed = view.seasonalClosed || [];
-            $scope.home.pools = view.pools || [];
+            $scope.home.pools = inDisplayOrder(view.pools);
             var remaining = 0, granted = 0;
             angular.forEach(view.pools || [], function(p) {
               remaining += p.remaining;
@@ -124,6 +162,9 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
             });
             $scope.home.totalRemaining = remaining;
             $scope.home.totalGranted = granted;
+            // Guarded rather than assumed: an employee whose kit grants nothing would
+            // otherwise divide by zero and render a NaN-wide bar.
+            $scope.home.percentLeft = granted > 0 ? Math.round((remaining / granted) * 100) : 0;
           }
           return loadCategories();
         })
