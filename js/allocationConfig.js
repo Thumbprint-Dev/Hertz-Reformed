@@ -47,6 +47,12 @@ four51.app.constant('AllocationConfig', {
    * test account, not an arbitrary one. That is an acceptable trade on a sandbox holding
    * generated data and an unacceptable one anywhere near real employees.
    *
+   * `true` reads the signed-in username. A **string** pins that username instead, which is
+   * the escape hatch for when Four51 reports something the server allowlist does not
+   * expect — a site-prefixed login, say — so a test is never blocked on working that out:
+   *
+   *     localAuthShim: 'web-htz'
+   *
    * MUST be false before any real HR feed lands. Leaving it on is the difference between a
    * test fixture and an impersonation endpoint.
    */

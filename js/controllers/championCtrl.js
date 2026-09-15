@@ -43,9 +43,13 @@ four51.app.controller('ChampionCtrl', ['$scope', '$location', 'Allocation',
       if (err.network || err.status === 0) return 'Could not reach the allocation service.';
       if (err.status === 403) return 'The allocation service refused this request.';
       if (err.status === 401) {
-        return err.shimUsername
-          ? 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.'
-          : 'Your session could not be verified.';
+        if (err.shimUsername) {
+          return 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.';
+        }
+        if (err.shimAttempted) {
+          return 'Could not read your Four51 username, so allocation could not verify you.';
+        }
+        return 'Your session could not be verified.';
       }
       return 'Could not load your team.';
     }

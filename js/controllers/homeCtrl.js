@@ -108,12 +108,16 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       if (err.network || err.status === 0) return 'Could not reach the allocation service.';
       if (err.status === 403) return 'The allocation service refused this request.';
       if (err.status === 401) {
-        // The shim asserts a username; a 401 almost always means that login is not on the
-        // server's allowlist, and naming it is the difference between a dead end and a
-        // one-line fix.
-        return err.shimUsername
-          ? 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.'
-          : 'Your session could not be verified.';
+        // A 401 under the shim is an allowlist question, and the only useful thing to say
+        // is which login was tried. Saying "no username" is just as actionable as naming
+        // one — it points at a different fix — and both beat a bare failure.
+        if (err.shimUsername) {
+          return 'Signed in as "' + err.shimUsername + '", which is not set up for allocation yet.';
+        }
+        if (err.shimAttempted) {
+          return 'Could not read your Four51 username, so allocation could not verify you.';
+        }
+        return 'Your session could not be verified.';
       }
       return 'Could not load your allocation.';
     }

@@ -31,8 +31,8 @@
  * page and this token authorises spending someone's allocation. In-memory means it dies
  * with the tab, and re-exchanging is cheap.
  */
-four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Security',
-  function($q, $rootScope, AllocationConfig, Security) {
+four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationConfig', 'Security', 'User',
+  function($q, $rootScope, $timeout, AllocationConfig, Security, User) {
 
     // In memory on purpose. See the note above.
     var _token = null;
@@ -116,23 +116,57 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
      * pointless round trips against a shopper's first paint.
      */
     /**
-     * The signed-in Four51 username, for the local auth shim.
+     * The signed-in Four51 username, for the local auth shim. Resolves to a name or null.
      *
-     * `isAuthenticated()` is what repopulates `currentUser` from the cookie after a page
-     * load — reading `currentUser` without calling it first gets `undefined` on every
-     * fresh load, which would silently fall back to the real token the stub cannot
-     * resolve. Calling it is the documented way to get the value, not a side effect being
-     * relied on by accident.
+     * Two sources, because the first one is not always populated. `Security.currentUser`
+     * comes from a cookie written at login by `Security.init`; `isAuthenticated()` is what
+     * repopulates it after a page load. That cookie turned out to be missing `Username` in
+     * practice — the symptom was a bare "session could not be verified" with nothing to act
+     * on — so `User.get` is the fallback. It is the same source the header reads, cached in
+     * localStorage and answered synchronously when it is warm.
+     *
+     * Never rejects and never hangs. A promise that neither settles is worse than a wrong
+     * answer here: it leaves the page on its loading skeleton forever, which is exactly how
+     * the `$applyAsync` bug presented. The timeout guarantees an answer.
      */
     function shimUsername() {
-      if (!AllocationConfig.localAuthShim) return null;
+      if (!AllocationConfig.localAuthShim) return $q.when(null);
+
+      // An explicit string pins the login instead of reading it. The escape hatch for
+      // when Four51's username is not what the allowlist expects — a prefixed one, say —
+      // so testing is never blocked on working that out.
+      if (typeof AllocationConfig.localAuthShim === 'string') {
+        return $q.when(AllocationConfig.localAuthShim);
+      }
+
       try {
         Security.isAuthenticated();
-        var u = Security.currentUser && Security.currentUser.Username;
-        return u || null;
+        var fromCookie = Security.currentUser && Security.currentUser.Username;
+        if (fromCookie) return $q.when(fromCookie);
       } catch (e) {
-        return null;
+        // Fall through to User.get rather than giving up.
       }
+
+      var d = $q.defer();
+      var settled = false;
+      function settle(value) {
+        if (settled) return;
+        settled = true;
+        d.resolve(value || null);
+      }
+
+      // If the cache is cold this is a network call; if it is warm the callback fires
+      // synchronously, so the digest is nudged rather than waited on.
+      $timeout(function() { settle(null); }, 5000);
+      try {
+        User.get(function(user) {
+          settle(user && user.Username);
+          $rootScope.$evalAsync();
+        });
+      } catch (e) {
+        settle(null);
+      }
+      return d.promise;
     }
 
     /**
@@ -154,26 +188,33 @@ four51.app.factory('Allocation', ['$q', '$rootScope', 'AllocationConfig', 'Secur
       // The shim wins when on, because the point of it is to work when the real session
       // token cannot be resolved. See the note on AllocationConfig.localAuthShim — it is
       // bounded server-side by an allowlist and must be off before real data exists.
-      var shimUser = shimUsername();
-      var four51Token = shimUser ? 'local:' + shimUser : Security.auth();
-      if (!four51Token) return $q.reject({ status: 401, body: null, noSession: true });
+      _pending = shimUsername().then(function(shimUser) {
+        var four51Token = shimUser ? 'local:' + shimUser : Security.auth();
+        if (!four51Token) {
+          _pending = null;
+          return $q.reject({ status: 401, body: null, noSession: true });
+        }
 
-      _pending = request('POST', '/auth/session', { four51Token: four51Token }, null)
-        .then(function(data) {
-          _token = data.token;
-          _tokenAt = Date.now();
-          _identity = { employeeId: data.employeeId, roles: data.roles || [] };
-          _pending = null;
-          return _token;
-        })
-        .catch(function(err) {
-          _pending = null;
-          _token = null;
-          if (err && err.status === 401 && shimUser) {
-            err.shimUsername = shimUser;
-          }
-          return $q.reject(err);
-        });
+        return request('POST', '/auth/session', { four51Token: four51Token }, null)
+          .then(function(data) {
+            _token = data.token;
+            _tokenAt = Date.now();
+            _identity = { employeeId: data.employeeId, roles: data.roles || [] };
+            _pending = null;
+            return _token;
+          })
+          .catch(function(err) {
+            _pending = null;
+            _token = null;
+            if (err && err.status === 401) {
+              // Always stamped, including when no name was found: a 401 here is an
+              // allowlist question, and "which login?" is the only thing worth knowing.
+              err.shimUsername = shimUser || null;
+              err.shimAttempted = AllocationConfig.localAuthShim === true;
+            }
+            return $q.reject(err);
+          });
+      });
 
       return _pending;
     }
