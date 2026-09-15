@@ -1,3 +1,9 @@
+<!-- Allocation summary band. Sits above the catalogue so the landing page answers
+     "what can I still order" without a second navigation. Its own controller, so
+     CategoryCtrl is untouched and a failure here cannot take the catalogue down. -->
+<div ng-controller="HomeCtrl">
+  <div ng-include="'partials/controls/allocationBand.html'"></div>
+</div>
 <style>
     .panel-nav ul li:hover {
   

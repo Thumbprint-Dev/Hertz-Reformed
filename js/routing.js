@@ -77,5 +77,5 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
             }
         }).
         
-        otherwise({redirectTo: '/home'});
+        otherwise({redirectTo: '/catalog'});
 }]);

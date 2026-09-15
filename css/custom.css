@@ -1233,7 +1233,7 @@ contentmodal2 a:hover{
 .hz-hero {
   position: relative;
   overflow: hidden;
-  background: var(--hz-ink);
+  background: #fff;
   margin-bottom: 52px;
 }
 
@@ -1246,15 +1246,15 @@ contentmodal2 a:hover{
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 90% at 82% 18%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 60%),
-    linear-gradient(115deg, #11172b 0%, #1b2338 48%, #11172b 100%);
+    radial-gradient(85% 120% at 88% 8%, rgba(255,204,0,.20) 0%, rgba(255,204,0,0) 62%),
+    linear-gradient(150deg, #ffffff 0%, #f6f8fc 46%, #eef2f8 100%);
 }
 .hz-home[data-brand="dollar"]  .hz-hero-art { background:
-    radial-gradient(120% 90% at 82% 18%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 60%),
-    linear-gradient(115deg, #2a0d13 0%, #4a1622 48%, #2a0d13 100%); }
+    radial-gradient(85% 120% at 88% 8%, rgba(229,25,55,.15) 0%, rgba(229,25,55,0) 62%),
+    linear-gradient(150deg, #ffffff 0%, #fbf7f8 46%, #f5eef0 100%); }
 .hz-home[data-brand="thrifty"] .hz-hero-art { background:
-    radial-gradient(120% 90% at 82% 18%, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 60%),
-    linear-gradient(115deg, #071d33 0%, #0b2d4f 48%, #071d33 100%); }
+    radial-gradient(85% 120% at 88% 8%, rgba(0,113,206,.15) 0%, rgba(0,113,206,0) 62%),
+    linear-gradient(150deg, #ffffff 0%, #f5f9fd 46%, #eaf2fa 100%); }
 
 /* The accent rule under the hero, echoing the wordmark's underline. */
 .hz-hero::after {
@@ -1278,7 +1278,7 @@ contentmodal2 a:hover{
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--hz-accent);
+  color: var(--hz-muted);
   margin: 0 0 14px;
 }
 
@@ -1288,7 +1288,7 @@ contentmodal2 a:hover{
   font-size: clamp(38px, 6.4vw, 66px);
   line-height: 0.98;
   letter-spacing: -0.012em;
-  color: #fff;
+  color: var(--hz-ink);
   margin: 0;
   text-wrap: balance;
 }
@@ -1307,12 +1307,12 @@ contentmodal2 a:hover{
   font-weight: 600;
   font-size: 62px;
   line-height: 0.85;
-  color: var(--hz-accent);
+  color: var(--hz-ink);
   font-variant-numeric: tabular-nums;
 }
 .hz-stat-t { display: flex; flex-direction: column; gap: 2px; }
-.hz-stat-t b { color: #fff; font-size: 15px; font-weight: 700; }
-.hz-stat-t i { color: rgba(255,255,255,.62); font-size: 13px; font-style: normal; }
+.hz-stat-t b { color: var(--hz-ink); font-size: 15px; font-weight: 700; }
+.hz-stat-t i { color: var(--hz-muted); font-size: 13px; font-style: normal; }
 
 .hz-cta {
   background: var(--hz-accent);
@@ -1326,12 +1326,12 @@ contentmodal2 a:hover{
   white-space: nowrap;
 }
 .hz-cta:hover, .hz-cta:focus { background: var(--hz-accent-deep); color: var(--hz-on-accent); text-decoration: none; }
-.hz-cta:focus { outline: 2px solid #fff; outline-offset: 3px; }
+.hz-cta:focus { outline: 2px solid var(--hz-ink); outline-offset: 3px; }
 
 .hz-hero-note {
   margin: 26px 0 0;
-  color: #fff;
-  background: rgba(255,255,255,.1);
+  color: var(--hz-warn-ink);
+  background: var(--hz-warn-bg);
   border-left: 3px solid var(--hz-accent);
   padding: 13px 17px;
   border-radius: 0 4px 4px 0;
@@ -1464,14 +1464,14 @@ contentmodal2 a:hover{
 /* ---------------------------------------------------------------- skeleton */
 .hz-skel {
   display: inline-block;
-  background: rgba(255,255,255,.16);
+  background: #e7eaf1;
   border-radius: 4px;
   position: relative;
   overflow: hidden;
 }
 .hz-skel::after {
   content: ""; position: absolute; top: 0; left: 0; height: 100%; width: 200%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.28) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.9) 50%, rgba(255,255,255,0) 100%);
   animation: hz-sweep 1.25s ease-in-out infinite;
 }
 @keyframes hz-sweep { from { transform: translateX(-60%); } to { transform: translateX(60%); } }
@@ -1491,4 +1491,97 @@ contentmodal2 a:hover{
   .hz-stat-n { font-size: 50px; }
   .hz-shell { padding-left: 18px; padding-right: 18px; }
   .hz-tile-art { height: 108px; }
+}
+
+/* ------------------- Allocation band (above the catalogue) ------------------- */
+/*
+   Light and quiet on purpose. It sits above the brand hero the admin authors, so it must
+   not compete with it — a band, not a card, with a hairline under it rather than a border
+   all the way round.
+*/
+.hz-band {
+  --hz-accent: #fc0;
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: #fff;
+  border-bottom: 1px solid #e3e7ef;
+}
+.hz-band[data-brand="dollar"]  { --hz-accent: #e51937; }
+.hz-band[data-brand="thrifty"] { --hz-accent: #0071ce; }
+
+.hz-band-inner {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+}
+.hz-band-inner--wait { border-left: 3px solid var(--hz-accent); background: #fdf4e2; }
+
+.hz-band-n {
+  font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 0.9;
+  color: #11172b;
+  font-variant-numeric: tabular-nums;
+}
+
+.hz-band-text { display: flex; flex-direction: column; gap: 1px; }
+.hz-band-text b { color: #11172b; font-size: 14px; font-weight: 700; }
+.hz-band-text i { color: #5f6778; font-size: 12.5px; font-style: normal; }
+
+/* Pushed right on a wide row; wraps to its own line before it would crowd the button. */
+.hz-band-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+
+.hz-band-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  background: #f4f6fa;
+  border: 1px solid #e3e7ef;
+  border-radius: 14px;
+  padding: 3px 11px;
+  font-size: 12px;
+  color: #2c3140;
+  white-space: nowrap;
+}
+.hz-band-chip b {
+  font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-size: 14px;
+  color: #11172b;
+  font-variant-numeric: tabular-nums;
+}
+
+.hz-band-cta {
+  background: var(--hz-accent);
+  color: #11172b;
+  border-radius: 4px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.hz-band[data-brand="dollar"] .hz-band-cta,
+.hz-band[data-brand="thrifty"] .hz-band-cta { color: #fff; }
+.hz-band-cta:hover, .hz-band-cta:focus { filter: brightness(.93); text-decoration: none; }
+.hz-band-cta:focus { outline: 2px solid #11172b; outline-offset: 2px; }
+
+.hz-band-season {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px 14px;
+  font-size: 12.5px;
+  color: #8a5a10;
+}
+.hz-band-season strong { font-weight: 700; }
+
+@media (max-width: 760px) {
+  .hz-band-chips { margin-left: 0; width: 100%; }
+  .hz-band-inner { padding: 14px 18px; }
+  .hz-band-n { font-size: 32px; }
 }
