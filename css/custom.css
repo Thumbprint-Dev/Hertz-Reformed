@@ -2405,7 +2405,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
   font-family: 'Open Sans', Arial, sans-serif;
   color: var(--body);
-  background: #fff;
+  /* Tinted ground, white cards on it. On pure white the cards' 1px edge was the only
+     thing separating the page from the header, which left the header reading as though it
+     were floating over nothing. */
+  background: #F6F7F9;
   /* Cancel .mainContainer's 10% side padding so the page runs edge to edge like the
      landing page: content box is 80% of the whole, and 10/80 = 12.5%. */
   margin-left: -12.5%;
@@ -2569,7 +2572,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   --line: #e3e7ef; --edge: #dae0ea; --sub: #f8f9fc;
   --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
   font-family: 'Open Sans', Arial, sans-serif;
-  color: var(--body); background: #fff;
+  color: var(--body); background: #F6F7F9;
   margin-left: -12.5%; margin-right: -12.5%;
   padding: 28px clamp(16px, 4vw, 56px) clamp(48px, 7vw, 96px);
   min-height: calc(100vh - 150px);
@@ -2598,7 +2601,9 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-co .panel-heading, .hz-co .panel-heading.checkout-container {
   background: #fff !important; border: 0 !important;
-  border-bottom: 1px solid var(--line) !important; padding: 15px 20px !important; cursor: pointer;
+  border-bottom: 1px solid var(--line) !important; padding: 15px 20px !important;
+  /* Always-open cards now: the header is a label, not a toggle. */
+  cursor: default;
 }
 .hz-co .panel-body { padding: 20px !important; border: 0; }
 .hz-co .panel-heading h3, .hz-co .panel-title {

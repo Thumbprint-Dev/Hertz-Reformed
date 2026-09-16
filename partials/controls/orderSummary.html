@@ -37,10 +37,6 @@
     </div>
   </div>
 
-  <p class="hz-co-note" ng-if="user.Permissions.contains('HidePricing') || hidePrices || currentOrder.Total <= 0">
-    Charged to your location, not to you.
-  </p>
-
   <button type="button" class="hz-co-btn hz-co-btn--primary"
           ng-click="submitOrder()"
           ng-disabled="submitClicked || cart_order.$invalid || cart_shipping.$invalid || cart_billing.$invalid">

@@ -20,13 +20,12 @@
   </style>
   <div class="panel-order" style="display: none !important;">
       <div class="panel-heading checkout-container" ng-class="{'no': cart_billing.$invalid, 'yes': !cart_billing.$invalid, 'open': checkOutSection == 'billing' }" style="background-color: white;">
-          <h3 ng-click="checkOutSection = 'billing'" class="panel-title">
+          <h3 class="panel-title">
               <i class="pull-left checkout-circle" ng-class="{'fa fa-warning': cart_billing.$invalid, 'fa fa-check-circle': !cart_billing.$invalid }"></i>
               <span class="checkout-title">{{'Billing' | r | xlat}}</span>
-              <i class="" style="color: #4E2683;" ng-class="{'fa fa-caret-up': checkOutSection == 'billing', 'fa fa-caret-down': checkOutSection == 'shipping' || checkOutSection == 'order' }"></i>
-          </h3>
+              </h3>
       </div>
-      <div collapse="checkOutSection != 'billing'" class="panel-body">
+      <div class="panel-body">
           <div>
               <billingmessage />
           </div>

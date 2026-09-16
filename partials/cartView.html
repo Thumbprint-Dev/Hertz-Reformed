@@ -116,10 +116,6 @@
             </div>
           </div>
 
-          <p class="hz-cart-note" ng-if="user.Permissions.contains('HidePricing') || currentOrder.Total <= 0">
-            Charged to your location, not to you.
-          </p>
-
           <!--
             The allotment confirmation. `required` is what keeps `cart.$invalid` true, which
             is what disables Check Out below — the gate, not a reminder.
@@ -134,9 +130,7 @@
             Check out
           </button>
 
-          <a class="hz-cart-btn" href="allocation">Keep choosing</a>
-
-          <button type="button" class="hz-cart-btn" ng-click="saveChanges()">Save order</button>
+          <a class="hz-cart-btn" href="catalog">Continue shopping</a>
 
           <button type="button" class="hz-cart-cancel"
                   ng-click="currentOrder.Status == 'AwaitingApproval' ? cancelEdit() : cancelOrder()">
