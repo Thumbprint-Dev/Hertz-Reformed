@@ -8,16 +8,19 @@
  * have left, and the ways into the catalogue — plus, for a Uniform Champion, the two
  * things only they can do.
  *
- * ## Categories come from Four51, not from here
+ * ## This page does not render the category tree
  *
- * The category tree is Four51's, maintained in the admin. This page reads it and renders
- * whatever is there rather than hardcoding a list, so adding or renaming a category is an
- * admin change with no deploy. `Category.tree()` caches in `localStorage` with **no
- * expiry**, so a newly created category will not appear until that key is cleared — which
- * is a Four51 behaviour, not a bug here (`docs/04-FOUR51-NOTES.md`).
+ * It used to: a champion saw a grid built from `Category.tree()`, headed "Buy a la carte".
+ * In this tenant that tree has one top-level category, `orderob`, so the grid rendered a
+ * single enormous empty tile labelled "Order On Behalf" — duplicating the button beneath
+ * it and pointing at a category that cannot know whose allocation it spends.
+ *
+ * Browsing a catalogue is the catalogue's job. This page is a launcher: the hero, the two
+ * champion doors, and for an employee their allocation. Anything that needs the tree
+ * should read it where it is used, not here.
  */
-four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
-  function($scope, $q, Allocation, Category) {
+four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
+  function($scope, Allocation) {
 
     /**
      * The hero photograph, top right of the landing page.
@@ -43,7 +46,6 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       brand: null,
       brandKey: 'hertz',
       isChampion: false,
-      categories: [],
       /** Orderable pools — one landing-page cell each. */
       pools: [],
       totalRemaining: 0,
@@ -67,8 +69,13 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
      * the beneficiary through the cart gate and into checkout.
      *
      * À la carte is genuinely a category, because it is a plain catalogue purchase charged
-     * to the location. Empty falls back to the first category in the tree, so the entry
-     * leads somewhere real until that category exists.
+     * to the location. Set this to its InteropID when Hertz creates it.
+     *
+     * Empty falls back to the catalogue root, NOT to the first category in the tree. That
+     * used to be the fallback and it was actively wrong: the first top-level category in
+     * this tenant is `orderob`, so "Buy à la carte" led to Order On Behalf — a category
+     * that cannot know whose allocation it spends. The root shows everything the champion
+     * may buy, which is the honest answer until the real category exists.
      */
     var A_LA_CARTE_CATEGORY = '';
 
@@ -106,48 +113,12 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
       return 'Could not load your allocation.';
     }
 
-    /**
-     * The categories this employee may shop.
-     *
-     * Four51 decides visibility by group, so whatever comes back is already scoped to
-     * them — this does not filter, it only presents. Top-level categories only: the tree's
-     * children are the drill-down the catalogue itself handles.
-     */
-    function loadCategories() {
-      var d = $q.defer();
-      try {
-        Category.tree(function(tree) {
-          var list = [];
-          angular.forEach(tree || [], function(c) {
-            if (c && c.Name) {
-              list.push({
-                name: c.Name,
-                interopID: c.InteropID,
-                href: 'catalog/' + c.InteropID
-              });
-            }
-          });
-          d.resolve(list);
-        }, function() { d.resolve([]); });
-      } catch (e) {
-        // A category failure must not take the page down — the allocation summary and the
-        // champion entries are still useful without it.
-        d.resolve([]);
-      }
-      return d.promise;
-    }
-
-    function categoryHref(interopId, list) {
-      if (interopId) return 'catalog/' + interopId;
-      var first = (list || [])[0];
-      return first ? first.href : 'catalog';
+    function categoryHref(interopId) {
+      return interopId ? 'catalog/' + interopId : 'catalog';
     }
 
     $scope.home.load = function() {
-      if (!$scope.home.enabled) {
-        loadCategories().then(function(list) { $scope.home.categories = list; });
-        return;
-      }
+      if (!$scope.home.enabled) return;
       $scope.home.loading = true;
       $scope.home.error = null;
 
@@ -186,17 +157,12 @@ four51.app.controller('HomeCtrl', ['$scope', '$q', 'Allocation', 'Category',
             // otherwise divide by zero and render a NaN-wide bar.
             $scope.home.percentLeft = granted > 0 ? Math.round((remaining / granted) * 100) : 0;
           }
-          return loadCategories();
-        })
-        .then(function(list) {
-          if (list) $scope.home.categories = list;
-          $scope.home.alaCarteHref = categoryHref(A_LA_CARTE_CATEGORY, list);
+          $scope.home.alaCarteHref = categoryHref(A_LA_CARTE_CATEGORY);
           $scope.home.loading = false;
         })
         .catch(function(err) {
           $scope.home.error = describe(err);
           $scope.home.loading = false;
-          loadCategories().then(function(list) { $scope.home.categories = list; });
         });
     };
 

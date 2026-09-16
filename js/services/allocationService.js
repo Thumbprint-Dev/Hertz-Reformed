@@ -213,6 +213,23 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
             _token = data.token;
             _tokenAt = Date.now();
             _identity = { employeeId: data.employeeId, roles: data.roles || [] };
+
+            // Tell the rest of the theme, which asks a different question.
+            //
+            // `hertzChampionUser` is set in Four51Ctrl by matching the user's Four51 group
+            // name against the literal string "5_Hertz Uniform Champions", and it gates the
+            // FAQ link in the header and hamburger navs, the footer, and Remove in the
+            // cart. Champion status in this system is decided by our database, not by a
+            // group name, so the two disagree the moment a group is renamed or a champion
+            // is set up in one place and not the other — and the symptom is a champion who
+            // has the champion landing page and no champion nav.
+            //
+            // One fact, two readers. This makes the API the source and leaves the group
+            // match in place as a fallback, so nothing that works today stops working.
+            if ((_identity.roles || []).indexOf('champion') > -1) {
+              $rootScope.hertzChampionUser = true;
+            }
+
             _pending = null;
             return _token;
           })

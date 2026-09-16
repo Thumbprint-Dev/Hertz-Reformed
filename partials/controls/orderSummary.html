@@ -37,18 +37,27 @@
     </div>
   </div>
 
+  <!--
+    `!currentOrder.ShipAddressID` is part of this condition in the stock theme and was lost
+    when this summary was rewritten. It is not redundant with `cart_shipping.$invalid`: the
+    shipping form can validate while the order still carries no ship address — the address
+    is set on the order by the shipping directive, not by the form control — and submitting
+    then is rejected by Four51 after the click, which reads as checkout being broken rather
+    than as something being missing.
+  -->
   <button type="button" class="hz-co-btn hz-co-btn--primary"
           ng-click="submitOrder()"
-          ng-disabled="submitClicked || cart_order.$invalid || cart_shipping.$invalid || cart_billing.$invalid">
+          ng-disabled="submitClicked || cart_order.$invalid || cart_shipping.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
     <span ng-if="!submitClicked">Submit order</span>
     <span ng-if="submitClicked">Submitting&hellip;</span>
   </button>
 
   <!-- Says what is still missing rather than only disabling the button. A disabled control
        with no explanation is the commonest way a checkout strands someone. -->
-  <p class="hz-co-blocked" ng-if="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid">
+  <p class="hz-co-blocked"
+     ng-if="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
     <span ng-if="cart_order.$invalid">Order details are incomplete. </span>
-    <span ng-if="cart_shipping.$invalid">A shipping address is needed. </span>
+    <span ng-if="cart_shipping.$invalid || !currentOrder.ShipAddressID">A shipping address is needed. </span>
     <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
   </p>
 

@@ -1,19 +1,59 @@
 four51.app.controller('CheckOutViewCtrl', ['$scope', '$routeParams', '$location', '$filter', '$rootScope', '$451', 'User', 'Order', 'OrderConfig', 'FavoriteOrder', 'AddressList', 'GoogleAnalytics',
   function ($scope, $routeParams, $location, $filter, $rootScope, $451, User, Order, OrderConfig, FavoriteOrder, AddressList, GoogleAnalytics) {
     $scope.errorSection = '';
-    
-    $scope.currentOrder.PaymentMethod = 'PurchaseOrder';
-  
-    $scope.isEditforApproval = $routeParams.id != null && $scope.user.Permissions.contains('EditApprovalOrder');
-    if ($scope.isEditforApproval) {
-      Order.get($routeParams.id, function(order) {
-        $scope.currentOrder = order;
+
+    /**
+     * Everything here that needs an order, in one place, run once the order exists.
+     *
+     * `currentOrder` and `user` are both loaded asynchronously by Four51Ctrl, inside the
+     * `User.get` callback. Reaching checkout by clicking through from the cart, they are
+     * already on the scope. Reaching it by a reload, a bookmark, a shared link or the
+     * round trip back from SSO, they are not.
+     *
+     * This controller used to set `currentOrder.PaymentMethod` on its first statement.
+     * With no order that threw, which killed the controller before Angular could link the
+     * view, and the checkout route rendered a header and a footer with nothing between
+     * them. A guard for exactly this case already existed eleven lines below — too late to
+     * help, because the dereference above it had already thrown.
+     *
+     * "Not loaded yet" and "there is no order" are different answers. Only the second one
+     * belongs at the catalogue; treating the first that way bounces someone out of
+     * checkout for the crime of refreshing the page.
+     */
+    function startCheckout(order) {
+      order.PaymentMethod = 'PurchaseOrder';
+
+      $scope.isEditforApproval =
+        $routeParams.id != null &&
+        $scope.user && $scope.user.Permissions &&
+        $scope.user.Permissions.contains('EditApprovalOrder');
+
+      if ($scope.isEditforApproval) {
+        Order.get($routeParams.id, function(loaded) {
+          $scope.currentOrder = loaded;
+        });
+      }
+
+      $scope.hasOrderConfig = OrderConfig.hasConfig(order, $scope.user);
+      $scope.checkOutSection = $scope.hasOrderConfig ? 'order' : 'shipping';
+      $scope.checkoutReady = true;
+    }
+
+    if ($scope.currentOrder) {
+      startCheckout($scope.currentOrder);
+    } else {
+      // `undefined` is "Four51Ctrl has not answered yet"; `null` is its answer that there
+      // is no open order. Wait for the first, redirect on the second.
+      var stopWaiting = $scope.$watch('currentOrder', function(order) {
+        if (order === undefined) return;
+        stopWaiting();
+        if (order === null) {
+          $location.path('catalog');
+          return;
+        }
+        startCheckout(order);
       });
     }
-  
-    if (!$scope.currentOrder) {
-          $location.path('catalog');
-      }
 
 if ($scope.conSpringUser == true || $scope.conOfficeSpringUser === true) {
   // Watch for changes to Total
@@ -52,9 +92,9 @@ if ($scope.conSpringUser == true || $scope.conOfficeSpringUser === true) {
 
 
   
-    $scope.hasOrderConfig = OrderConfig.hasConfig($scope.currentOrder, $scope.user);
-    $scope.checkOutSection = $scope.hasOrderConfig ? 'order' : 'shipping';
-  
+      // hasOrderConfig / checkOutSection moved into startCheckout() above: both read the
+      // order, so both have to wait for it.
+
       function submitOrder() {
         $scope.displayLoadingIndicator = true;
       $scope.submitClicked = true;
@@ -83,6 +123,8 @@ if ($scope.conSpringUser == true || $scope.conOfficeSpringUser === true) {
       };
   
     $scope.$watch('currentOrder.CostCenter', function() {
+      // Fires once at registration, when there may be no order yet.
+      if (!$scope.currentOrder) return;
       OrderConfig.address($scope.currentOrder, $scope.user);
     });
   
