@@ -21,9 +21,17 @@
       <h2 class="hz-footer-h">Your uniform</h2>
       <ul>
         <li><a href="catalog">Shop uniforms</a></li>
+        <!--
+          Links are RELATIVE, like every other in-app link here. Three of these carried a
+          `/shop/` prefix from another tenant — `/shop/returns`, `/shop/faq`,
+          `/shop/contactus`. This app is served under `/hertzsandbox/`, so an absolute
+          `/shop/...` leaves it entirely and lands on a Four51 404. The routes themselves
+          are `contactus`, `faq/` and `returns/` in routing.js; Angular treats the trailing
+          slash as optional, so the bare name matches.
+        -->
         <li><a href="allocation">My allocation</a></li>
         <li><a href="order">Order history</a></li>
-        <li><a href="/shop/returns">Returns &amp; exchanges</a></li>
+        <li><a href="returns">Returns &amp; exchanges</a></li>
       </ul>
     </nav>
 
@@ -31,9 +39,9 @@
       <h2 class="hz-footer-h">Help</h2>
       <ul>
         <li ng-show="(hertzChampionUser || dollarChampionUser || thriftyChampionUser)">
-          <a href="/shop/faq">FAQ</a>
+          <a href="faq">FAQ</a>
         </li>
-        <li><a href="/shop/contactus">Contact us</a></li>
+        <li><a href="contactus">Contact us</a></li>
         <li>
           <a href="https://www.hertz.com/rentacar/privacypolicy/index.jsp?targetPage=privacyPolicyView.jsp"
              target="_blank" rel="noopener noreferrer">Privacy policy</a>
