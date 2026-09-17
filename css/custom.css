@@ -1781,6 +1781,15 @@ contentmodal2 a:hover{
 .hz-thumb:hover { border-color: var(--firm); }
 .hz-thumb:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+/* Fills the 58px thumb the outline art used to sit in, without resizing it. `contain`
+   because the renderings are square but the garments inside them are not, and a cropped
+   sleeve is worse than a small one. The files carry their own transparency, so the tile
+   background still shows through exactly as it did behind the mask. */
+.hz-thumb-img {
+  display: block; width: 100%; height: 100%;
+  object-fit: contain; padding: 4px; box-sizing: border-box;
+}
+
 .hz-item-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .hz-item-name { font-weight: 600; font-size: 14.5px; color: var(--ink); }
 .hz-item-sku { font-family: var(--display); font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
@@ -1894,6 +1903,13 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    token so a brand change does not need new artwork. */
 .hz-art { display: block; width: 34px; height: 34px; background: #aab2c2; }
 .hz-art--lg { width: 132px; height: 132px; margin: 0 auto; }
+
+/* The same 132px footprint the large outline occupies, so the dialog does not resize
+   depending on whether a garment has a rendering yet. */
+.hz-modal-img {
+  display: block; width: 132px; height: 132px;
+  object-fit: contain; margin: 0 auto;
+}
 .hz-art--polo    { -webkit-mask: var(--m-polo) center/contain no-repeat; mask: var(--m-polo) center/contain no-repeat; }
 .hz-art--poloLs  { -webkit-mask: var(--m-polols) center/contain no-repeat; mask: var(--m-polols) center/contain no-repeat; }
 .hz-art--pants   { -webkit-mask: var(--m-pants) center/contain no-repeat; mask: var(--m-pants) center/contain no-repeat; }

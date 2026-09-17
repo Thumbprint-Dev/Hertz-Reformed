@@ -92,6 +92,42 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       'Hat': 'cap', 'Beanie': 'beanie', 'Belt': 'belt', 'Parka': 'layer'
     };
 
+    /**
+     * Product photography, by garment stem.
+     *
+     * DEMO ASSETS, and the only reason they are in the repo. These are the vendor
+     * renderings Hertz supplied; Four51 is where product imagery belongs, and `catalog_map`
+     * still has no URL column to read it from. When the catalogue serves its own images
+     * these files and this list go, and `photoFor` reads the product instead.
+     *
+     * Listed rather than probed because there is no way to ask the browser whether a file
+     * exists without requesting it: an unlisted stem would render a broken-image icon in
+     * the row. A miss here falls back to the outline art, which is a deliberate state
+     * rather than a failure — `RFBLT` (belt) has no rendering and shows its outline.
+     */
+    var PHOTOS = [
+      'beanie', 'cargopant-m', 'cargopant-w', 'cargoshort-m', 'cargoshort-w',
+      'flzip-w', 'lskirt-w', 'matpant-w', 'mattop', 'parka-us', 'perfpant-m',
+      'perfpant-w', 'polols-m', 'polols-w', 'poloss-m', 'poloss-w', 'qtzip-m',
+      'rfhat', 'sshell-us'
+    ];
+
+    /**
+     * The photo for a product, or null to fall back to the outline.
+     *
+     * Keyed on the garment, not the whole InteropID: `-HZ` and `-DT` are the brand the
+     * garment is embroidered for and `-UV` the unbranded variant, and the three share one
+     * rendering. Matching the full id would need three copies of every file and would still
+     * miss the next brand.
+     */
+    function photoFor(productId) {
+      var stem = String(productId || '').toUpperCase()
+        .replace(/^HTZ-/, '')
+        .replace(/-(HZ|DT|UV)$/, '')
+        .toLowerCase();
+      return PHOTOS.indexOf(stem) === -1 ? null : 'css/img/products/' + stem + '.png';
+    }
+
     /** Which measurements a size chart shows, by category. */
     var CHART = {
       'Short Sleeve Polo': 'top', 'Long Sleeve Polo': 'topLs',
@@ -225,7 +261,9 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         product: product,
         name: labelFor(product.productId, category.name),
         art: ART[category.name] || 'polo',
-        chart: CHART[category.name] || 'top'
+        photo: photoFor(product.productId),
+        // Built once, here, and never from the template. See `chartRowsFor`.
+        chartRows: chartRowsFor(CHART[category.name] || 'top')
       };
     };
     $scope.alloc.closePreview = function() { $scope.alloc.preview = null; };
@@ -260,7 +298,21 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
                 vals: { XS:[32], S:[34], M:[38], L:[42], XL:[46], '2XL':[50], '3XL':[54] } }
     };
 
-    $scope.alloc.chartRows = function(key) {
+    /**
+     * Build the chart rows for a garment type.
+     *
+     * **Call this when the preview opens, never from the template.** It was bound as
+     * `ng-repeat="row in alloc.chartRows(...)"`, which re-ran it on every digest and handed
+     * `ngRepeat` a brand-new array of brand-new objects each time. With nothing stable to
+     * track by, the repeater treated every pass as a fresh collection and appended the rows
+     * again, growing until Angular gave up at its digest limit: the three-row Pants chart
+     * rendered **66 rows and stood 2250px tall**, which is what "the size chart looks
+     * duplicated" was.
+     *
+     * Its result is now stored on `alloc.preview` at open time, so the array has one
+     * identity for as long as the dialog is up and the repeater has nothing to react to.
+     */
+    function chartRowsFor(key) {
       var spec = CHARTS[key] || CHARTS.top;
       var out = [];
       for (var i = 0; i < spec.rows.length; i++) {
@@ -272,9 +324,10 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         out.push({ label: spec.rows[i], values: values });
       }
       return out;
-    };
+    }
 
     $scope.alloc.labelFor = labelFor;
+    $scope.alloc.photoFor = photoFor;
     $scope.alloc.artFor = function(categoryName) { return ART[categoryName] || 'polo'; };
 
     /**

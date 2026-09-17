@@ -80,7 +80,13 @@
                   <button class="hz-thumb" type="button"
                           ng-click="alloc.openPreview(pool, cat, product)"
                           aria-label="Preview {{alloc.labelFor(product.productId, cat.name)}}">
-                    <span class="hz-art hz-art--{{alloc.artFor(cat.name)}}" aria-hidden="true"></span>
+                    <!-- Photo where we have one, the outline where we do not. The outline
+                         is a real state, not a placeholder for a missing file: a garment
+                         with no rendering still has to render. -->
+                    <img class="hz-thumb-img" ng-if="alloc.photoFor(product.productId)"
+                         ng-src="{{alloc.photoFor(product.productId)}}" alt="" />
+                    <span class="hz-art hz-art--{{alloc.artFor(cat.name)}}"
+                          ng-if="!alloc.photoFor(product.productId)" aria-hidden="true"></span>
                   </button>
 
                   <div class="hz-item-text">
@@ -174,8 +180,16 @@
 
       <div class="hz-modal-body">
         <div class="hz-modal-art">
-          <span class="hz-art hz-art--lg hz-art--{{alloc.preview.art}}" aria-hidden="true"></span>
-          <p class="hz-modal-cap">Illustration. Product photography comes from the catalogue.</p>
+          <img class="hz-modal-img" ng-if="alloc.preview.photo"
+               ng-src="{{alloc.preview.photo}}" alt="{{alloc.preview.name}}" />
+          <span class="hz-art hz-art--lg hz-art--{{alloc.preview.art}}"
+                ng-if="!alloc.preview.photo" aria-hidden="true"></span>
+          <p class="hz-modal-cap" ng-if="alloc.preview.photo">
+            Sample rendering. Final photography comes from the catalogue.
+          </p>
+          <p class="hz-modal-cap" ng-if="!alloc.preview.photo">
+            Illustration. Product photography comes from the catalogue.
+          </p>
         </div>
 
         <div>
@@ -189,7 +203,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in alloc.chartRows(alloc.preview.chart)">
+                <!-- Bound to the array built when the dialog opened. Calling a function
+                     that returns a new array here is what made this table 66 rows long. -->
+                <tr ng-repeat="row in alloc.preview.chartRows">
                   <td>{{row.label}}</td>
                   <td ng-repeat="v in row.values">{{v}}&quot;</td>
                 </tr>
