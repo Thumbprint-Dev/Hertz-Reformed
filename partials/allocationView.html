@@ -26,22 +26,7 @@
     </div>
 
     <header class="hz-pick-head">
-      <!--
-        The headline says whose year is being spent.
-
-        It used to read "Choose your uniform" in both cases, directly contradicting the
-        banner above it for a Champion ordering on behalf. The banner is the belt; this is
-        the braces, and it is the element people actually read. Spending the wrong person's
-        allocation is silent and is discovered by them, not by the Champion, so every
-        chance to name the beneficiary is worth taking.
-
-        The employee number rather than a name: the API returns an id, and the name is not
-        worth putting into a URL or a page title to get it here.
-      -->
-      <h1 class="hz-pick-title" ng-if="!alloc.onBehalf">Choose your uniform</h1>
-      <h1 class="hz-pick-title" ng-if="alloc.onBehalf">
-        Choose a uniform for employee {{alloc.beneficiaryId}}
-      </h1>
+      <h1 class="hz-pick-title">Choose your uniform</h1>
       <p class="hz-pick-sub" ng-if="alloc.view">
         {{alloc.view.groupName}} &middot; allocation year ends {{alloc.view.cycleEnd | hzDate}}
       </p>

@@ -1,7 +1,6 @@
 four51.app.controller('ProductCtrl', ['$scope', '$routeParams', '$route', '$location', '$451', 'Nav', 'Product', 'ProductDisplayService', 'Order', 'Variant', 'User',
   function($scope, $routeParams, $route, $location, $451, Nav, Product, ProductDisplayService, Order, Variant, User) {
-    // Same guard, same reason as cartCtrl.js. See the note there.
-	$scope.isEditforApproval = $routeParams.orderID && $scope.user && $scope.user.Permissions.contains('EditApprovalOrder');
+    $scope.isEditforApproval = $routeParams.orderID && $scope.user.Permissions.contains('EditApprovalOrder');
     if ($scope.isEditforApproval) {
       Order.get($routeParams.orderID, function(order) {
         $scope.currentOrder = order;

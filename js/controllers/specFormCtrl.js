@@ -1,7 +1,6 @@
 four51.app.controller('SpecFormCtrl', ['$scope', '$location', '$route', '$routeParams', 'Nav', '$window', 'ProductDisplayService', 'Variant', 'Order',
 function ($scope, $location, $route, $routeParams, Nav, $window, ProductDisplayService, Variant, Order) {
-    // Same guard, same reason as cartCtrl.js. See the note there.
-	$scope.isEditforApproval = $routeParams.orderID && $scope.user && $scope.user.Permissions.contains('EditApprovalOrder');
+    $scope.isEditforApproval = $routeParams.orderID && $scope.user.Permissions.contains('EditApprovalOrder');
     $scope.EditingLineItem = (typeof($routeParams.lineItemIndex) != 'undefined');
     if ($scope.EditingLineItem) $scope.LineItemIndex = $routeParams.lineItemIndex;
     if ($scope.isEditforApproval) {

@@ -1,88 +1,87 @@
-<!--
-  Checkout · step 3, billing.
-
-  HIDDEN IN THIS TENANT. The panel carries `display: none !important`, as it did in the
-  stock file: a Hertz employee's uniform is charged to their location, never to them, so
-  there is nothing to bill and nothing to ask.
-
-  It is restyled rather than deleted, for two reasons. `cart_billing` is a real form whose
-  validity `orderSummary.html` reads to enable Submit — delete the form and that expression
-  silently evaluates against `undefined` — and a tenant that does charge the shopper brings
-  this panel back by removing one style, at which point it should already look like the
-  rest of the page rather than like 2014.
-
-  Every binding is stock: `currentOrder.BillAddressID`, `BillFirstName`, `BillLastName`,
-  the `paymentselector`, `billingmessage`, `sameasshipaddresscheckbox` and `addressinput`
-  directives, and the `billingAddress` / `billingFirstName` / `billingLastName` control
-  names the error list in the stock theme referred to.
-
-  The duplicate `isAlphaNum` definition that was at the foot of this file is gone. It was
-  declared identically here and in orderShipping.html, both rendered on the same page, so
-  the second definition simply overwrote the first. Shipping keeps the one copy.
--->
-<div class="hz-co-card" style="display: none !important;">
-  <div class="hz-co-card-h">
-    <i class="hz-co-step-icon"
-       ng-class="{'fa fa-exclamation-circle is-todo': cart_billing.$invalid,
-                  'fa fa-check-circle is-done': !cart_billing.$invalid}"
-       aria-hidden="true"></i>
-    <h3 class="hz-co-card-t">{{'Billing' | r | xlat}}</h3>
-  </div>
-
-  <div class="hz-co-card-b">
-    <billingmessage></billingmessage>
-    <sameasshipaddresscheckbox></sameasshipaddresscheckbox>
-
-    <div ng-show="billaddressform || (billaddresses.length == 0 && user.Permissions.contains('CreateBillToAddress'))">
-      <addressinput address="billaddress" user="user"></addressinput>
-    </div>
-
-    <div ng-hide="billaddressform || (billaddresses.length == 0 && user.Permissions.contains('CreateBillToAddress'))">
-      <form name="cart_billing" novalidate="">
-        <paymentselector></paymentselector>
-
-        <div class="hz-co-field" ng-show="billaddresses.length > 0">
-          <label class="hz-co-label is-required">
-            {{('Billing' | r) + ' ' + ('Address' | r) | xlat}}
-          </label>
-          <select class="hz-co-select" name="billingAddress" ng-show="billaddresses"
-                  ng-options="address.ID as address.AddressName for address in billaddresses | filter:{IsBilling:true}"
-                  ng-model="currentOrder.BillAddressID" ng-required="false">
-            <option value=""></option>
-          </select>
-        </div>
-
-        <div class="hz-co-ship" ng-show="BillAddress">
-          <p class="hz-co-ship-h">{{('Billing' | r) + ' ' + ('Location' | r) | xlat}}</p>
-
-          <address class="hz-co-ship-a">
-            <span ng-show="BillAddress.AddressName">{{BillAddress.AddressName}}</span>
-            <span ng-show="BillAddress.CompanyName">{{BillAddress.CompanyName}}</span>
-            <span ng-show="(BillAddress.FirstName || BillAddress.LastName) && (!user.Permissions.contains('EditBillToName') && BillAddress.IsCustEditable)">
-              {{BillAddress.FirstName + ' ' + BillAddress.LastName}}
-            </span>
-            <span ng-show="BillAddress.Street1">{{BillAddress.Street1}}</span>
-            <span ng-show="BillAddress.Street2">{{BillAddress.Street2}}</span>
-            <span ng-show="BillAddress.City || BillAddress.State || BillAddress.Zip">
-              {{BillAddress.City}}<span ng-if="BillAddress.City && BillAddress.State">,</span>
-              {{BillAddress.State}} {{BillAddress.Zip}}
-            </span>
-            <span ng-show="BillAddress.Phone">{{BillAddress.Phone}}</span>
-          </address>
-
-          <div class="hz-co-pair"
-               ng-show="user.Permissions.contains('EditBillToName') && !BillAddress.IsCustEditable">
-            <input class="hz-co-input" name="billingFirstName" type="text" autocomplete="off"
-                   ng-model="currentOrder.BillFirstName"
-                   placeholder="{{('First' | r) + ' ' + ('Name' | r) | xlat}}"
-                   onkeypress="isAlphaNum(event);" />
-            <input class="hz-co-input" name="billingLastName" type="text"
-                   ng-model="currentOrder.BillLastName"
-                   placeholder="{{('Last' | r) + ' ' + ('Name' | r) | xlat}}"
-                   onkeypress="isAlphaNum(event);" />
+<style>
+    .checkout-title {
+      font-size: 35px;
+      font-weight: bold;
+      letter-spacing: -0.74px;
+      padding-right: 10px;
+    }
+    .checkout-circle {
+      padding-top: 10px;
+      padding-right: 10px;
+    }
+  .checkout-container {
+    background-color: none;
+    border-color: none;
+    border-bottom: 1px solid #979797;
+  }
+  .checkout-textarea {
+    background: #F9F4FF;
+  }
+  </style>
+  <div class="panel-order" style="display: none !important;">
+      <div class="panel-heading checkout-container" ng-class="{'no': cart_billing.$invalid, 'yes': !cart_billing.$invalid, 'open': checkOutSection == 'billing' }" style="background-color: white;">
+          <h3 class="panel-title">
+              <i class="pull-left checkout-circle" ng-class="{'fa fa-warning': cart_billing.$invalid, 'fa fa-check-circle': !cart_billing.$invalid }"></i>
+              <span class="checkout-title">{{'Billing' | r | xlat}}</span>
+              </h3>
+      </div>
+      <div class="panel-body">
+          <div>
+              <billingmessage />
           </div>
-        </div>
-      </form>
-    </div>
+          <sameasshipaddresscheckbox></sameasshipaddresscheckbox>
+          <div ng-show="billaddressform || (billaddresses.length == 0 && user.Permissions.contains('CreateBillToAddress'))">
+              <addressinput address='billaddress' user='user'></addressinput>
+          </div>
+          <div ng-hide="billaddressform || (billaddresses.length == 0 && user.Permissions.contains('CreateBillToAddress'))">
+              <form name="cart_billing" novalidate="">
+                  <div>
+                      <paymentselector></paymentselector>
+                      <div class="view-form-icon" ng-show="billaddresses.length > 0">
+                          <div ng-class="{'view-form-select': !currentOrder.BillAddressID, '': currentOrder.BillAddressID }">
+                              <label class="required">{{('Billing' | r) + ' ' + ('Address' | r) | xlat}}</label>
+                              <select class="form-control" ng-show="billaddresses" name="billingAddress"
+                                      ng-options="address.ID as address.AddressName for address in billaddresses | filter:{IsBilling:true}" ng-model="currentOrder.BillAddressID" ng-required="false">
+                                  <option value=""></option>
+                              </select>
+                              <!--<i class="fa fa-map-marker"></i>-->
+                          </div>
+                      </div>
+                      <div class="order-location" ng-show="BillAddress">
+                          <p><strong><small>{{('Billing' | r) + ' ' + ('Location' | r) | xlat}}</small></strong></p>
+                          <p ng-show="BillAddress.AddressName"><small>{{BillAddress.AddressName}}</small></p>
+                          <p ng-show="BillAddress.CompanyName"><small>{{BillAddress.CompanyName}}</small></p>
+                          <p ng-show="(BillAddress.FirstName || BillAddress.LastName) && (!user.Permissions.contains('EditBillToName') && BillAddress.IsCustEditable)">
+                              <small>{{BillAddress.FirstName + ' ' + BillAddress.LastName}}</small>
+                          </p>
+                          <div class="row" ng-show="user.Permissions.contains('EditBillToName') && !BillAddress.IsCustEditable">
+                              <div class="col-sm-4">
+                                  <input class="form-control" name="billingFirstName" type="text" ng-model="currentOrder.BillFirstName"
+                                         placeholder="{{('First' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" onkeypress="isAlphaNum(event);"/>
+                              </div>
+                              <div class="col-sm-4">
+                                  <input class="form-control" name="billingLastName" type="text" ng-model="currentOrder.BillLastName"
+                                         placeholder="{{('Last' | r) + ' ' + ('Name' | r) | xlat}}"  onkeypress="isAlphaNum(event);"/>
+                              </div>
+                          </div>
+                          <p ng-show="BillAddress.Street1"><small>{{BillAddress.Street1}}</small></p>
+                          <p ng-show="BillAddress.Street2"><small>{{BillAddress.Street2}}</small></p>
+                          <p ng-show="BillAddress.City || BillAddress.State || BillAddress.Zip"><small>{{BillAddress.City}}<span ng-if="BillAddress.City && BillAddress.State">, </span> {{BillAddress.State}} {{BillAddress.Zip}}</small></p>
+                          <p ng-show="BillAddress.Phone"><small>{{BillAddress.Phone}}</small></p>
+                      </div>
+                  </div>
+              </form>
+          </div>
+      </div>
   </div>
-</div>
+  <script>
+  function isAlphaNum(event) {
+  var regex = new RegExp("^[a-zA-Z0-9.,\\s]+$");
+  var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+  if (!regex.test(key)) {
+  event.preventDefault();
+  return false;
+  }
+  }
+  </script>
+  
