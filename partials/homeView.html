@@ -114,19 +114,8 @@
     <div class="hz-lp-alloc-grid" ng-show="!home.loading && !home.error && home.view">
 
       <div class="hz-lp-count">
-        <!--
-          The figure counts up when the entitlement lands. `hz-count-up` OWNS this text
-          node — the interpolation it replaced rewrote the node on every digest and would
-          fight the animation frame by frame.
-
-          `aria-hidden` on the animating span, with the real figure in a `hz-sr-only`
-          sibling: assistive tech should be told the allocation, not read a number caught
-          mid-flight that was never true.
-        -->
         <p class="hz-lp-count-n">
-          <span hz-count-up="home.totalRemaining" hz-count-up-delay="80" aria-hidden="true"></span>
-          <span class="hz-sr-only">{{home.totalRemaining}} items available</span>
-          <span aria-hidden="true">items<br />available</span>
+          {{home.totalRemaining}}<span>items<br />available</span>
         </p>
         <span class="hz-lp-track" aria-hidden="true">
           <i ng-style="{width: home.percentLeft + '%'}"></i>
@@ -141,10 +130,7 @@
            ng-class="{'is-out': pool.remaining === 0}"
            ng-attr-aria-disabled="{{pool.remaining === 0 ? 'true' : undefined}}">
           <span class="hz-lp-cat-l">{{pool.name | hzPool}}</span>
-          <!-- Staggered off $index so the row cascades rather than firing as one block. -->
-          <span class="hz-lp-cat-n" hz-count-up="pool.remaining"
-                hz-count-up-delay="{{60 + $index * 60}}" aria-hidden="true"></span>
-          <span class="hz-sr-only">{{pool.remaining}} remaining</span>
+          <span class="hz-lp-cat-n">{{pool.remaining}}</span>
           <span class="hz-lp-cat-sub" ng-if="pool.remaining === 0">none left</span>
         </a>
 

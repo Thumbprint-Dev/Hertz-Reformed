@@ -2086,16 +2086,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   padding-bottom: 6px;
 }
 .hz-lp-track { display: block; height: 6px; background: #EEE; overflow: hidden; }
-/* Fills in step with the figure counting up beside it (js/allocationCountUp.js): same
-   duration, same ease-out, so the pair reads as one movement instead of a number climbing
-   past a bar that has already snapped to its end. */
-.hz-lp-track i {
-  display: block; height: 100%; background: var(--yellow);
-  transition: width 800ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .hz-lp-track i { transition: none; }
-}
+.hz-lp-track i { display: block; height: 100%; background: var(--yellow); }
 .hz-lp-count-of { margin: 0; font-size: 12px; color: var(--black-60); }
 
 .hz-lp-cats { display: flex; flex-wrap: nowrap; }
