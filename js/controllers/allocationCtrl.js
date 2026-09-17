@@ -243,7 +243,15 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       var row = $scope.alloc.picked[product.productId];
       if (!row) return;
       row.qty = Math.max(0, row.qty - 1);
-      if (row.qty === 0) delete $scope.alloc.picked[product.productId];
+      // The row STAYS at zero. It used to be deleted here, which took the chosen size with
+      // it: the size dropdown binds to `picked[productId].size`, so dropping back to zero
+      // left the model undefined and the control rendered blank — the employee's size
+      // silently forgotten for going 1 → 0. `ng-init` only runs when the row is first
+      // linked, so nothing put it back.
+      //
+      // Nothing downstream needs the key gone: `chosen()` already skips `qty < 1`, and
+      // `usedIn` adds a zero. A row at zero is a size the employee has chosen and not
+      // ordered yet, which is worth keeping for as long as the page is open.
       retotal();
     };
 
@@ -271,10 +279,16 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     /**
      * Size chart rows, in inches.
      *
-     * EXAMPLE measurements, labelled as such in the UI. Hertz supplies the real chart;
-     * these exist so the table can be laid out and judged and must not be mistaken for a
-     * garment's actual spec. Different measurements per garment type on purpose — a
-     * single generic table would look fine and be wrong.
+     * PLACEHOLDER measurements. Hertz supplies the real chart; these exist so the table can
+     * be laid out and judged and must not be mistaken for a garment's actual spec.
+     * Different measurements per garment type on purpose — a single generic table would
+     * look fine and be wrong.
+     *
+     * **They are no longer labelled in the UI.** The "Example measurements" badge was
+     * removed for the client demo so the dialog reads as finished, which means nothing on
+     * screen now distinguishes these invented numbers from a real chart. Replacing them is
+     * a release blocker, not a nicety: an employee ordering to a fabricated chart gets the
+     * wrong garment and the return comes out of their allocation. Tracked in HANDOFF.md.
      */
     var CHARTS = {
       top:    { rows: ['Chest', 'Body length', 'Sleeve'],
