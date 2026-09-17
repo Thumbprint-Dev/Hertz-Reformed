@@ -7,8 +7,8 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', 'Allocation', 'Order', 'Product',
-  function($scope, $rootScope, $location, $q, Allocation, Order, Product) {
+four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', '$timeout', 'Allocation', 'Order', 'Product',
+  function($scope, $rootScope, $location, $q, $timeout, Allocation, Order, Product) {
 
     /**
      * Whose allocation this page is spending.
@@ -423,6 +423,44 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
      * Then to the cart, because the cart is where someone checks the order over before
      * checking out. This button fills the cart; it does not place an order.
      */
+    /**
+     * Resolve once the current cart is known: the order, or null for "no cart yet".
+     *
+     * `Four51Ctrl` fetches the current order asynchronously and only then assigns it —
+     * `null` when the user has no `CurrentOrderID`, the order when they do. Until that
+     * lands, `$scope.currentOrder` is **`undefined`**, and undefined is not null: one means
+     * "no cart", the other means "we have not been told yet".
+     *
+     * The picker used to read `$scope.currentOrder || {}`, which collapsed the two. Clicking
+     * Add to cart before the fetch returned therefore posted a bare `{}`, Four51 created a
+     * SECOND order and made it current, and whatever was already in the cart was orphaned —
+     * the employee's cart "went away". Waiting costs a few hundred milliseconds on the one
+     * path where it matters and nothing at all once the value has arrived.
+     *
+     * The timeout is a backstop, not an expectation: `currentOrder` is assigned on both
+     * branches of the user fetch, so if ten seconds pass the session is broken in a way
+     * that guessing at a cart would only make worse.
+     */
+    function whenCartKnown() {
+      if ($scope.currentOrder !== undefined) return $q.when($scope.currentOrder);
+
+      var d = $q.defer();
+      var settled = false;
+      var stop = $scope.$watch('currentOrder', function(value) {
+        if (value === undefined || settled) return;
+        settled = true;
+        stop();
+        d.resolve(value);
+      });
+      $timeout(function() {
+        if (settled) return;
+        settled = true;
+        stop();
+        d.reject({ local: 'Your cart is still loading. Please try again in a moment.' });
+      }, 10000);
+      return d.promise;
+    }
+
     $scope.alloc.addToCart = function() {
       var rows = chosen();
       if (!rows.length || $scope.alloc.submitting) return;
@@ -438,6 +476,10 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         };
       });
 
+      // Carried between steps 2 and 3 of the chain below: the Four51 products, resolved
+      // before the cart is known and needed after it is.
+      var products = {};
+
       Allocation.previewCart(draftOrderId(), lines, FOR)
         .then(function() {
           return fetchProducts(rows);
@@ -450,12 +492,16 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             });
           }
 
-          var order = $scope.currentOrder || {};
+          products = resolved.found;
+          return whenCartKnown();
+        })
+        .then(function(current) {
+          var order = current || {};
           if (!order.LineItems) order.LineItems = [];
 
           angular.forEach(rows, function(row) {
             order.LineItems.push({
-              Product: resolved.found[sizedId(row.productId, row.size)],
+              Product: products[sizedId(row.productId, row.size)],
               Quantity: row.qty,
               ShipAccount: null,
               ShipAddressID: null,
