@@ -17,7 +17,17 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         // now sends those to the catalogue, which is a far better answer than an error
         // page. `partials/listOrders.html` is left in place rather than deleted: it is
         // inert, and order history lives at `/order`.
-        when('/orderdetails/:orderid', {templateUrl: 'partials/orderDetails.html', controller: 'OrderDetailsCtrl'}).
+        // `/orderdetails/:orderid` removed, same reason as `/listOrders`: `OrderDetailsCtrl`
+        // is never defined, so the route could only ever render "Server Error". Nothing
+        // links to it; order history is `/order` and a placed order is `/order/new/:id`.
+        //
+        // NOT removed, and known broken: `KitSpecFormCtrl` and `KitVariantCtrl`, on the
+        // deeper `/kit/...` routes below, are also undefined. They are left because they
+        // belong to Four51's kit feature — `KitCtrl` itself does exist and `/kit/:id` is
+        // reachable from productCtrl — and deleting a feature's routes is a bigger call
+        // than deleting a route nothing can reach. Hertz's allocation is pool-based and
+        // configures no kits, so nobody hits them today. If a kit is ever configured,
+        // those two controllers have to be written before the flow works.
         // `/catalog` is where sign-in lands and where `otherwise` sends everything, so it
         // is the front door and carries the landing page. A specific category still goes
         // to the product listing; only the bare path changed. The old bare-`/catalog`
