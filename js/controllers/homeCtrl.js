@@ -50,6 +50,8 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
       pools: [],
       totalRemaining: 0,
       totalGranted: 0,
+      /** In the cart, held against the allocation but not yet ordered. */
+      totalReserved: 0,
       /** Width of the progress bar, as a percentage. */
       percentLeft: 0,
       closed: [],
@@ -146,13 +148,18 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
             $scope.home.brandKey = brandKeyFor(view.brand);
             $scope.home.closed = view.seasonalClosed || [];
             $scope.home.pools = Allocation.inDisplayOrder(view.pools);
-            var remaining = 0, granted = 0;
+            var remaining = 0, granted = 0, held = 0;
             angular.forEach(view.pools || [], function(p) {
               remaining += p.remaining;
               granted += p.granted;
+              held += p.reserved || 0;
             });
             $scope.home.totalRemaining = remaining;
             $scope.home.totalGranted = granted;
+            // Units in the cart, already deducted from `remaining`. Named here because the
+            // landing page is where the headline figure is read, and a figure that has
+            // quietly dropped is the one people ask about.
+            $scope.home.totalReserved = held;
             // Guarded rather than assumed: an employee whose kit grants nothing would
             // otherwise divide by zero and render a NaN-wide bar.
             $scope.home.percentLeft = granted > 0 ? Math.round((remaining / granted) * 100) : 0;

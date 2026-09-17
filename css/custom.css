@@ -1444,6 +1444,42 @@ contentmodal2 a:hover{
 .hz-alert p { margin: 0; color: var(--hz-stop-ink); }
 .hz-note p { margin: 0; }
 
+/* What is already in the cart.
+   Built on the same rule-and-fill vocabulary as .hz-note rather than as a card, because it
+   is an explanation attached to the numbers below it, not a separate object. It stacks to
+   one column at phone width so the action never ends up beside a squeezed sentence. */
+.hz-held {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 14px;
+  /* `--sub` and `--a`, not `--hz-sub`/`--hz-accent`: those belong to `.hz-home` and are
+     undefined inside `.hz-pick`, which silently drops the fill and — because an invalid
+     var kills the whole shorthand — the left rule with it. */
+  background: var(--sub);
+  border-left: 3px solid var(--a);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 18px;
+  margin-bottom: 26px;
+}
+.hz-held-text { min-width: 0; }
+.hz-held-h { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
+/* The count carries the emphasis; it is the thing being explained. */
+.hz-held-h b { font-size: 22px; margin-right: 4px; }
+.hz-held-sub { margin: 4px 0 0; font-size: 13px; color: var(--muted); max-width: 62ch; }
+.hz-held-go {
+  flex: 0 0 auto; white-space: nowrap;
+  padding: 10px 16px; border: 1px solid var(--firm); border-radius: 4px;
+  background: #fff; color: var(--ink); font-weight: 700; font-size: 14px;
+  text-decoration: none;
+}
+.hz-held-go:hover { border-color: var(--ink); }
+.hz-held-go:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* The per-pool echo of the same fact, on its own line under the pool name. */
+.hz-pool-held {
+  display: block; font-style: normal; font-weight: 600;
+  font-size: 12px; color: var(--muted); margin-top: 2px;
+}
+
 .hz-seasonal {
   margin-top: 30px;
   font-size: 13.5px;
@@ -2104,6 +2140,12 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-track { display: block; height: 6px; background: #EEE; overflow: hidden; }
 .hz-lp-track i { display: block; height: 100%; background: var(--yellow); }
 .hz-lp-count-of { margin: 0; font-size: 12px; color: var(--black-60); }
+
+/* Under the headline figure. Sentence, not badge — see the partial. Type on the landing
+   page is never yellow (§3.2), so the emphasis is weight and the link is underlined. */
+.hz-lp-held { margin: 10px 0 0; font-size: 13px; color: var(--black-90); max-width: 40ch; }
+.hz-lp-held b { font-size: 15px; }
+.hz-lp-held a { color: var(--black-90); text-decoration: underline; }
 
 .hz-lp-cats { display: flex; flex-wrap: nowrap; }
 .hz-lp-cat {

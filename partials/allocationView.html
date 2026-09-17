@@ -50,6 +50,38 @@
         <p>{{alloc.eligibility.message}}</p>
       </div>
 
+      <!--
+        What is already in the cart.
+
+        `remaining` has these units taken off it, so an employee who put three tops in the
+        cart comes back to a page that says two rather than five, with their picks cleared
+        and nothing on screen accounting for the difference. That reads as items going
+        missing, and the natural response is to pick three more — which they cannot.
+
+        So it says the number, where the items are, and what to do about it, in that order,
+        in the words someone would use themselves. "Held" rather than "reserved" because
+        reserved is what a table at a restaurant is; "put them back" rather than "release
+        the allocation" because nobody outside this codebase says release.
+
+        Shown whenever anything is held, not only after adding — arriving fresh the next
+        morning with a full cart is exactly when the number needs explaining.
+      -->
+      <div class="hz-held" ng-show="!alloc.loading && !alloc.error && alloc.totalReserved > 0">
+        <div class="hz-held-text">
+          <p class="hz-held-h">
+            <b>{{alloc.totalReserved}}</b>
+            <span ng-if="alloc.totalReserved === 1">item is waiting in your cart</span>
+            <span ng-if="alloc.totalReserved !== 1">items are waiting in your cart</span>
+          </p>
+          <p class="hz-held-sub">
+            They are held for you until you check out, so the numbers below do not count
+            them. Changed your mind? Take them out of your cart and they come straight back
+            here.
+          </p>
+        </div>
+        <a class="hz-held-go" href="cart">Go to my cart</a>
+      </div>
+
       <div class="hz-pick-grid" ng-show="!alloc.loading && !alloc.error && alloc.view">
 
         <div class="hz-pools">
@@ -58,7 +90,13 @@
             <button class="hz-pool-head" type="button"
                     ng-click="alloc.toggle(pool)"
                     aria-expanded="{{pool.open ? 'true' : 'false'}}">
-              <span class="hz-pool-name">{{pool.name | hzPool}}</span>
+              <span class="hz-pool-name">
+                {{pool.name | hzPool}}
+                <!-- Makes the row add up. Without it "2 remaining" against a kit the
+                     employee knows gives five is just a wrong number; with it, 2 and 3
+                     account for the 5 they expect. -->
+                <i class="hz-pool-held" ng-if="pool.reserved > 0">{{pool.reserved}} in your cart</i>
+              </span>
               <span class="hz-pool-n">{{alloc.leftIn(pool)}}<i>remaining</i></span>
               <span class="hz-chev" aria-hidden="true"></span>
             </button>

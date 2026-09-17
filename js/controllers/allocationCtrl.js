@@ -38,6 +38,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       /** sku -> { qty, size } */
       picked: {},
       totalPicked: 0,
+      /** Units already in the Four51 cart, held against the allocation but not yet ordered. */
+      totalReserved: 0,
       preview: null,
       submitting: false,
       result: null,
@@ -574,6 +576,14 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = Allocation.inDisplayOrder(view.pools);
+
+            // Units sitting in the cart, unordered. `remaining` already has these taken
+            // off it, so without saying so the page simply shows a smaller number than the
+            // employee remembers and no reason for it — which reads as items going missing.
+            var held = 0;
+            angular.forEach($scope.alloc.pools, function(p) { held += p.reserved || 0; });
+            $scope.alloc.totalReserved = held;
+
             // Open the largest pool: the page should show what it does at rest rather
             // than a column of closed rows.
             var biggest = null;

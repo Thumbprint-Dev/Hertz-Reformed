@@ -121,6 +121,18 @@
           <i ng-style="{width: home.percentLeft + '%'}"></i>
         </span>
         <p class="hz-lp-count-of">of {{home.totalGranted}} in your allocation</p>
+        <!--
+          Sits directly under the headline figure, because this is the number people read
+          first and the one that appears to have dropped for no reason once a cart is
+          filled. It is a plain sentence rather than a badge: a badge reading "3 held"
+          raises the question, a sentence answers it.
+        -->
+        <p class="hz-lp-held" ng-if="home.totalReserved > 0">
+          <b>{{home.totalReserved}}</b>
+          <span ng-if="home.totalReserved === 1">item is waiting in your cart</span>
+          <span ng-if="home.totalReserved !== 1">items are waiting in your cart</span>
+          &mdash; <a href="cart">go to my cart</a>
+        </p>
       </div>
 
       <div class="hz-lp-cats">
