@@ -7,8 +7,8 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', 'Allocation', 'Order', 'Product',
-  function($scope, $rootScope, $location, $q, Allocation, Order, Product) {
+four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', '$timeout', 'Allocation', 'Order', 'Product',
+  function($scope, $rootScope, $location, $q, $timeout, Allocation, Order, Product) {
 
     /**
      * Whose allocation this page is spending.
@@ -38,6 +38,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       /** sku -> { qty, size } */
       picked: {},
       totalPicked: 0,
+      /** Units already in the Four51 cart, held against the allocation but not yet ordered. */
+      totalReserved: 0,
       preview: null,
       submitting: false,
       result: null,
@@ -91,6 +93,42 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       'Quarter Zip': 'layer', 'Fleece': 'layer', 'Softshell': 'layer', 'Jacket': 'layer',
       'Hat': 'cap', 'Beanie': 'beanie', 'Belt': 'belt', 'Parka': 'layer'
     };
+
+    /**
+     * Product photography, by garment stem.
+     *
+     * DEMO ASSETS, and the only reason they are in the repo. These are the vendor
+     * renderings Hertz supplied; Four51 is where product imagery belongs, and `catalog_map`
+     * still has no URL column to read it from. When the catalogue serves its own images
+     * these files and this list go, and `photoFor` reads the product instead.
+     *
+     * Listed rather than probed because there is no way to ask the browser whether a file
+     * exists without requesting it: an unlisted stem would render a broken-image icon in
+     * the row. A miss here falls back to the outline art, which is a deliberate state
+     * rather than a failure — `RFBLT` (belt) has no rendering and shows its outline.
+     */
+    var PHOTOS = [
+      'beanie', 'cargopant-m', 'cargopant-w', 'cargoshort-m', 'cargoshort-w',
+      'flzip-w', 'lskirt-w', 'matpant-w', 'mattop', 'parka-us', 'perfpant-m',
+      'perfpant-w', 'polols-m', 'polols-w', 'poloss-m', 'poloss-w', 'qtzip-m',
+      'rfhat', 'sshell-us'
+    ];
+
+    /**
+     * The photo for a product, or null to fall back to the outline.
+     *
+     * Keyed on the garment, not the whole InteropID: `-HZ` and `-DT` are the brand the
+     * garment is embroidered for and `-UV` the unbranded variant, and the three share one
+     * rendering. Matching the full id would need three copies of every file and would still
+     * miss the next brand.
+     */
+    function photoFor(productId) {
+      var stem = String(productId || '').toUpperCase()
+        .replace(/^HTZ-/, '')
+        .replace(/-(HZ|DT|UV)$/, '')
+        .toLowerCase();
+      return PHOTOS.indexOf(stem) === -1 ? null : 'css/img/products/' + stem + '.png';
+    }
 
     /** Which measurements a size chart shows, by category. */
     var CHART = {
@@ -207,7 +245,15 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       var row = $scope.alloc.picked[product.productId];
       if (!row) return;
       row.qty = Math.max(0, row.qty - 1);
-      if (row.qty === 0) delete $scope.alloc.picked[product.productId];
+      // The row STAYS at zero. It used to be deleted here, which took the chosen size with
+      // it: the size dropdown binds to `picked[productId].size`, so dropping back to zero
+      // left the model undefined and the control rendered blank — the employee's size
+      // silently forgotten for going 1 → 0. `ng-init` only runs when the row is first
+      // linked, so nothing put it back.
+      //
+      // Nothing downstream needs the key gone: `chosen()` already skips `qty < 1`, and
+      // `usedIn` adds a zero. A row at zero is a size the employee has chosen and not
+      // ordered yet, which is worth keeping for as long as the page is open.
       retotal();
     };
 
@@ -225,7 +271,9 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         product: product,
         name: labelFor(product.productId, category.name),
         art: ART[category.name] || 'polo',
-        chart: CHART[category.name] || 'top'
+        photo: photoFor(product.productId),
+        // Built once, here, and never from the template. See `chartRowsFor`.
+        chartRows: chartRowsFor(CHART[category.name] || 'top')
       };
     };
     $scope.alloc.closePreview = function() { $scope.alloc.preview = null; };
@@ -233,10 +281,16 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     /**
      * Size chart rows, in inches.
      *
-     * EXAMPLE measurements, labelled as such in the UI. Hertz supplies the real chart;
-     * these exist so the table can be laid out and judged and must not be mistaken for a
-     * garment's actual spec. Different measurements per garment type on purpose — a
-     * single generic table would look fine and be wrong.
+     * PLACEHOLDER measurements. Hertz supplies the real chart; these exist so the table can
+     * be laid out and judged and must not be mistaken for a garment's actual spec.
+     * Different measurements per garment type on purpose — a single generic table would
+     * look fine and be wrong.
+     *
+     * **They are no longer labelled in the UI.** The "Example measurements" badge was
+     * removed for the client demo so the dialog reads as finished, which means nothing on
+     * screen now distinguishes these invented numbers from a real chart. Replacing them is
+     * a release blocker, not a nicety: an employee ordering to a fabricated chart gets the
+     * wrong garment and the return comes out of their allocation. Tracked in HANDOFF.md.
      */
     var CHARTS = {
       top:    { rows: ['Chest', 'Body length', 'Sleeve'],
@@ -260,7 +314,21 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
                 vals: { XS:[32], S:[34], M:[38], L:[42], XL:[46], '2XL':[50], '3XL':[54] } }
     };
 
-    $scope.alloc.chartRows = function(key) {
+    /**
+     * Build the chart rows for a garment type.
+     *
+     * **Call this when the preview opens, never from the template.** It was bound as
+     * `ng-repeat="row in alloc.chartRows(...)"`, which re-ran it on every digest and handed
+     * `ngRepeat` a brand-new array of brand-new objects each time. With nothing stable to
+     * track by, the repeater treated every pass as a fresh collection and appended the rows
+     * again, growing until Angular gave up at its digest limit: the three-row Pants chart
+     * rendered **66 rows and stood 2250px tall**, which is what "the size chart looks
+     * duplicated" was.
+     *
+     * Its result is now stored on `alloc.preview` at open time, so the array has one
+     * identity for as long as the dialog is up and the repeater has nothing to react to.
+     */
+    function chartRowsFor(key) {
       var spec = CHARTS[key] || CHARTS.top;
       var out = [];
       for (var i = 0; i < spec.rows.length; i++) {
@@ -272,9 +340,10 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         out.push({ label: spec.rows[i], values: values });
       }
       return out;
-    };
+    }
 
     $scope.alloc.labelFor = labelFor;
+    $scope.alloc.photoFor = photoFor;
     $scope.alloc.artFor = function(categoryName) { return ART[categoryName] || 'polo'; };
 
     /**
@@ -356,6 +425,44 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
      * Then to the cart, because the cart is where someone checks the order over before
      * checking out. This button fills the cart; it does not place an order.
      */
+    /**
+     * Resolve once the current cart is known: the order, or null for "no cart yet".
+     *
+     * `Four51Ctrl` fetches the current order asynchronously and only then assigns it —
+     * `null` when the user has no `CurrentOrderID`, the order when they do. Until that
+     * lands, `$scope.currentOrder` is **`undefined`**, and undefined is not null: one means
+     * "no cart", the other means "we have not been told yet".
+     *
+     * The picker used to read `$scope.currentOrder || {}`, which collapsed the two. Clicking
+     * Add to cart before the fetch returned therefore posted a bare `{}`, Four51 created a
+     * SECOND order and made it current, and whatever was already in the cart was orphaned —
+     * the employee's cart "went away". Waiting costs a few hundred milliseconds on the one
+     * path where it matters and nothing at all once the value has arrived.
+     *
+     * The timeout is a backstop, not an expectation: `currentOrder` is assigned on both
+     * branches of the user fetch, so if ten seconds pass the session is broken in a way
+     * that guessing at a cart would only make worse.
+     */
+    function whenCartKnown() {
+      if ($scope.currentOrder !== undefined) return $q.when($scope.currentOrder);
+
+      var d = $q.defer();
+      var settled = false;
+      var stop = $scope.$watch('currentOrder', function(value) {
+        if (value === undefined || settled) return;
+        settled = true;
+        stop();
+        d.resolve(value);
+      });
+      $timeout(function() {
+        if (settled) return;
+        settled = true;
+        stop();
+        d.reject({ local: 'Your cart is still loading. Please try again in a moment.' });
+      }, 10000);
+      return d.promise;
+    }
+
     $scope.alloc.addToCart = function() {
       var rows = chosen();
       if (!rows.length || $scope.alloc.submitting) return;
@@ -371,6 +478,10 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         };
       });
 
+      // Carried between steps 2 and 3 of the chain below: the Four51 products, resolved
+      // before the cart is known and needed after it is.
+      var products = {};
+
       Allocation.previewCart(draftOrderId(), lines, FOR)
         .then(function() {
           return fetchProducts(rows);
@@ -383,12 +494,16 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             });
           }
 
-          var order = $scope.currentOrder || {};
+          products = resolved.found;
+          return whenCartKnown();
+        })
+        .then(function(current) {
+          var order = current || {};
           if (!order.LineItems) order.LineItems = [];
 
           angular.forEach(rows, function(row) {
             order.LineItems.push({
-              Product: resolved.found[sizedId(row.productId, row.size)],
+              Product: products[sizedId(row.productId, row.size)],
               Quantity: row.qty,
               ShipAccount: null,
               ShipAddressID: null,
@@ -461,6 +576,14 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = Allocation.inDisplayOrder(view.pools);
+
+            // Units sitting in the cart, unordered. `remaining` already has these taken
+            // off it, so without saying so the page simply shows a smaller number than the
+            // employee remembers and no reason for it — which reads as items going missing.
+            var held = 0;
+            angular.forEach($scope.alloc.pools, function(p) { held += p.reserved || 0; });
+            $scope.alloc.totalReserved = held;
+
             // Open the largest pool: the page should show what it does at rest rather
             // than a column of closed rows.
             var biggest = null;

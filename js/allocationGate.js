@@ -102,10 +102,49 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
     Order.save = function(order, success, error) {
       var orderId = order && order.ID;
 
-      // No id yet, or the integration is off: nothing to meter against. An order with no
-      // id has never been saved, so there is no reservation to reconcile it to either.
-      if (!Allocation.isEnabled() || !orderId) {
+      if (!Allocation.isEnabled()) {
         return save(order, success, error);
+      }
+
+      /**
+       * The first save of a cart that does not exist yet.
+       *
+       * This used to return here unmetered, on the reasoning that an order with no id has
+       * no reservation to reconcile against. True, and it left the hole: an employee whose
+       * cart is empty has no `CurrentOrderID`, so `four51Ctrl` sets `currentOrder` to null,
+       * the picker sends `{}`, and **their first add was never metered at all**. The cart
+       * filled up and the landing page still read 15 of 15, because nothing had been
+       * reserved.
+       *
+       * The id only exists once Four51 has assigned it, so the order of operations has to
+       * invert here: save first, then reserve against the id that comes back. Every later
+       * save takes the metered path below.
+       *
+       * A refusal cannot be enforced on this path — the order is already written by the
+       * time we could hear one — so it is logged rather than surfaced. That is the right
+       * trade for a first add: the picker has already previewed the same selection against
+       * the same balance, so a refusal here means something changed in between, and
+       * `validateCart` reconciles the hold to whatever the cart really holds the next time
+       * anything touches it.
+       */
+      if (!orderId) {
+        return save(order, function(saved) {
+          var newId = saved && saved.ID;
+          if (newId) {
+            // Prefer the saved order: Four51 may have merged or renumbered lines, and the
+            // hold must match what the cart actually holds. Fall back to what we sent if
+            // the response comes back without products attached.
+            var newLines = linesOf(saved);
+            if (!newLines.length) newLines = linesOf(order);
+            Allocation.validateCart(newId, newLines, Allocation.orderBeneficiary(newId))
+              .catch(function(err) {
+                if (window.console && console.warn) {
+                  console.warn('new cart saved but not reserved; reconciliation will catch it', err);
+                }
+              });
+          }
+          if (angular.isFunction(success)) success(saved);
+        }, error);
       }
 
       var lines = linesOf(order);

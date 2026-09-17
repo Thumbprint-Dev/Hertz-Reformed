@@ -50,6 +50,38 @@
         <p>{{alloc.eligibility.message}}</p>
       </div>
 
+      <!--
+        What is already in the cart.
+
+        `remaining` has these units taken off it, so an employee who put three tops in the
+        cart comes back to a page that says two rather than five, with their picks cleared
+        and nothing on screen accounting for the difference. That reads as items going
+        missing, and the natural response is to pick three more — which they cannot.
+
+        So it says the number, where the items are, and what to do about it, in that order,
+        in the words someone would use themselves. "Held" rather than "reserved" because
+        reserved is what a table at a restaurant is; "put them back" rather than "release
+        the allocation" because nobody outside this codebase says release.
+
+        Shown whenever anything is held, not only after adding — arriving fresh the next
+        morning with a full cart is exactly when the number needs explaining.
+      -->
+      <div class="hz-held" ng-show="!alloc.loading && !alloc.error && alloc.totalReserved > 0">
+        <div class="hz-held-text">
+          <p class="hz-held-h">
+            <b>{{alloc.totalReserved}}</b>
+            <span ng-if="alloc.totalReserved === 1">item is waiting in your cart</span>
+            <span ng-if="alloc.totalReserved !== 1">items are waiting in your cart</span>
+          </p>
+          <p class="hz-held-sub">
+            They are held for you until you check out, so the numbers below do not count
+            them. Changed your mind? Take them out of your cart and they come straight back
+            here.
+          </p>
+        </div>
+        <a class="hz-held-go" href="cart">Go to my cart</a>
+      </div>
+
       <div class="hz-pick-grid" ng-show="!alloc.loading && !alloc.error && alloc.view">
 
         <div class="hz-pools">
@@ -58,7 +90,13 @@
             <button class="hz-pool-head" type="button"
                     ng-click="alloc.toggle(pool)"
                     aria-expanded="{{pool.open ? 'true' : 'false'}}">
-              <span class="hz-pool-name">{{pool.name | hzPool}}</span>
+              <span class="hz-pool-name">
+                {{pool.name | hzPool}}
+                <!-- Makes the row add up. Without it "2 remaining" against a kit the
+                     employee knows gives five is just a wrong number; with it, 2 and 3
+                     account for the 5 they expect. -->
+                <i class="hz-pool-held" ng-if="pool.reserved > 0">{{pool.reserved}} in your cart</i>
+              </span>
               <span class="hz-pool-n">{{alloc.leftIn(pool)}}<i>remaining</i></span>
               <span class="hz-chev" aria-hidden="true"></span>
             </button>
@@ -80,7 +118,13 @@
                   <button class="hz-thumb" type="button"
                           ng-click="alloc.openPreview(pool, cat, product)"
                           aria-label="Preview {{alloc.labelFor(product.productId, cat.name)}}">
-                    <span class="hz-art hz-art--{{alloc.artFor(cat.name)}}" aria-hidden="true"></span>
+                    <!-- Photo where we have one, the outline where we do not. The outline
+                         is a real state, not a placeholder for a missing file: a garment
+                         with no rendering still has to render. -->
+                    <img class="hz-thumb-img" ng-if="alloc.photoFor(product.productId)"
+                         ng-src="{{alloc.photoFor(product.productId)}}" alt="" />
+                    <span class="hz-art hz-art--{{alloc.artFor(cat.name)}}"
+                          ng-if="!alloc.photoFor(product.productId)" aria-hidden="true"></span>
                   </button>
 
                   <div class="hz-item-text">
@@ -174,12 +218,24 @@
 
       <div class="hz-modal-body">
         <div class="hz-modal-art">
-          <span class="hz-art hz-art--lg hz-art--{{alloc.preview.art}}" aria-hidden="true"></span>
-          <p class="hz-modal-cap">Illustration. Product photography comes from the catalogue.</p>
+          <img class="hz-modal-img" ng-if="alloc.preview.photo"
+               ng-src="{{alloc.preview.photo}}" alt="{{alloc.preview.name}}" />
+          <span class="hz-art hz-art--lg hz-art--{{alloc.preview.art}}"
+                ng-if="!alloc.preview.photo" aria-hidden="true"></span>
         </div>
 
         <div>
-          <p class="hz-chart-h">Size chart <em>Example measurements</em></p>
+          <!--
+            The "Example measurements" badge that sat here was removed for the client demo,
+            at the client's request, so the dialog reads as finished.
+
+            THE NUMBERS BEHIND IT ARE STILL PLACEHOLDERS. See `CHARTS` in
+            js/controllers/allocationCtrl.js. Nothing on screen says so any more, so the
+            only guard left is this comment and the note in HANDOFF.md: do not let this
+            reach employees before Hertz supplies the real charts, because a size chart that
+            looks authoritative and is invented gets people the wrong garment.
+          -->
+          <p class="hz-chart-h">Size chart</p>
           <div class="hz-chart-scroll">
             <table class="hz-chart">
               <thead>
@@ -189,7 +245,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in alloc.chartRows(alloc.preview.chart)">
+                <!-- Bound to the array built when the dialog opened. Calling a function
+                     that returns a new array here is what made this table 66 rows long. -->
+                <tr ng-repeat="row in alloc.preview.chartRows">
                   <td>{{row.label}}</td>
                   <td ng-repeat="v in row.values">{{v}}&quot;</td>
                 </tr>

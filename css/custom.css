@@ -1444,6 +1444,42 @@ contentmodal2 a:hover{
 .hz-alert p { margin: 0; color: var(--hz-stop-ink); }
 .hz-note p { margin: 0; }
 
+/* What is already in the cart.
+   Built on the same rule-and-fill vocabulary as .hz-note rather than as a card, because it
+   is an explanation attached to the numbers below it, not a separate object. It stacks to
+   one column at phone width so the action never ends up beside a squeezed sentence. */
+.hz-held {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 14px;
+  /* `--sub` and `--a`, not `--hz-sub`/`--hz-accent`: those belong to `.hz-home` and are
+     undefined inside `.hz-pick`, which silently drops the fill and — because an invalid
+     var kills the whole shorthand — the left rule with it. */
+  background: var(--sub);
+  border-left: 3px solid var(--a);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 18px;
+  margin-bottom: 26px;
+}
+.hz-held-text { min-width: 0; }
+.hz-held-h { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
+/* The count carries the emphasis; it is the thing being explained. */
+.hz-held-h b { font-size: 22px; margin-right: 4px; }
+.hz-held-sub { margin: 4px 0 0; font-size: 13px; color: var(--muted); max-width: 62ch; }
+.hz-held-go {
+  flex: 0 0 auto; white-space: nowrap;
+  padding: 10px 16px; border: 1px solid var(--firm); border-radius: 4px;
+  background: #fff; color: var(--ink); font-weight: 700; font-size: 14px;
+  text-decoration: none;
+}
+.hz-held-go:hover { border-color: var(--ink); }
+.hz-held-go:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* The per-pool echo of the same fact, on its own line under the pool name. */
+.hz-pool-held {
+  display: block; font-style: normal; font-weight: 600;
+  font-size: 12px; color: var(--muted); margin-top: 2px;
+}
+
 .hz-seasonal {
   margin-top: 30px;
   font-size: 13.5px;
@@ -1781,6 +1817,15 @@ contentmodal2 a:hover{
 .hz-thumb:hover { border-color: var(--firm); }
 .hz-thumb:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+/* Fills the 58px thumb the outline art used to sit in, without resizing it. `contain`
+   because the renderings are square but the garments inside them are not, and a cropped
+   sleeve is worse than a small one. The files carry their own transparency, so the tile
+   background still shows through exactly as it did behind the mask. */
+.hz-thumb-img {
+  display: block; width: 100%; height: 100%;
+  object-fit: contain; padding: 4px; box-sizing: border-box;
+}
+
 .hz-item-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .hz-item-name { font-weight: 600; font-size: 14.5px; color: var(--ink); }
 .hz-item-sku { font-family: var(--display); font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
@@ -1894,6 +1939,13 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    token so a brand change does not need new artwork. */
 .hz-art { display: block; width: 34px; height: 34px; background: #aab2c2; }
 .hz-art--lg { width: 132px; height: 132px; margin: 0 auto; }
+
+/* The same 132px footprint the large outline occupies, so the dialog does not resize
+   depending on whether a garment has a rendering yet. */
+.hz-modal-img {
+  display: block; width: 132px; height: 132px;
+  object-fit: contain; margin: 0 auto;
+}
 .hz-art--polo    { -webkit-mask: var(--m-polo) center/contain no-repeat; mask: var(--m-polo) center/contain no-repeat; }
 .hz-art--poloLs  { -webkit-mask: var(--m-polols) center/contain no-repeat; mask: var(--m-polols) center/contain no-repeat; }
 .hz-art--pants   { -webkit-mask: var(--m-pants) center/contain no-repeat; mask: var(--m-pants) center/contain no-repeat; }
@@ -2088,6 +2140,12 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-track { display: block; height: 6px; background: #EEE; overflow: hidden; }
 .hz-lp-track i { display: block; height: 100%; background: var(--yellow); }
 .hz-lp-count-of { margin: 0; font-size: 12px; color: var(--black-60); }
+
+/* Under the headline figure. Sentence, not badge — see the partial. Type on the landing
+   page is never yellow (§3.2), so the emphasis is weight and the link is underlined. */
+.hz-lp-held { margin: 10px 0 0; font-size: 13px; color: var(--black-90); max-width: 40ch; }
+.hz-lp-held b { font-size: 15px; }
+.hz-lp-held a { color: var(--black-90); text-decoration: underline; }
 
 .hz-lp-cats { display: flex; flex-wrap: nowrap; }
 .hz-lp-cat {

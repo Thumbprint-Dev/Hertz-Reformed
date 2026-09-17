@@ -61,11 +61,29 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
         });
 	};
 
+	/*
+	 * NOTE: the five `451Cache.User.` removals in this file had no trailing dot and were
+	 * therefore removing a key that is never written. `userService.js:2` caches the user at
+	 * `451Cache.User.<apiName>`; these asked for `451Cache.User<apiName>`, so the user cache
+	 * survived every order write.
+	 *
+	 * That is why a cart disappeared on refresh. Saving an order is what gives the user a
+	 * `CurrentOrderID`, and the line below exists to drop the stale copy so the `User.get`
+	 * immediately after re-reads it. With the key wrong, nothing was dropped, `User.get`
+	 * answered from cache with the pre-cart user, and `Four51Ctrl` then read
+	 * `user.CurrentOrderID` as absent on the next load and set `currentOrder` to null. The
+	 * order was never lost — it was sitting on the server, unreachable, because the browser
+	 * held a user record that predated it.
+	 *
+	 * Every other entity here already spells it with the dot: `451Cache.Order.`,
+	 * `451Cache.Address.`, `451Cache.Category.`, `451Cache.Tree.`. This is the origin of the
+	 * "clear localStorage before assuming a code bug" advice in CLAUDE.md.
+	 */
 	var _save = function(order, success, error) {
 		$resource($451.api('order')).save(order).$promise.then(
 			function(o) {
 				store.set('451Cache.Order.' + o.ID, o);
-				store.remove('451Cache.User' + $451.apiName);
+				store.remove('451Cache.User.' + $451.apiName);
                 User.get(function(user) {
                     _extend(o, user);
                     _then(success, o);
@@ -81,7 +99,7 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
 		$resource($451.api('order')).delete().$promise.then(
 			function() {
 				store.remove('451Cache.Order.' + order.ID);
-				store.remove('451Cache.User' + $451.apiName);
+				store.remove('451Cache.User.' + $451.apiName);
 				_then(success);
 			},
 			function(ex) {
@@ -94,7 +112,7 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
 		$resource($451.api('order'), { }, { submit: { method: 'PUT' }}).submit(order).$promise.then(
 			function(o) {
 				store.set('451Cache.Order.' + o.ID);
-				store.remove('451Cache.User' + $451.apiName);
+				store.remove('451Cache.User.' + $451.apiName);
                 User.get(function(user) {
                     _extend(o, user);
                     _then(success, o);
@@ -110,7 +128,7 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
 		$resource($451.api('order/repeat/:id'), {'id': id}, { repeat: { method: 'PUT'}}).repeat().$promise.then(
 			function(o) {
 				store.set('451Cache.Order.' + o.ID);
-				store.remove('451Cache.User' + $451.apiName);
+				store.remove('451Cache.User.' + $451.apiName);
                 User.get(function(user) {
                     _extend(o, user);
                     _then(success, o);
@@ -163,7 +181,7 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
                         _then(success, o);
                     });
 				} else {
-					store.remove('451Cache.User' + $451.apiName);
+					store.remove('451Cache.User.' + $451.apiName);
 					_then(success, null);
 				}
 			},
