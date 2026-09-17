@@ -77,13 +77,12 @@
 	</style>
   <div class="panel-order">
 	  <div class="panel-heading checkout-container" ng-class="{'no': cart_order.$invalid, 'yes': !cart_order.$invalid, 'open': checkOutSection == 'order' }" style="background-color: white;">
-		  <h3 ng-click="checkOutSection = 'order'" class="">
+		  <h3 class="">
 			  <i class="pull-left checkout-circle" ng-class="{'fa fa-warning': cart_order.$invalid, 'fa fa-check-circle': !cart_order.$invalid }"></i>
 			  <span class="checkout-title">{{'Order' | r | xlat}}</span>
-			  <i class="" style="color: #4E2683;font-size: 16px;" ng-class="{'fa fa-caret-up': checkOutSection == 'order', 'fa fa-caret-down': checkOutSection == 'shipping' || checkOutSection == 'billing' }"></i>
-		  </h3>
+			  </h3>
 	  </div>
-	  <div collapse="checkOutSection != 'order'" class="panel-body">
+	  <div class="panel-body">
 		  <form name="cart_order" novalidate="">
 			  <div class="view-form-icon" ng-if="user.Permissions.contains('EditPOID')" ng-invalid>
 				  <div class="col-xs-12 input-group">
