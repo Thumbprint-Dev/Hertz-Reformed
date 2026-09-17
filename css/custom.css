@@ -2984,3 +2984,105 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-terms-btn:hover { background: #E6B800; }
 .hz-terms-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---------- Order confirmation ----------
+   Where checkout lands, and the view of any single order. Same language as the cart and
+   checkout: a tinted ground, white cards, the summary in a sticky column beside the items.
+   -------------------------------------------------- */
+.hz-ord {
+  --yellow: #FFCC00; --ink: #11172b; --body: #2c3140; --muted: #5f6778;
+  --line: #e3e7ef; --edge: #dae0ea; --sub: #f8f9fc;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif; color: var(--body);
+  background: #F6F7F9;
+  margin-left: -12.5%; margin-right: -12.5%;
+  padding: 24px clamp(16px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  min-height: calc(100vh - 150px);
+}
+.hz-ord, .hz-ord *, .hz-ord *::before, .hz-ord *::after { box-sizing: border-box; }
+@media screen and (max-width: 425px) {
+  .hz-ord { margin-left: -2.0833%; margin-right: -2.0833%; }
+}
+
+.hz-ord-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-bottom: 18px;
+}
+.hz-ord-kind { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+.hz-ord-print {
+  font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px;
+  border: 1px solid var(--edge); border-radius: 4px; background: #fff;
+  color: var(--body); cursor: pointer;
+}
+.hz-ord-print:hover { border-color: var(--ink); color: var(--ink); }
+
+.hz-ord-grid { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 24px; align-items: start; }
+.hz-ord-main { min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.hz-ord-side { position: sticky; top: 16px; }
+
+.hz-ord-title-wrap { }
+.hz-ord-title {
+  font-family: var(--display); font-weight: 600; font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.04; color: var(--ink); margin: 0 0 6px;
+}
+.hz-ord-count { margin: 0; font-size: 14.5px; color: var(--muted); }
+.hz-ord-h2 { margin: 0 0 12px; font-size: 15px; font-weight: 700; color: var(--ink); }
+
+.hz-ord-card {
+  background: #fff; border: 1px solid var(--edge); border-radius: 8px; padding: 20px;
+}
+.hz-ord-card-h {
+  margin: 0 0 12px; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+.hz-ord-ship, .hz-ord-actions, .hz-ord-approvals {
+  background: #fff; border: 1px solid var(--edge); border-radius: 8px; padding: 18px 20px;
+}
+.hz-ord-ship p, .hz-ord-actions p { margin: 0 0 6px; font-size: 14px; }
+.hz-ord-ship-h {
+  font-size: 11px !important; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.hz-ord-ship strong { display: inline-block; min-width: 88px; color: var(--muted); font-weight: 600; }
+.hz-ord-ship-items { margin: 8px 0 0; padding-left: 18px; font-size: 14px; }
+
+.hz-ord-label {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+}
+.hz-ord-inline { display: flex; flex-wrap: wrap; gap: 10px; }
+.hz-ord-input {
+  flex: 1 1 200px; font: inherit; font-size: 15px; color: var(--ink);
+  padding: 11px 13px; border: 1px solid var(--line); border-radius: 4px; background: #fff;
+}
+.hz-ord-input:focus { border-color: var(--ink); outline: 2px solid var(--yellow); outline-offset: 1px; }
+.hz-ord-btn {
+  font: inherit; font-size: 14px; font-weight: 600; padding: 11px 18px;
+  border: 1px solid var(--edge); border-radius: 4px; background: #fff; color: var(--ink);
+  cursor: pointer;
+}
+.hz-ord-btn:hover { background: var(--sub); border-color: var(--ink); }
+
+.hz-ord-alert { border-radius: 6px; padding: 12px 16px; font-size: 14px; margin-top: 16px; }
+.hz-ord-alert--good { background: #eef7f1; border: 1px solid #cfe6d8; color: #1d6f4f; }
+.hz-ord-alert--bad { background: #fdf3f2; border: 1px solid #e7c9c6; color: #8a2f27; }
+.hz-ord-alert p { margin: 0; }
+
+/* The nested stock directives keep Bootstrap's classes; bring them into line without
+   restyling each one. */
+.hz-ord .panel, .hz-ord .panel-body, .hz-ord .panel-heading { background: none; border: 0; box-shadow: none; padding: 0; }
+.hz-ord table { width: 100%; font-size: 14px; }
+.hz-ord .form-control {
+  font: inherit; font-size: 15px; width: 100%; padding: 11px 13px;
+  border: 1px solid var(--line); border-radius: 4px; box-shadow: none; height: auto;
+}
+
+@media screen and (max-width: 900px) {
+  .hz-ord-grid { grid-template-columns: minmax(0,1fr); }
+  .hz-ord-side { position: static; order: -1; }
+}
+@media screen and (min-width: 901px) {
+  /* Written second in the source, shown first: details beside the items. */
+  .hz-ord-side { order: 2; }
+}
