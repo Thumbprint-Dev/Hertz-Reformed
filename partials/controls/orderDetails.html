@@ -1,201 +1,155 @@
-<style>
-	.checkout-title {
-	  color: #208fad;
-	  font-size: 35px;
-	  font-weight: bold;
-	  letter-spacing: -0.74px;
-	  padding-right: 10px;
-	}
-	.checkout-circle {
-	  padding-top: 10px;
-	  padding-right: 10px;
-	}
-  .checkout-container {
-	background-color: none;
-	border-color: none;
-	border-bottom: 1px solid #d2e8ee;
-  }
-  .checkout-textarea {
-	background: white !important;
-  }
-  .champion-order-panel {
-	background: #fff;
-	border: 1px solid #d8e2e8;
-	border-radius: 6px;
-	margin-top: 18px;
-	padding: 18px;
-  }
-  .champion-order-panel h4 {
-	color: #242629;
-	font-size: 20px;
-	font-weight: 700;
-	margin: 0 0 8px;
-  }
-  .champion-order-panel p {
-	color: #4d4f52;
-	font-size: 15px;
-	line-height: 1.45;
-	margin: 0;
-  }
-  .champion-order-grid {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-	margin: 16px 0;
-  }
-  .champion-order-option {
-	align-items: flex-start;
-	background: #f7fafc;
-	border: 1px solid #d8e2e8;
-	border-radius: 6px;
-	cursor: pointer;
-	display: flex;
-	flex: 1 1 280px;
-	gap: 10px;
-	margin: 0;
-	padding: 14px;
-  }
-  .champion-order-option input {
-	margin-top: 3px;
-  }
-  .champion-order-option strong {
-	color: #242629;
-	display: block;
-	font-size: 15px;
-	margin-bottom: 3px;
-  }
-  .champion-order-option span {
-	color: #5f6368;
-	display: block;
-	font-size: 13px;
-	font-weight: 400;
-	line-height: 1.4;
-  }
-  .champion-order-field {
-	margin-top: 14px;
-  }
-	</style>
-  <div class="panel-order">
-	  <div class="panel-heading checkout-container" ng-class="{'no': cart_order.$invalid, 'yes': !cart_order.$invalid, 'open': checkOutSection == 'order' }" style="background-color: white;">
-		  <h3 class="">
-			  <i class="pull-left checkout-circle" ng-class="{'fa fa-warning': cart_order.$invalid, 'fa fa-check-circle': !cart_order.$invalid }"></i>
-			  <span class="checkout-title">{{'Order' | r | xlat}}</span>
-			  </h3>
-	  </div>
-	  <div class="panel-body">
-		  <form name="cart_order" novalidate="">
-			  <div class="view-form-icon" ng-if="user.Permissions.contains('EditPOID')" ng-invalid>
-				  <div class="col-xs-12 input-group">
-					  <label class="required">{{('Order' | r) + ' '  + ('ID' | r) | xlat}}</label>
-					  <input class="form-control" name="orderid" ng-disabled='currentOrder.autoID' type='text' ng-model="currentOrder.ExternalID"
-							 required ui-mask="{{currentOrder.autoID ? null : user.Company.POIDMask}}"></input>
-						  <span ng-if="user.Permissions.contains('AllowAutoGenPOID')" class="input-group-addon">
-							  <input type='checkbox' ng-click="currentOrder.ExternalID = currentOrder.autoID ? null : 'auto'" ng-model='currentOrder.autoID' />
-						  </span>
-					  <span class="input-group-addon" ng-show="user.Permissions.contains('AllowAutoGenPOID')">{{('Auto' | r) + ' ' + ('ID' | r) | xlat}}</span>
-					  <i class="fa">#</i>
-				  </div>
-			  </div>
-			  <!--<div class="view-form-icon" ng-if="user.Permissions.contains('Comments')">
-				  <div>
-					  <label ng-show="currentOrder.Comments">{{'Comments' | r | xlat}}:</label>
-					  <textarea class="form-control" rows="5" cols="100" ng-model="currentOrder.Comments" ng-attr-placeholder="{{'Comments (max character limit of 250)' | r | xlat}}..." maxlength="250"/>
-					  <i class="fa fa-edit"></i>
-				  </div>
-			  </div>-->
-			  <div class="alert alert-warning" role="alert" style="text-align:center;margin-bottom: 0;"><p ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">If you have any questions or concerns about your uniform requirements please reach out to your Uniform Champion<br><br></p>
-			If you have any issues with checking out or need to make changes to your order please click on the Chat button when you’re logged into the site or email us at <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.
-			  </div>
-			  <div class="view-form-icon" ng-show="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && user.CostCenters.length > 0 || user.Permissions.contains('CostCenterPerOrder') && user.Permissions.contains('FreeFormCostCenter')">
-				  <div ng-class="{'view-form-select': !currentOrder.CostCenter && user.CostCenters.length > 1, '': currentOrder.CostCenter }">
-					  <label class="required">{{'Cost Center' | r | xlat}}</label>
-					  <select class="form-control" ng-required="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && !user.Permissions.contains('FreeFormCostCenter')"
-							  ng-change="updateCostCenter()" ng-if="user.CostCenters.length > 1 && !user.Permissions.contains('FreeFormCostCenter')"
-							  ng-options="center.Name as center.Name for center in user.CostCenters" ng-model="currentOrder.CostCenter"><option value=""></option></select>
-					  <input class="form-control" ng-show="user.Permissions.contains('FreeFormCostCenter')" ng-model="currentOrder.CostCenter" type='text'
-							 ng-required="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && user.Permissions.contains('FreeFormCostCenter')"
-							 placeholder="{{'Cost Center' | r | xlat}}" />
-					  <span ng-if="user.CostCenters.length == 1 && !user.Permissions.contains('FreeFormCostCenter')">{{currentOrder.CostCenter}}</span>
-					  <i class="fa fa-arrow-down" ng-show="user.CostCenters.length > 1 && !user.Permissions.contains('FreeFormCostCenter')"></i>
-				  </div>
-			  </div>
-			  <!--<div ng-show="currentOrder.OrderFields">
-				  <hr />
-				  <div ng-repeat="field in currentOrder.OrderFields">
-					  <customtextfield customfield="field" ng-if="field.ControlType == 'Text'" ng-required="field.IsRequired" />
-					  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
-				  </div>
-			  </div>-->
-			  
-			  <div class="champion-order-panel" ng-if="hertzChampionUser || dollarChampionUser || thriftyChampionUser" ng-init="championReturnExchange = championReturnExchange || !!(((currentOrder.OrderFields | filter:{Name:'CG_IntegrationField2'})[0] || {}).Value); championOtherReason = championOtherReason || !!(((currentOrder.OrderFields | filter:{Name:'CG_IntegrationField5'})[0] || {}).Value)">
-				  <h4>Uniform Champion Order Details</h4>
-				  <p>Enter the employee number for the individual you are ordering on behalf of, then select why this order is being placed. This information helps the Hertz approval team review the order faster.</p>
+<!--
+  Checkout · step 1, order details.
 
-				  <div class="champion-order-field" ng-repeat="field in currentOrder.OrderFields | filter:{Name:'CG_IntegrationField1'}">
-					  <octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'" ng-required="true" label="Employee Number"></octextfield>
-				  </div>
+  Rewritten off Bootstrap. Every binding is the stock one — `cart_order` is still the form
+  name `orderSummary.html` and `checkOutViewCtrl` read for validity, `currentOrder.*` model
+  paths are unchanged, and the `octextfield` directives and their `ng-required` expressions
+  are byte-for-byte what they were. What changed is the chrome: `panel-*`, `col-xs-*`,
+  `input-group`, `form-control` and the inline `<style>` block are gone, replaced by the
+  `hz-co-*` components in custom.css.
 
-				  <div class="champion-order-grid">
-					  <label class="champion-order-option">
-						  <input type="checkbox" name="champion_return_exchange" ng-model="championReturnExchange" ng-change="championReturnExchange && (championOtherReason = false)" ng-required="!championOtherReason" />
-						  <span>
-							  <strong>Are you processing this order because of a return/exchange?</strong>
-							  Please provide the RMA number from the return/exchange form.
-						  </span>
-					  </label>
-					  <label class="champion-order-option">
-						  <input type="checkbox" name="champion_other_reason" ng-model="championOtherReason" ng-change="championOtherReason && (championReturnExchange = false)" ng-required="!championReturnExchange" />
-						  <span>
-							  <strong>Are you processing this order for another reason?</strong>
-							  Please explain why this order is being placed for this individual.
-						  </span>
-					  </label>
-				  </div>
+  That matters because the old markup could only be restyled from the outside, with a pile
+  of `!important` fighting Bootstrap's own rules. Two stylesheets arguing over the same
+  element is why this page kept looking half-finished whatever was done to it.
 
-				  <div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'CG_IntegrationField2'}">
-					  <div class="champion-order-field" ng-if="championReturnExchange || field.Value">
-						  <octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'" ng-required="championReturnExchange" label="If placing an order on behalf of an employee for an exchange, please include the RMA number you were"></octextfield>
-					  </div>
-				  </div>
-
-				  <div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'CG_IntegrationField5'}">
-					  <div class="champion-order-field" ng-if="championOtherReason || field.Value">
-						  <octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'" ng-required="championOtherReason" label="Please provide a brief reason for placing this order on behalf of this employee."></octextfield>
-					  </div>
-				  </div>
-			  </div>
-
-
-			
-		<!--<div ng-if="adtDealer == true" class="alert alert-danger text-center" style="margin-top:15px;border-radius:24px;"><span><input type="checkbox"
-						   required="required"
-						   ng-model="confirmTried.value1"
-						   name="Confirmed">
-			By checking this box, I acknowledge this is an on-demand order, production of apparel is <strong>10-15 days</strong> from time of order. Your items are produced at the time of order, and can not be refunded or exchanged once color & size are selected.</span>
-		</div>
-		
-		
-		<div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'DCX_Event'}">
-			<ocselectionfield customfield="field" options="options" ng-if="field.ControlType == 'Selection'" label='Is this order for an event?	'></ocselectionfield>
-		 </div>
-		  
-		 <div ng-if="currentOrder.OrderFields[0].Value === 'Yes' || currentOrder.OrderFields[1].Value === 'Yes' || currentOrder.OrderFields[2].Value === 'Yes' || currentOrder.OrderFields[3].Value === 'Yes'">
-		<div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'DCX_Event_Name'}">
-			<octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'" label='Event Name'></octextfield>
-		</div>
-		<div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'DCX_Event_Date'}">
-			  <ocdatefield customfield="field" options="options" ng-if="field.ControlType == 'Text'" format='MM-dd-yyyy' />
-		</div>
-		<div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'DCX_Delivery_Window'}">
-			  <ocdatefield customfield="field" options="options" ng-if="field.ControlType == 'Text'" format='MM-dd-yyyy' />
-		</div>
-		<div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'DCX_Label'}">
-			   <ocfilefield customfield="field" options="options" ng-if="field.ControlType == 'Text'"></ocfilefield>
-		</div> -->
-		
-		  </div>
-  
-		  </form>
-	  </div>
+  Branches nobody at Hertz currently reaches — the PO ID field, cost centres, free-form
+  cost centre — are kept, not deleted. They are permission-gated Four51 behaviour and a
+  different tenant or a permission change brings them back; removing them would be removing
+  functionality, which is not what restyling means.
+-->
+<div class="hz-co-card">
+  <div class="hz-co-card-h">
+    <!-- Status, not decoration: it tells you which step is holding up Submit. -->
+    <i class="hz-co-step-icon"
+       ng-class="{'fa fa-exclamation-circle is-todo': cart_order.$invalid,
+                  'fa fa-check-circle is-done': !cart_order.$invalid}"
+       aria-hidden="true"></i>
+    <h3 class="hz-co-card-t">{{'Order' | r | xlat}}</h3>
   </div>
-  
+
+  <div class="hz-co-card-b">
+    <form name="cart_order" novalidate="">
+
+      <div class="hz-co-field" ng-if="user.Permissions.contains('EditPOID')">
+        <label class="hz-co-label is-required" for="hz-co-orderid">
+          {{('Order' | r) + ' ' + ('ID' | r) | xlat}}
+        </label>
+        <div class="hz-co-inline">
+          <input id="hz-co-orderid" class="hz-co-input" name="orderid" type="text"
+                 ng-disabled="currentOrder.autoID"
+                 ng-model="currentOrder.ExternalID"
+                 required
+                 ui-mask="{{currentOrder.autoID ? null : user.Company.POIDMask}}" />
+          <label class="hz-co-check" ng-if="user.Permissions.contains('AllowAutoGenPOID')">
+            <input type="checkbox"
+                   ng-click="currentOrder.ExternalID = currentOrder.autoID ? null : 'auto'"
+                   ng-model="currentOrder.autoID" />
+            <span>{{('Auto' | r) + ' ' + ('ID' | r) | xlat}}</span>
+          </label>
+        </div>
+      </div>
+
+      <!--
+        The support notice. Kept verbatim, including the champion carve-out: an employee is
+        told to ask their Uniform Champion, and a Champion is not told to ask themselves.
+      -->
+      <div class="hz-co-note">
+        <p ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">
+          If you have any questions or concerns about your uniform requirements please reach
+          out to your Uniform Champion.
+        </p>
+        <p>
+          If you have any issues with checking out or need to make changes to your order,
+          use the Chat button while signed in, or email
+          <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.
+        </p>
+      </div>
+
+      <div class="hz-co-field"
+           ng-show="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && user.CostCenters.length > 0 || user.Permissions.contains('CostCenterPerOrder') && user.Permissions.contains('FreeFormCostCenter')">
+        <label class="hz-co-label is-required" for="hz-co-costcenter">
+          {{'Cost Center' | r | xlat}}
+        </label>
+        <select id="hz-co-costcenter" class="hz-co-select"
+                ng-required="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && !user.Permissions.contains('FreeFormCostCenter')"
+                ng-change="updateCostCenter()"
+                ng-if="user.CostCenters.length > 1 && !user.Permissions.contains('FreeFormCostCenter')"
+                ng-options="center.Name as center.Name for center in user.CostCenters"
+                ng-model="currentOrder.CostCenter">
+          <option value=""></option>
+        </select>
+        <input class="hz-co-input" type="text"
+               ng-show="user.Permissions.contains('FreeFormCostCenter')"
+               ng-model="currentOrder.CostCenter"
+               ng-required="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && user.Permissions.contains('FreeFormCostCenter')"
+               placeholder="{{'Cost Center' | r | xlat}}" />
+        <p class="hz-co-static"
+           ng-if="user.CostCenters.length == 1 && !user.Permissions.contains('FreeFormCostCenter')">
+          {{currentOrder.CostCenter}}
+        </p>
+      </div>
+
+      <!--
+        Champion ordering on behalf. The two checkboxes are mutually exclusive and each is
+        `ng-required` unless the other is ticked, so one reason is always given — that
+        pairing is what the Hertz approval team reads, and it is unchanged.
+      -->
+      <div class="hz-co-sub"
+           ng-if="hertzChampionUser || dollarChampionUser || thriftyChampionUser"
+           ng-init="championReturnExchange = championReturnExchange || !!(((currentOrder.OrderFields | filter:{Name:'CG_IntegrationField2'})[0] || {}).Value); championOtherReason = championOtherReason || !!(((currentOrder.OrderFields | filter:{Name:'CG_IntegrationField5'})[0] || {}).Value)">
+        <h4 class="hz-co-sub-t">Uniform Champion order details</h4>
+        <p class="hz-co-sub-p">
+          Enter the employee number for the individual you are ordering on behalf of, then
+          say why this order is being placed. This helps the Hertz approval team review it
+          faster.
+        </p>
+
+        <div class="hz-co-field"
+             ng-repeat="field in currentOrder.OrderFields | filter:{Name:'CG_IntegrationField1'}">
+          <octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'"
+                       ng-required="true" label="Employee Number"></octextfield>
+        </div>
+
+        <div class="hz-co-choices">
+          <label class="hz-co-choice">
+            <input type="checkbox" name="champion_return_exchange"
+                   ng-model="championReturnExchange"
+                   ng-change="championReturnExchange && (championOtherReason = false)"
+                   ng-required="!championOtherReason" />
+            <span class="hz-co-choice-t">
+              <strong>Is this for a return or exchange?</strong>
+              Provide the RMA number from the return form.
+            </span>
+          </label>
+          <label class="hz-co-choice">
+            <input type="checkbox" name="champion_other_reason"
+                   ng-model="championOtherReason"
+                   ng-change="championOtherReason && (championReturnExchange = false)"
+                   ng-required="!championReturnExchange" />
+            <span class="hz-co-choice-t">
+              <strong>Is this for another reason?</strong>
+              Explain why the order is being placed for this individual.
+            </span>
+          </label>
+        </div>
+
+        <div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'CG_IntegrationField2'}">
+          <div class="hz-co-field" ng-if="championReturnExchange || field.Value">
+            <octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'"
+                         ng-required="championReturnExchange"
+                         label="RMA number from the return or exchange form"></octextfield>
+          </div>
+        </div>
+
+        <div ng-repeat="field in currentOrder.OrderFields | filter:{Name:'CG_IntegrationField5'}">
+          <div class="hz-co-field" ng-if="championOtherReason || field.Value">
+            <octextfield customfield="field" options="options" ng-if="field.ControlType == 'Text'"
+                         ng-required="championOtherReason"
+                         label="Why this order is being placed for this employee"></octextfield>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

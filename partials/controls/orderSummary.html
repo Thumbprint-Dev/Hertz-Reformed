@@ -56,8 +56,15 @@
        with no explanation is the commonest way a checkout strands someone. -->
   <p class="hz-co-blocked"
      ng-if="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
-    <span ng-if="cart_order.$invalid">Order details are incomplete. </span>
-    <span ng-if="cart_shipping.$invalid || !currentOrder.ShipAddressID">A shipping address is needed. </span>
+    <span ng-if="cart_order.$invalid">Fill in the order details above. </span>
+    <!--
+      "A shipping address is needed" was wrong in the commonest case: an address is chosen
+      automatically for every allocation employee, and what is actually missing is the tick
+      confirming it. Telling someone to supply what is already on screen sends them looking
+      for a control that is not there.
+    -->
+    <span ng-if="!currentOrder.ShipAddressID">Choose a shipping address. </span>
+    <span ng-if="currentOrder.ShipAddressID && cart_shipping.$invalid">Confirm the shipping address above. </span>
     <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
   </p>
 

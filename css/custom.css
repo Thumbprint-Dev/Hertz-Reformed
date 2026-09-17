@@ -2494,6 +2494,276 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-cart-ack input { margin: 2px 0 0; flex: 0 0 auto; }
 .hz-cart-ack--summary { margin: 4px 0 14px; }
 
+/* ---- hints ---- */
+.hz-co-hint { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.hz-co-hint--bad { color: #8a2f27; }
+
+/* ---- waiting ----
+   The stock indicator is a full-width Bootstrap cell that the theme paints as a pale blue
+   wash. Inside a step card it covered the whole card, including the address the shopper
+   was being asked to confirm, so the page looked like it had failed rather than like it
+   was fetching a shipping rate. Here it is a quiet line under the card's own content.
+   -------------------------------------------------- */
+.hz-co .app-loading-indicator-cell {
+  background: none !important; width: auto; float: none; padding: 0;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--muted);
+}
+.hz-co .app-loading-indicator-cell p { margin: 0; }
+.hz-co .app-loading-indicator-cell small { font-size: 13px; }
+
+/* ---- summary ---- */
+.hz-cart-side { position: sticky; top: 16px; }
+.hz-cart-summary {
+  border: 1px solid var(--edge); border-radius: 8px; background: #fff; padding: 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hz-cart-summary-h {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 4px;
+}
+.hz-cart-sum-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  font-size: 14.5px; margin: 0;
+}
+.hz-cart-sum-row span:last-child { font-variant-numeric: tabular-nums; color: var(--ink); }
+.hz-cart-sum-total {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  border-top: 2px solid var(--ink); margin-top: 8px; padding-top: 12px;
+  font-size: 19px; font-weight: 700; color: var(--ink);
+}
+.hz-cart-note { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+.hz-cart-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  padding: 14px 18px; cursor: pointer; text-decoration: none;
+}
+.hz-cart-btn:hover, .hz-cart-btn:focus {
+  background: var(--sub); border-color: var(--ink); color: var(--ink); text-decoration: none;
+}
+.hz-cart-btn--primary {
+  background: var(--yellow); border-color: var(--yellow); color: #434244;
+}
+.hz-cart-btn--primary:hover, .hz-cart-btn--primary:focus {
+  background: var(--yellow-press); border-color: var(--yellow-press); color: #434244;
+}
+.hz-cart-btn--primary[disabled] {
+  background: #EDEFF2; border-color: var(--line); color: var(--muted); cursor: not-allowed;
+}
+/* Cancelling is not the second half of checking out. */
+.hz-cart-cancel {
+  background: none; border: 0; font: inherit; font-size: 13px; font-weight: 600;
+  color: var(--muted); text-decoration: underline; padding: 6px; cursor: pointer;
+}
+.hz-cart-cancel:hover { color: #9b1c1c; }
+
+.hz-cart :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+.hz-cart-empty { padding: 40px 0; }
+.hz-cart-empty p { font-size: 16px; color: var(--body); margin: 0 0 16px; }
+.hz-cart-empty .hz-cart-btn { display: inline-block; width: auto; }
+
+.hz-cart-alert, .hz-cart-said { margin-top: 18px; font-size: 14px; }
+.hz-cart-alert p { color: #9b1c1c; margin: 0; }
+.hz-cart-said p { color: #1d6f4f; margin: 0; }
+
+@media (max-width: 900px) {
+  .hz-cart-grid { grid-template-columns: minmax(0, 1fr); }
+  .hz-cart-side { position: static; }
+}
+@media (max-width: 600px) {
+  .hz-cart-row { grid-template-columns: 64px minmax(0, 1fr); row-gap: 10px; padding: 16px; }
+  .hz-cart-thumb { width: 64px; height: 64px; }
+  .hz-cart-qty, .hz-cart-act { grid-column: 2; text-align: left; }
+}
+
+/* ---------- Checkout ----------
+   Same language as the cart. The three step cards come from the stock theme's form
+   partials, so this styles them from the outside as cards and leaves their internals
+   alone — that is where address, payment and approval behaviour lives.
+   -------------------------------------------------- */
+.hz-co {
+  --yellow: #FFCC00; --yellow-press: #E6B800;
+  --ink: #11172b; --body: #2c3140; --muted: #5f6778;
+  --line: #e3e7ef; --edge: #dae0ea; --sub: #f8f9fc;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: var(--body); background: #F6F7F9;
+  margin-left: -12.5%; margin-right: -12.5%;
+  padding: 28px clamp(16px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  min-height: calc(100vh - 150px);
+}
+.hz-co, .hz-co *, .hz-co *::before, .hz-co *::after { box-sizing: border-box; }
+@media screen and (max-width: 425px) {
+  .hz-co { margin-left: -2.0833%; margin-right: -2.0833%; }
+}
+
+.hz-co-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.hz-co-title {
+  font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.02; letter-spacing: -0.008em; color: var(--ink); margin: 0;
+}
+.hz-co-back { font-size: 13.5px; font-weight: 600; color: var(--body); }
+.hz-co-back:hover { color: var(--ink); }
+
+.hz-co-grid { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 24px; align-items: start; }
+.hz-co-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.hz-co-side { position: sticky; top: 16px; }
+
+/* ---- the step cards ----
+   Written for this page, not layered over Bootstrap. The step partials now carry hz-co-*
+   classes of their own, so none of this needs `!important` to win an argument with
+   bootstrap-451.css — which is what the previous version of this block was doing, and why
+   the page kept looking half-finished whatever was changed.
+
+   Bootstrap is still loaded for the rest of the theme. Checkout simply no longer depends
+   on it.
+   -------------------------------------------------- */
+.hz-co-card {
+  background: #fff; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden;
+}
+.hz-co-card-h {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px; border-bottom: 1px solid var(--line); background: #fff;
+}
+.hz-co-card-t {
+  margin: 0; font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 15px; font-weight: 700; letter-spacing: 0; color: var(--ink);
+}
+.hz-co-step-icon { font-size: 14px; line-height: 1; }
+.hz-co-step-icon.is-done { color: #1d6f4f; }
+.hz-co-step-icon.is-todo { color: var(--muted); }
+.hz-co-card-b { padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+
+/* ---- fields ---- */
+.hz-co-field { display: flex; flex-direction: column; gap: 6px; }
+.hz-co-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin: 0;
+}
+.hz-co-label.is-required::after { content: ' *'; }
+.hz-co-input, .hz-co-select {
+  font: inherit; font-size: 15px; color: var(--ink); width: 100%;
+  padding: 11px 13px; border: 1px solid var(--line); border-radius: 4px;
+  background: #fff; box-shadow: none; appearance: none;
+}
+/* A select must not look like a text box — it has a caret drawn in. */
+.hz-co-select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%235f6778' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center; background-size: 11px;
+  padding-right: 36px;
+}
+.hz-co-input:focus, .hz-co-select:focus {
+  border-color: var(--ink); outline: 2px solid var(--yellow); outline-offset: 1px;
+}
+.hz-co-input[disabled] { background: var(--sub); color: var(--muted); }
+.hz-co-static { margin: 0; font-size: 15px; color: var(--ink); }
+.hz-co-inline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.hz-co-inline .hz-co-input { flex: 1 1 220px; width: auto; }
+.hz-co-pair { display: flex; flex-wrap: wrap; gap: 10px; }
+.hz-co-pair .hz-co-input { flex: 1 1 160px; width: auto; }
+.hz-co-check { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; margin: 0; }
+
+/* ---- notices ---- */
+.hz-co-note {
+  background: var(--sub); border: 1px solid var(--line); border-radius: 6px;
+  padding: 14px 16px; font-size: 13.5px; line-height: 1.5; color: var(--body);
+}
+.hz-co-note p { margin: 0 0 8px; }
+.hz-co-note p:last-child { margin: 0; }
+.hz-co-alert {
+  background: var(--sub); border: 1px solid var(--line); border-radius: 6px;
+  padding: 14px 16px; font-size: 13.5px; line-height: 1.5; color: var(--body);
+}
+.hz-co-alert--bad { background: #fdf3f2; border-color: #e7c9c6; color: #8a2f27; }
+.hz-co-alert a { font-weight: 600; text-decoration: underline; }
+
+/* ---- champion sub-panel ---- */
+.hz-co-sub {
+  border: 1px solid var(--line); border-radius: 6px; padding: 16px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.hz-co-sub-t { margin: 0; font-size: 14px; font-weight: 700; color: var(--ink); }
+.hz-co-sub-p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+.hz-co-choices { display: flex; flex-wrap: wrap; gap: 12px; }
+.hz-co-choice {
+  flex: 1 1 260px; display: flex; gap: 10px; align-items: flex-start; margin: 0;
+  padding: 13px; border: 1px solid var(--line); border-radius: 6px;
+  background: #fff; cursor: pointer; font-weight: 400;
+}
+.hz-co-choice:hover { border-color: var(--ink); }
+.hz-co-choice input { margin: 2px 0 0; flex: none; }
+.hz-co-choice-t { font-size: 13px; line-height: 1.45; color: var(--muted); }
+.hz-co-choice-t strong { display: block; font-size: 14px; color: var(--ink); margin-bottom: 2px; }
+
+/* ---- shipping ---- */
+.hz-co-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.hz-co-toggle {
+  font: inherit; font-size: 14px; font-weight: 600; padding: 9px 14px;
+  border: 0; background: #fff; color: var(--body); cursor: pointer;
+}
+.hz-co-toggle + .hz-co-toggle { border-left: 1px solid var(--line); }
+.hz-co-toggle.is-on { background: var(--ink); color: #fff; }
+.hz-co-linkbtn {
+  align-self: flex-start; font: inherit; font-size: 13.5px; font-weight: 600;
+  background: none; border: 0; padding: 0; color: var(--body);
+  text-decoration: underline; cursor: pointer;
+}
+.hz-co-linkbtn:hover { color: var(--ink); }
+
+.hz-co-ship {
+  border: 1px solid var(--line); border-radius: 6px; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.hz-co-ship-h {
+  margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.hz-co-ship-a { display: flex; flex-direction: column; gap: 2px; font-style: normal; font-size: 14.5px; color: var(--ink); margin: 0; }
+
+/* The required confirmations. Given weight, because they gate Submit. */
+.hz-co-confirm {
+  display: flex; gap: 10px; align-items: flex-start; margin: 0;
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--sub); font-size: 13.5px; line-height: 1.45;
+  color: var(--body); font-weight: 400; cursor: pointer;
+}
+.hz-co-confirm input { margin: 2px 0 0; flex: none; }
+
+.hz-co-multi {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px;
+  border-top: 1px solid var(--line); padding-top: 16px;
+}
+.hz-co-multi-to { display: flex; flex-direction: column; gap: 12px; }
+.hz-co-multi-when { margin: 0; font-size: 12px; color: var(--muted); }
+.hz-co-multi-what { margin: 0; font-size: 14px; color: var(--ink); }
+
+@media screen and (max-width: 700px) {
+  .hz-co-multi { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The directives inside the step cards are still stock Four51 markup — addressinput,
+   paymentselector, the oc* custom fields. They keep Bootstrap's classes, so these few
+   rules bring them into line without restyling each one. */
+.hz-co-card-b .form-control {
+  font: inherit; font-size: 15px; color: var(--ink); height: auto; width: 100%;
+  padding: 11px 13px; border: 1px solid var(--line); border-radius: 4px;
+  background: #fff; box-shadow: none;
+}
+.hz-co-card-b .form-control:focus {
+  border-color: var(--ink); outline: 2px solid var(--yellow); outline-offset: 1px;
+}
+.hz-co-card-b label { font-size: 13px; font-weight: 600; color: var(--body); }
+.hz-co-card-b label.required::after { content: ' *'; color: var(--muted); }
+.hz-co-card-b .btn {
+  font: inherit; font-size: 14px; font-weight: 600; padding: 10px 15px;
+  border-radius: 4px; border: 1px solid var(--edge); background: #fff; color: var(--ink);
+  box-shadow: none; text-transform: none; letter-spacing: 0;
+}
+.hz-co-card-b .btn:hover { background: var(--sub); border-color: var(--ink); }
+
 /* ---- summary ---- */
 .hz-cart-side { position: sticky; top: 16px; }
 .hz-cart-summary {
