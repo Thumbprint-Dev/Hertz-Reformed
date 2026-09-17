@@ -10,7 +10,13 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
     }
 
     $routeProvider.
-        when('/listOrders', { templateUrl: 'partials/listOrders.html', controller: 'ListOrdersCtrl' }).
+        // `/listOrders` removed. Its controller, `ListOrdersCtrl`, is never defined
+        // anywhere in the theme — the route named a string and nothing else — so reaching
+        // it threw `ng:areq: not a function, got undefined` and rendered "Server Error".
+        // Nothing links to it; only a bookmark or an old link gets there, and `otherwise`
+        // now sends those to the catalogue, which is a far better answer than an error
+        // page. `partials/listOrders.html` is left in place rather than deleted: it is
+        // inert, and order history lives at `/order`.
         when('/orderdetails/:orderid', {templateUrl: 'partials/orderDetails.html', controller: 'OrderDetailsCtrl'}).
         // `/catalog` is where sign-in lands and where `otherwise` sends everything, so it
         // is the front door and carries the landing page. A specific category still goes
