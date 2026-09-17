@@ -2958,3 +2958,29 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-co-grid { grid-template-columns: minmax(0,1fr); }
   .hz-co-side { position: static; }
 }
+
+/* ---------- Terms of use ----------
+   The page a user with unaccepted terms is redirected to, and cannot leave until they
+   accept. It rendered empty before, so it had never been styled.
+   -------------------------------------------------- */
+.hz-terms {
+  --ink: #11172b; --body: #2c3140; --muted: #5f6778; --line: #e3e7ef; --yellow: #FFCC00;
+  font-family: 'Open Sans', Arial, sans-serif; color: var(--body);
+  max-width: 720px; margin: 0 auto; padding: 40px 0 64px;
+}
+.hz-terms-head { margin-bottom: 24px; }
+.hz-terms-title {
+  font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif; font-weight: 600;
+  font-size: clamp(30px, 4vw, 40px); line-height: 1.05; color: var(--ink); margin: 0 0 8px;
+}
+.hz-terms-sub { margin: 0; font-size: 15px; color: var(--muted); }
+.hz-terms-body { font-size: 15px; line-height: 1.65; }
+.hz-terms-body p { margin: 0 0 14px; }
+.hz-terms-body a { font-weight: 600; text-decoration: underline; }
+.hz-terms-actions { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+.hz-terms-btn {
+  font: inherit; font-size: 15px; font-weight: 700; padding: 13px 26px;
+  border: 0; border-radius: 2px; background: var(--yellow); color: var(--ink); cursor: pointer;
+}
+.hz-terms-btn:hover { background: #E6B800; }
+.hz-terms-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }

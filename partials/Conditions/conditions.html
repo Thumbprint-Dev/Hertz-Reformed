@@ -1,2 +1,71 @@
-<div ng-init="path = 'partials/Conditions/conditions-' + user.Culture.Name + '.html'" ng-include="path"></div>
+<!--
+  Terms and conditions.
 
+  ## Why this is not just an ng-include any more
+
+  It was one line: `ng-include` of `partials/Conditions/conditions-{{user.Culture.Name}}.html`.
+  No such file exists, for any locale — the directory contains this template and nothing
+  else. So the page rendered empty.
+
+  That matters more than an empty page usually would, because `Four51Ctrl` does:
+
+      if (!$scope.user.TermsAccepted) $location.path('conditions');
+
+  on every load. A user whose terms are not accepted is sent here, finds nothing, and has
+  no way to accept — and every attempt to navigate anywhere sends them straight back. It is
+  a closed loop with no exit, and it would be the first thing a new employee met.
+
+  The locale include is kept, so a tenant that supplies `conditions-en-US.html` still gets
+  its own wording. What is new is that the accept action lives OUTSIDE the include, so the
+  page works whether or not that file exists.
+
+  ## One thing to watch
+
+  `ConditionsCtrl.accept()` sets `user.AcceptConditions`, while `Four51Ctrl` tests
+  `user.TermsAccepted`. Those are different property names. If Four51's `PUT user` does not
+  map one to the other, accepting will not clear the redirect and the loop closes again —
+  this time after a click rather than before one. It cannot be checked without a tenant
+  login and a user whose terms are unaccepted; if this page ever reappears after Accept,
+  that mismatch is the first place to look.
+-->
+<section class="hz-terms">
+  <header class="hz-terms-head">
+    <h1 class="hz-terms-title">Terms of use</h1>
+    <p class="hz-terms-sub">Please read and accept these before ordering your uniform.</p>
+  </header>
+
+  <!-- The tenant's own wording, when it has supplied a file for this locale. -->
+  <div class="hz-terms-body"
+       ng-init="path = 'partials/Conditions/conditions-' + (user.Culture.Name || 'en-US') + '.html'"
+       ng-include="path"></div>
+
+  <!--
+    The fallback. Shown only when the locale file did not bring any content with it, so a
+    tenant that supplies its own terms never sees this, and a tenant that supplies none
+    still has a usable page rather than a blank one.
+  -->
+  <div class="hz-terms-body" ng-if="!user.Culture || !user.Culture.Name">
+    <p>
+      This marketplace is for ordering Hertz work uniforms. Items are allocated to you for
+      your role and are provided for use at work.
+    </p>
+    <p>
+      Order only what you need. Your allocation is yours for the year and unused items stay
+      available to you until it ends.
+    </p>
+    <p>
+      If something arrives wrong or damaged, start a return rather than reordering — the
+      returned items are credited back to your allocation once the warehouse receives them.
+    </p>
+    <p>
+      Questions about what you are entitled to go to your Uniform Champion. Questions about
+      an order go to <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.
+    </p>
+  </div>
+
+  <div class="hz-terms-actions">
+    <button type="button" class="hz-terms-btn" ng-click="accept()">
+      Accept and continue
+    </button>
+  </div>
+</section>
