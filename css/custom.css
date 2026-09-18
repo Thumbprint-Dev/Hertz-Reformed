@@ -1433,15 +1433,32 @@ contentmodal2 a:hover{
 .hz-tile--alt .hz-tile-body { padding-top: 22px; }
 
 /* ---------------------------------------------------------------- notices */
+/*
+  Every token here carries a fallback, and it is not decoration.
+
+  These two classes are used only by `allocationView.html` and `championView.html`, and
+  neither page is inside `.hz-home` — which is the only place the `--hz-*` tokens are
+  defined. So every declaration below resolved to nothing: no fill, and, because an invalid
+  var() invalidates the whole shorthand, no left rule either. Both rendered as bare text.
+
+  Nobody had reported it because both are conditional: `.hz-note` is what an employee sees
+  before day 90, and `.hz-alert` only appears when the allocation service fails. The states
+  where the styling carries the message are exactly the states nobody was looking at.
+
+  Fallbacks rather than copying the tokens into `.hz-pick` and `.hz-champ`: these are
+  general-purpose message boxes and the next page to use one will not be inside `.hz-home`
+  either. The fallback values are `.hz-home`'s own, so a page that does define the tokens
+  still themes them — the Dollar and Thrifty accents keep working.
+*/
 .hz-note, .hz-alert {
-  background: var(--hz-sub);
-  border-left: 3px solid var(--hz-accent);
+  background: var(--hz-sub, #f8f9fc);
+  border-left: 3px solid var(--hz-accent, #fc0);
   border-radius: 0 6px 6px 0;
   padding: 14px 18px;
   margin-bottom: 26px;
 }
-.hz-alert { border-left-color: var(--hz-stop-ink); background: var(--hz-stop-bg); }
-.hz-alert p { margin: 0; color: var(--hz-stop-ink); }
+.hz-alert { border-left-color: var(--hz-stop-ink, #a4192d); background: var(--hz-stop-bg, #fcebed); }
+.hz-alert p { margin: 0; color: var(--hz-stop-ink, #a4192d); }
 .hz-note p { margin: 0; }
 
 /* What is already in the cart.
