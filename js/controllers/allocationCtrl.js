@@ -388,24 +388,54 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     function fetchProducts(rows) {
       var found = {};
       var missing = [];
+      var silent = [];
+
       var work = rows.map(function(row) {
         var d = $q.defer();
         var id = sizedId(row.productId, row.size);
+        var settled = false;
+
+        function settle(bucket) {
+          if (settled) return;
+          settled = true;
+          if (bucket) bucket.push(id);
+          d.resolve();
+          $rootScope.$evalAsync();
+        }
+
+        /*
+         * The lookup has to be able to give up.
+         *
+         * `Product.get` is `.then(success)` with **no rejection branch** and no error
+         * callback to pass — see `productService.js`. If Four51 answers 404 for a SKU, or
+         * the request fails for any reason at all, the success callback simply never fires.
+         * Without this timer that deferred is never resolved, `$q.all` never settles, and
+         * the chain stops dead: the Add to cart button stays disabled, no message appears,
+         * and the only way out is a page reload. One unmappable size did that.
+         *
+         * Ten seconds because a catalogue lookup that slow has failed whatever the status
+         * code says, and it matches the cart backstop above.
+         */
+        var giveUp = $timeout(function() { settle(silent); }, 10000);
+
         try {
           Product.get(id, function(product) {
-            if (product && product.InteropID) found[id] = product;
-            else missing.push(id);
-            d.resolve();
-            $rootScope.$evalAsync();
+            $timeout.cancel(giveUp);
+            var ok = !!(product && product.InteropID);
+            // Recorded before the deferred resolves, so the collected result is complete
+            // by the time `$q.all` hands it on.
+            if (ok) found[id] = product;
+            settle(ok ? null : missing);
           });
         } catch (e) {
-          missing.push(id);
-          d.resolve();
+          $timeout.cancel(giveUp);
+          settle(missing);
         }
         return d.promise;
       });
+
       return $q.all(work).then(function() {
-        return { found: found, missing: missing };
+        return { found: found, missing: missing, silent: silent };
       });
     }
 
@@ -487,6 +517,16 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
           return fetchProducts(rows);
         })
         .then(function(resolved) {
+          // Two different failures, and they need two different answers. A product the
+          // catalogue answered about and does not have is a gap someone has to fix, so it
+          // names the champion. A product that never answered is probably a bad minute,
+          // and telling that employee to contact their champion sends them to bother
+          // someone about something that will work on retry.
+          if (resolved.silent.length) {
+            return $q.reject({
+              local: 'We could not reach the catalogue just now. Please try again in a moment.'
+            });
+          }
           if (resolved.missing.length) {
             return $q.reject({
               local: 'These are not in the catalogue yet: ' + resolved.missing.join(', ') +

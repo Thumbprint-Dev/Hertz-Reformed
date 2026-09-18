@@ -1433,15 +1433,32 @@ contentmodal2 a:hover{
 .hz-tile--alt .hz-tile-body { padding-top: 22px; }
 
 /* ---------------------------------------------------------------- notices */
+/*
+  Every token here carries a fallback, and it is not decoration.
+
+  These two classes are used only by `allocationView.html` and `championView.html`, and
+  neither page is inside `.hz-home` — which is the only place the `--hz-*` tokens are
+  defined. So every declaration below resolved to nothing: no fill, and, because an invalid
+  var() invalidates the whole shorthand, no left rule either. Both rendered as bare text.
+
+  Nobody had reported it because both are conditional: `.hz-note` is what an employee sees
+  before day 90, and `.hz-alert` only appears when the allocation service fails. The states
+  where the styling carries the message are exactly the states nobody was looking at.
+
+  Fallbacks rather than copying the tokens into `.hz-pick` and `.hz-champ`: these are
+  general-purpose message boxes and the next page to use one will not be inside `.hz-home`
+  either. The fallback values are `.hz-home`'s own, so a page that does define the tokens
+  still themes them — the Dollar and Thrifty accents keep working.
+*/
 .hz-note, .hz-alert {
-  background: var(--hz-sub);
-  border-left: 3px solid var(--hz-accent);
+  background: var(--hz-sub, #f8f9fc);
+  border-left: 3px solid var(--hz-accent, #fc0);
   border-radius: 0 6px 6px 0;
   padding: 14px 18px;
   margin-bottom: 26px;
 }
-.hz-alert { border-left-color: var(--hz-stop-ink); background: var(--hz-stop-bg); }
-.hz-alert p { margin: 0; color: var(--hz-stop-ink); }
+.hz-alert { border-left-color: var(--hz-stop-ink, #a4192d); background: var(--hz-stop-bg, #fcebed); }
+.hz-alert p { margin: 0; color: var(--hz-stop-ink, #a4192d); }
 .hz-note p { margin: 0; }
 
 /* What is already in the cart.
@@ -1460,7 +1477,10 @@ contentmodal2 a:hover{
   padding: 16px 18px;
   margin-bottom: 26px;
 }
-.hz-held-text { min-width: 0; }
+/* `flex: 1 1 320px` so the sentence shrinks to fit beside the button rather than sizing to
+   its own max-content and shoving the button onto a second row. Below ~460px of room it
+   wraps anyway, which is the phone layout. */
+.hz-held-text { flex: 1 1 320px; min-width: 0; }
 .hz-held-h { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
 /* The count carries the emphasis; it is the thing being explained. */
 .hz-held-h b { font-size: 22px; margin-right: 4px; }
@@ -2255,6 +2275,11 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    ========================================================================= */
 .hz-hd {
   --yellow: #FFCC00;
+  /* Repeated here for the same reason as the rest: the header is not inside .hz-lp, so a
+     token defined only there resolves to nothing and silently drops the declaration that
+     uses it. The cart control needs both — type on yellow, and the pressed yellow. */
+  --yellow-press: #E6B800;
+  --black-90: #434244;
   --black-80: #58595B;
   --black-60: #808285;
   --rule: rgba(0,0,0,0.2);
@@ -2348,6 +2373,105 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   width: 20px; height: 20px;
   fill: none; stroke: currentColor; stroke-width: 1.7;
   stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ---------------------------------------------------------- the cart control
+   Deliberately the twin of .hz-hd-avatar above: same 38px box, same 1px rule, same 2px
+   radius, same 20px stroked glyph. The two sit together at the end of the header and
+   should read as one pair of controls, not an icon parked beside a button.
+
+   Styles live here rather than in the directive, which used to inject its own <style>
+   block carrying `margin-right: 30%` and a `min-width: 300px` that broke the header. */
+.hz-mc { position: relative; list-style: none; display: flex; align-items: center; }
+
+.hz-mc-btn {
+  position: relative;
+  /* `min-height` because bootstrap-451.css sets `min-height: 40px` on every button, and a
+     min-height beats a height. Without this the cart sits 2px taller than the account
+     avatar next to it — the avatar is an <a> and escapes that rule. */
+  width: 38px; height: 38px; min-height: 38px; padding: 0;
+  border: 1px solid var(--rule); border-radius: 2px; background: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #000; cursor: pointer; flex: 0 0 auto;
+}
+.hz-mc-btn:hover { border-color: #000; }
+.hz-mc-btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.hz-mc-i {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Yellow is a fill and never type (§3.2), so the count is near-black on yellow. It sits
+   proud of the box corner; `min-width` with a pill radius keeps a two-digit count from
+   squashing into an oval. */
+.hz-mc-badge {
+  position: absolute; top: -7px; right: -7px;
+  min-width: 19px; height: 19px; padding: 0 5px;
+  border-radius: 10px; background: var(--yellow); color: var(--black-90);
+  font-size: 11px; font-weight: 700; line-height: 19px; text-align: center;
+  box-sizing: border-box;
+}
+
+.hz-mc-panel {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 1200;
+  width: 320px; max-width: calc(100vw - 32px);
+  background: #fff; border: 1px solid var(--rule); border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 14px 16px;
+  text-align: left;
+  cursor: default;
+}
+.hz-mc-h {
+  margin: 0 0 10px; padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+  font-size: 13px; font-weight: 700; color: var(--black-90);
+}
+
+.hz-mc-empty { text-align: center; padding: 6px 0 2px; }
+.hz-mc-empty p { margin: 0 0 8px; font-size: 13px; color: var(--black-60); }
+.hz-mc-empty a { font-size: 13px; font-weight: 700; color: var(--black-90); text-decoration: underline; }
+
+.hz-mc-list { list-style: none; margin: 0; padding: 0; }
+.hz-mc-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--rule);
+}
+.hz-mc-thumb {
+  flex: 0 0 auto; width: 40px; height: 40px;
+  border: 1px solid var(--rule); background: #fafbfd;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.hz-mc-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.hz-mc-meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
+/* The name wraps to two lines and then stops. A product name is long enough to push the
+   price out of the panel if it is allowed to run. */
+.hz-mc-name {
+  font-size: 13px; font-weight: 600; color: var(--black-90); line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.hz-mc-qty { font-size: 12px; color: var(--black-60); }
+.hz-mc-line { flex: 0 0 auto; font-size: 13px; font-weight: 600; color: var(--black-90); }
+
+.hz-mc-more { padding: 9px 0; text-align: center; }
+.hz-mc-more a { font-size: 12px; font-weight: 600; color: var(--black-60); text-decoration: underline; }
+
+.hz-mc-sums { padding-top: 10px; }
+.hz-mc-sums p {
+  display: flex; justify-content: space-between; gap: 12px;
+  margin: 0 0 5px; font-size: 13px; color: var(--black-60);
+}
+.hz-mc-sums .hz-mc-total { font-weight: 700; color: var(--black-90); }
+
+/* The one action in the panel, so it carries the yellow. */
+.hz-mc-go {
+  display: block; margin-top: 12px; padding: 11px 14px;
+  background: var(--yellow); border: 1px solid var(--yellow); border-radius: 2px;
+  color: var(--black-90); font-size: 14px; font-weight: 700;
+  text-align: center; text-decoration: none;
+}
+.hz-mc-go:hover, .hz-mc-go:focus {
+  background: var(--yellow-press); border-color: var(--yellow-press); color: var(--black-90);
+  text-decoration: none;
 }
 
 .hz-hd a:focus-visible,
