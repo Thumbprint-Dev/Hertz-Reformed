@@ -57,7 +57,21 @@
   <p class="hz-co-blocked"
      ng-if="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
     <span ng-if="cart_order.$invalid">Order details are incomplete. </span>
-    <span ng-if="cart_shipping.$invalid || !currentOrder.ShipAddressID">A shipping address is needed. </span>
+
+    <!--
+      Two different gaps, and they were saying the same thing.
+
+      "A shipping address is needed" is right when the order carries none. It is actively
+      misleading once one is chosen and only the confirmation tick is outstanding — which is
+      the common case, because the address arrives prefilled from the employee's location
+      and the tick does not. Being told to supply an address that is already on screen sends
+      people looking for a field that is not missing.
+    -->
+    <span ng-if="!currentOrder.ShipAddressID">A shipping address is needed. </span>
+    <span ng-if="currentOrder.ShipAddressID && cart_shipping.$invalid">
+      Confirm the shipping address to continue.
+    </span>
+
     <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
   </p>
 

@@ -19,10 +19,29 @@
 
   <div class="hz-co-grid">
     <div class="hz-co-main" ng-show="currentOrder && currentOrder.isEditable">
-      <orderdetails></orderdetails>
-      <ordershipping></ordershipping>
-      <orderbilling></orderbilling>
-      <orderapprovals ng-show="currentOrder.Approvals"></orderapprovals>
+      <!--
+        One panel, not three cards.
+
+        Order, shipping and billing are steps in a single act, and the employee is not
+        choosing between them — they fill the form top to bottom and submit. Three bordered
+        cards said "three things to do" and made a short form look like an application.
+        They are now sections of one surface, separated by a rule and their own heading,
+        which is the shape a checkout is expected to have.
+
+        The directives are untouched: `orderdetails`, `ordershipping`, `orderbilling` and
+        `orderapprovals` each still render their own form, keep their own `name` for
+        validation, and are hidden by their own conditions — billing does not render at all
+        for an order with nothing to charge, and the panel simply closes up around it.
+
+        Messages stay outside the panel, because an error about the order is not a section
+        of the order.
+      -->
+      <div class="hz-co-panel">
+        <orderdetails></orderdetails>
+        <ordershipping></ordershipping>
+        <orderbilling></orderbilling>
+        <orderapprovals ng-show="currentOrder.Approvals"></orderapprovals>
+      </div>
 
       <div class="hz-co-alert" ng-show="errorMessage"><p>{{errorMessage}}</p></div>
       <div class="hz-co-said" ng-show="actionMessage"><p>{{actionMessage}}</p></div>
