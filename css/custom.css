@@ -82,13 +82,15 @@ html {
 .btn-default .badge {
     background:red;
 }
+/* Was a stock green. Yellow is this brand's only accent, as a fill with near-black type
+   on it (§3.2) — an approve button is not a different brand from the rest of the site. */
 .approvalBtn {
-    background-color: #47a447;
-    color: white;
+    background-color: #FFCC00;
+    color: #434244;
 }
 .approvalBtn:hover {
-    background-color: #398439;
-    color: white;
+    background-color: #E6B800;
+    color: #434244;
 }
 .main-logo {
 
@@ -480,8 +482,8 @@ html {
 }
 
 .btn-info.disabled, .btn-info[disabled], fieldset[disabled] .btn-info, .btn-info.disabled:hover, .btn-info[disabled]:hover, fieldset[disabled] .btn-info:hover, .btn-info.disabled:focus, .btn-info[disabled]:focus, fieldset[disabled] .btn-info:focus, .btn-info.disabled:active, .btn-info[disabled]:active, fieldset[disabled] .btn-info:active, .btn-info.disabled.active, .btn-info[disabled].active, fieldset[disabled] .btn-info.active {
-    background-color: #991933;
-    border-color: #991933;
+    background-color: #a4192d;
+    border-color: #a4192d;
 }
 
 .containerLetter {
@@ -672,7 +674,8 @@ contentmodal2 a:hover{
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #3f9eae;
+  /* Was a teal left over from another tenant's theme. */
+  background-color: #FFCC00;
   transform-origin: bottom right;
   transition: transform 0.25s ease-out;
 }
@@ -1027,7 +1030,7 @@ contentmodal2 a:hover{
 
 .hz-alloc-error p {
   margin: 0;
-  color: #991933;
+  color: #a4192d;
 }
 
 .hz-alloc-table {
@@ -1205,8 +1208,10 @@ contentmodal2 a:hover{
   --hz-accent: #fc0;
   --hz-accent-deep: #e8b800;
   --hz-on-accent: #11172b;
-  --hz-warn-bg: #fdf4e2;
-  --hz-warn-ink: #8a5a10;
+  /* Not a gold wash: the brand's attention treatment is a yellow rule on a light
+     ground with ink type. Kept as tokens so the shape stays consistent. */
+  --hz-warn-bg: #f8f9fc;
+  --hz-warn-ink: #11172b;
   --hz-stop-bg: #fcebed;
   --hz-stop-ink: #a4192d;
   --hz-display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
@@ -1504,17 +1509,23 @@ contentmodal2 a:hover{
   margin-left: 8px; padding: 2px 7px; border-radius: 2px;
   font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
 }
-.hz-pool-tag--must { background: #fdf6e7; color: #7a5a12; border: 1px solid #e6d3a3; }
-.hz-pool-tag--done { background: #eef7f2; color: #1d6f4f; border: 1px solid #bfdccd; }
-.hz-pool-tag--may  { background: var(--sub); color: var(--muted); border: 1px solid var(--line); }
+/* Hertz yellow as a FILL with near-black type on it, which is the brand's own rule for
+   yellow (§3.2) — not the generic warning gold this used to be. A required item is the
+   thing to notice on the row, so it takes the accent; the other two states stay quiet. */
+.hz-pool-tag--must { background: var(--a); color: var(--on-a); border: 1px solid var(--a); }
+.hz-pool-tag--done { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+.hz-pool-tag--may  { background: transparent; color: var(--muted); border: 1px solid var(--line); }
 
 /* What is still owed, in the rail, above the button. */
+/* The same shape every other notice on this site uses: a light ground with a yellow rule
+   down the edge, and ink type. The gold-on-gold version read as a warning about something
+   going wrong, when it is simply a statement of what the allocation is. */
 .hz-rail-need {
-  margin: 14px 0 0; padding: 14px; border-radius: 6px;
-  background: #fdf6e7; border: 1px solid #e6d3a3;
+  margin: 14px 0 0; padding: 12px 14px;
+  background: var(--sub); border-left: 3px solid var(--a); border-radius: 0 4px 4px 0;
 }
 .hz-rail-need-h {
-  margin: 0 0 8px; font-size: 13px; font-weight: 700; color: #7a5a12; line-height: 1.35;
+  margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.35;
 }
 .hz-rail-need-list { list-style: none; margin: 0; padding: 0; }
 .hz-rail-need-list li {
@@ -1523,12 +1534,6 @@ contentmodal2 a:hover{
 }
 /* Tabular figures so the counts line up down the list. */
 .hz-rail-need-list b { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
-
-.hz-rail-done {
-  margin: 14px 0 0; padding: 12px 14px; border-radius: 6px;
-  background: #eef7f2; border: 1px solid #bfdccd;
-  font-size: 14px; font-weight: 600; color: #1d6f4f;
-}
 
 .hz-pool-held {
   display: block; font-style: normal; font-weight: 600;
@@ -1612,7 +1617,7 @@ contentmodal2 a:hover{
   align-items: center;
   gap: 14px 26px;
 }
-.hz-band-inner--wait { border-left: 3px solid var(--hz-accent); background: #fdf4e2; }
+.hz-band-inner--wait { border-left: 3px solid var(--hz-accent); background: var(--hz-sub, #f8f9fc); }
 
 .hz-band-n {
   font-family: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
@@ -1670,7 +1675,7 @@ contentmodal2 a:hover{
   margin-right: auto;
   padding: 0 24px 14px;
   font-size: 12.5px;
-  color: #8a5a10;
+  color: var(--hz-ink, #11172b);
 }
 .hz-band-season strong { font-weight: 700; }
 
@@ -1929,7 +1934,7 @@ contentmodal2 a:hover{
 .hz-rail-row:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .hz-rail-name { font-size: 13px; font-weight: 600; color: var(--body); }
 .hz-rail-n { font-family: var(--display); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.hz-rail-row.done .hz-rail-n { color: #1d6f4f; font-weight: 700; }
+.hz-rail-row.done .hz-rail-n { color: var(--ink); font-weight: 700; }
 .hz-rail-bar { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
 .hz-rail-bar i { display: block; height: 100%; background: var(--a); }
 
@@ -1943,7 +1948,7 @@ contentmodal2 a:hover{
 .hz-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .hz-btn--block { width: 100%; text-align: center; }
 
-.hz-result { font-size: 13px; border-radius: 4px; padding: 11px 13px; background: #e5f3ec; color: #1d6f4f; }
+.hz-result { font-size: 13px; border-radius: 2px; padding: 11px 13px; background: var(--sub); border-left: 3px solid var(--a); color: var(--ink); }
 .hz-result.bad { background: #fcebed; color: #a4192d; }
 .hz-result p { margin: 0 0 6px; }
 .hz-result p:last-child { margin: 0; }
@@ -1971,7 +1976,7 @@ contentmodal2 a:hover{
 .hz-chart-h { font-weight: 700; font-size: 14px; color: var(--ink); margin: 0 0 9px; }
 .hz-chart-h em {
   font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .04em;
-  text-transform: uppercase; color: #8a5a10; background: #fdf4e2; border-radius: 2px;
+  text-transform: uppercase; color: var(--on-a); background: var(--a); border-radius: 2px;
   padding: 2px 7px; margin-left: 8px;
 }
 .hz-chart-scroll { overflow-x: auto; }
@@ -2229,7 +2234,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-alloc-wait { padding: 26px var(--gutter); }
 .hz-lp-alloc-wait p { margin: 0; font-size: 15px; color: var(--black-80); }
 .hz-lp-alert { padding: 20px var(--gutter); }
-.hz-lp-alert p { margin: 0; color: #9b1c1c; font-size: 14px; }
+.hz-lp-alert p { margin: 0; color: #a4192d; font-size: 14px; }
 
 /* ---- start here / champion ---- */
 .hz-lp-start,
@@ -2699,7 +2704,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   font: inherit; font-size: 13px; font-weight: 600; color: var(--muted);
   padding: 9px 14px; cursor: pointer; white-space: nowrap;
 }
-.hz-cart-remove:hover { border-color: #9b1c1c; color: #9b1c1c; }
+.hz-cart-remove:hover { border-color: #a4192d; color: #a4192d; }
 
 /* ---- acknowledgements ---- */
 .hz-cart-ack {
@@ -2757,7 +2762,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   background: none; border: 0; font: inherit; font-size: 13px; font-weight: 600;
   color: var(--muted); text-decoration: underline; padding: 6px; cursor: pointer;
 }
-.hz-cart-cancel:hover { color: #9b1c1c; }
+.hz-cart-cancel:hover { color: #a4192d; }
 
 .hz-cart :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
 
@@ -2766,8 +2771,8 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-cart-empty .hz-cart-btn { display: inline-block; width: auto; }
 
 .hz-cart-alert, .hz-cart-said { margin-top: 18px; font-size: 14px; }
-.hz-cart-alert p { color: #9b1c1c; margin: 0; }
-.hz-cart-said p { color: #1d6f4f; margin: 0; }
+.hz-cart-alert p { color: #a4192d; margin: 0; }
+.hz-cart-said p { color: var(--ink); margin: 0; }
 
 @media (max-width: 900px) {
   .hz-cart-grid { grid-template-columns: minmax(0, 1fr); }
@@ -2864,7 +2869,9 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    actually holding up Submit says anything, which is also what makes it findable. */
 .hz-co-step-icon { font-size: 15px; line-height: 1; }
 .hz-co-step-icon.is-done { display: none; }
-.hz-co-step-icon.is-todo { color: #b7791f; }
+/* Ink, not a warning gold. The heading beside it carries the meaning; the marker
+   only has to be findable. */
+.hz-co-step-icon.is-todo { color: var(--ink); }
 
 .hz-co-card-b { padding: 14px 26px 26px; display: flex; flex-direction: column; gap: 18px; }
 /* The gap above applies to the card body's children — but every section's real content is
@@ -2919,7 +2926,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   background: var(--sub); border: 1px solid var(--line); border-radius: 6px;
   padding: 14px 16px; font-size: 13.5px; line-height: 1.5; color: var(--body);
 }
-.hz-co-alert--bad { background: #fdf3f2; border-color: #e7c9c6; color: #8a2f27; }
+.hz-co-alert--bad { background: #fcebed; border-color: #e3bcc2; color: #a4192d; }
 .hz-co-alert a { font-weight: 600; text-decoration: underline; }
 
 /* ---- champion sub-panel ---- */
@@ -3081,7 +3088,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-co .view-form-icon i { display: none; }
 
 .hz-co .hz-addr-hint { margin: 6px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
-.hz-co .hz-addr-hint--bad { color: #8a2f27; }
+.hz-co .hz-addr-hint--bad { color: #a4192d; }
 
 /* The typeahead list. The injected version was the only 10px radius and the only drop shadow
    on the page, and painted the highlighted row pure black with !important. */
@@ -3119,7 +3126,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-co .checkout-circle, .hz-co .panel-heading .fa {
   float: none !important; padding: 0 !important; font-size: 14px !important; line-height: 1;
 }
-.hz-co .fa-check-circle { color: #1d6f4f !important; }
+.hz-co .fa-check-circle { color: var(--muted) !important; }
 .hz-co .fa-warning { color: var(--muted) !important; }
 .hz-co .fa-caret-up, .hz-co .fa-caret-down { color: var(--muted) !important; margin-left: auto; }
 
@@ -3157,9 +3164,12 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   background: var(--sub); border: 1px solid var(--line);
   color: var(--body); border-radius: 2px; font-size: 13.5px;
 }
-.hz-co .alert-warning { background: #fdf6e7; border-color: #e6d3a3; color: #7a5a12; }
-.hz-co .alert-danger  { background: #fdf3f2; border-color: #e7c9c6; color: #8a2f27; }
-.hz-co .alert-success { background: #eef7f2; border-color: #bfdccd; color: #1d6f4f; }
+/* Brand: light ground, yellow rule, ink type — not a gold wash. */
+.hz-co .alert-warning { background: var(--sub); border-color: var(--line); border-left: 3px solid var(--yellow); color: var(--ink); }
+.hz-co .alert-danger  { background: #fcebed; border-color: #e3bcc2; color: #a4192d; }
+/* Confirmations do not get their own colour here. Green said 'well done' where the
+   page only needs to say what happened. */
+.hz-co .alert-success { background: var(--sub); border-color: var(--line); color: var(--ink); }
 
 /* ---- summary ---- */
 .hz-co-summary {
@@ -3205,10 +3215,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   background: none; border: 0; font: inherit; font-size: 13px; font-weight: 600;
   color: var(--muted); text-decoration: underline; padding: 6px; cursor: pointer;
 }
-.hz-co-cancel:hover { color: #9b1c1c; }
+.hz-co-cancel:hover { color: #a4192d; }
 .hz-co :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
-.hz-co-alert p { color: #9b1c1c; margin: 0; font-size: 14px; }
-.hz-co-said p { color: #1d6f4f; margin: 0; font-size: 14px; }
+.hz-co-alert p { color: #a4192d; margin: 0; font-size: 14px; }
+.hz-co-said p { color: var(--ink); margin: 0; font-size: 14px; }
 
 @media (max-width: 900px) {
   .hz-co-grid { grid-template-columns: minmax(0,1fr); }
