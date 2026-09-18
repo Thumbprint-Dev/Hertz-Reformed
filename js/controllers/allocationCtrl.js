@@ -38,6 +38,23 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       /** sku -> { qty, size } */
       picked: {},
       totalPicked: 0,
+      /**
+       * Required pools that still have units to take, as [{name, left}] — decision 53.
+       *
+       * Recomputed on every add and remove rather than from a function in the template.
+       * An `ng-repeat` over a function that returns a fresh array runs it on every digest
+       * and re-renders the list each time; that is what once made the size-chart table 66
+       * rows long. This is a plain property the template can watch.
+       */
+      outstanding: [],
+      /** True when nothing required is left — the only state that may go to the cart. */
+      complete: false,
+      /**
+       * Whether the API told us about obligation at all. False against a service deployed
+       * before decision 53, and the page then says nothing about required or optional
+       * rather than guessing. See `recount`.
+       */
+      knowsRequirements: false,
       /** Units already in the Four51 cart, held against the allocation but not yet ordered. */
       totalReserved: 0,
       preview: null,
@@ -231,7 +248,56 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       angular.forEach($scope.alloc.picked, function(row) { n += row.qty; });
       $scope.alloc.totalPicked = n;
       $scope.alloc.result = null;
+      recount();
     }
+
+    /**
+     * What is still required, and whether the selection may go to the cart.
+     *
+     * A pool counts only when it is BOTH required and orderable. Seasonal Outerwear is
+     * required but has no SKUs and a seasonal gate, so demanding it would leave the button
+     * disabled for ever with no way for the employee to satisfy it — the same trap the
+     * server-side rule avoids in `orders/required.ts`, and the two have to agree or the
+     * picker asks for something checkout does not want.
+     */
+    function recount() {
+      /*
+       * Does the API tell us about obligation at all?
+       *
+       * `required` arrived with decision 53. An older API — or a storefront deployed ahead
+       * of the service, which is exactly what happened on 18 September — returns pools
+       * without it, and `undefined` is falsy: every pool then read as OPTIONAL and the rail
+       * congratulated an employee who had chosen nothing with "that is everything you
+       * need". Absent data claimed the opposite of the truth, in the one direction that
+       * matters.
+       *
+       * So the three states are kept apart. Required, optional, and NOT KNOWN — and when it
+       * is not known the page says nothing about obligation rather than inventing an
+       * answer. The button stays enabled, because refusing on an unknown would strand
+       * everybody; the server still enforces the rule either way.
+       */
+      var known = false;
+      angular.forEach($scope.alloc.pools, function(p) {
+        if (typeof p.required === 'boolean') known = true;
+      });
+      $scope.alloc.knowsRequirements = known;
+
+      if (!known) {
+        $scope.alloc.outstanding = [];
+        $scope.alloc.complete = true;
+        return;
+      }
+
+      var out = [];
+      angular.forEach($scope.alloc.pools, function(p) {
+        if (p.required !== true || !p.orderable) return;
+        var left = $scope.alloc.leftIn(p);
+        if (left > 0) out.push({ name: p.name, left: left });
+      });
+      $scope.alloc.outstanding = out;
+      $scope.alloc.complete = out.length === 0;
+    }
+    $scope.alloc.recount = recount;
 
     $scope.alloc.add = function(pool, product) {
       if (!$scope.alloc.canAdd(pool)) return;
@@ -631,6 +697,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
               if (!biggest || p.remaining > biggest.remaining) biggest = p;
             });
             if (biggest) biggest.open = true;
+            // The employee has taken nothing yet, so this is what they owe on arrival.
+            recount();
           }
           $scope.alloc.loading = false;
         })

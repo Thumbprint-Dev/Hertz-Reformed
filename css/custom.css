@@ -1495,6 +1495,41 @@ contentmodal2 a:hover{
 .hz-held-go:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 /* The per-pool echo of the same fact, on its own line under the pool name. */
+/* Required / optional / done, on the pool row.
+   Small, uppercase and set apart from the pool name, so the row still reads as its name
+   first and its obligation second. The three states are colour AND word — a shopper who
+   cannot separate the greens from the greys still reads "required" and "done". */
+.hz-pool-tag {
+  display: inline-block; font-style: normal; vertical-align: 2px;
+  margin-left: 8px; padding: 2px 7px; border-radius: 2px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+.hz-pool-tag--must { background: #fdf6e7; color: #7a5a12; border: 1px solid #e6d3a3; }
+.hz-pool-tag--done { background: #eef7f2; color: #1d6f4f; border: 1px solid #bfdccd; }
+.hz-pool-tag--may  { background: var(--sub); color: var(--muted); border: 1px solid var(--line); }
+
+/* What is still owed, in the rail, above the button. */
+.hz-rail-need {
+  margin: 14px 0 0; padding: 14px; border-radius: 6px;
+  background: #fdf6e7; border: 1px solid #e6d3a3;
+}
+.hz-rail-need-h {
+  margin: 0 0 8px; font-size: 13px; font-weight: 700; color: #7a5a12; line-height: 1.35;
+}
+.hz-rail-need-list { list-style: none; margin: 0; padding: 0; }
+.hz-rail-need-list li {
+  display: flex; align-items: baseline; gap: 6px;
+  font-size: 14px; color: var(--ink); padding: 3px 0;
+}
+/* Tabular figures so the counts line up down the list. */
+.hz-rail-need-list b { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.hz-rail-done {
+  margin: 14px 0 0; padding: 12px 14px; border-radius: 6px;
+  background: #eef7f2; border: 1px solid #bfdccd;
+  font-size: 14px; font-weight: 600; color: #1d6f4f;
+}
+
 .hz-pool-held {
   display: block; font-style: normal; font-weight: 600;
   font-size: 12px; color: var(--muted); margin-top: 2px;

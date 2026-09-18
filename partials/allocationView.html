@@ -114,6 +114,21 @@
                     aria-expanded="{{pool.open ? 'true' : 'false'}}">
               <span class="hz-pool-name">
                 {{pool.name | hzPool}}
+                <!--
+                  Decision 53: the allocation is required, not offered. Said on the row
+                  itself rather than only in the rail, because this is where someone is
+                  deciding — and the one optional pool has to look different from the four
+                  that are not, or "required" reads as decoration.
+
+                  A required pool nobody can order from says nothing: Seasonal Outerwear
+                  has no SKUs and a seasonal gate, and a tag demanding it would be asking
+                  for something that cannot be given.
+                -->
+                <i class="hz-pool-tag hz-pool-tag--must"
+                   ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) > 0">required</i>
+                <i class="hz-pool-tag hz-pool-tag--done"
+                   ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) === 0">&#10003; done</i>
+                <i class="hz-pool-tag hz-pool-tag--may" ng-if="pool.required === false">optional</i>
                 <!-- Makes the row add up. Without it "2 remaining" against a kit the
                      employee knows gives five is just a wrong number; with it, 2 and 3
                      account for the 5 they expect. Whose cart depends on who is looking —
@@ -197,6 +212,27 @@
           <p class="hz-rail-h">Your selection</p>
           <p class="hz-rail-total"><b>{{alloc.totalPicked}}</b> <span>items chosen</span></p>
 
+          <!--
+            What is still owed, before the button rather than after it.
+            
+            Without this an employee picks a couple of polos, adds to cart, walks to
+            checkout and is refused there — having done all the choosing, at the last step,
+            with no way to have known. The rule is the same either way; this is the
+            difference between being told and finding out.
+          -->
+          <div class="hz-rail-need" ng-if="alloc.knowsRequirements && !alloc.complete && alloc.pools.length">
+            <p class="hz-rail-need-h">Your allocation must be taken in full</p>
+            <ul class="hz-rail-need-list">
+              <li ng-repeat="item in alloc.outstanding">
+                <b>{{item.left}}</b> {{item.name | hzPool}}
+              </li>
+            </ul>
+          </div>
+
+          <p class="hz-rail-done" ng-if="alloc.knowsRequirements && alloc.complete && alloc.pools.length">
+            &#10003; That is everything you need.
+          </p>
+
           <div class="hz-rail-list">
             <button class="hz-rail-row" type="button" ng-repeat="pool in alloc.pools"
                     ng-click="alloc.toggle(pool)"
@@ -211,13 +247,21 @@
 
           <!-- Fills the cart; it does not place the order. The cart is where someone
                checks it over, and checkout is the step after that. -->
+          <!--
+            Disabled until the allocation is complete, and it SAYS so on its face. Checkout
+            refuses an incomplete order anyway (decision 53), so allowing the cart to be
+            filled first would only move the refusal to the step where it costs the most.
+            A disabled control with no explanation is the commonest way a checkout strands
+            someone, so the label carries the reason.
+          -->
           <button class="hz-btn hz-btn--block" type="button"
                   ng-click="alloc.addToCart()"
-                  ng-disabled="!alloc.totalPicked || alloc.submitting">
-            <span ng-if="!alloc.submitting">Add to cart</span>
+                  ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting">
             <span ng-if="alloc.submitting">Adding&hellip;</span>
+            <span ng-if="!alloc.submitting && alloc.complete">Add to cart</span>
+            <span ng-if="!alloc.submitting && !alloc.complete">Choose everything to continue</span>
           </button>
-          <p class="hz-rail-note" ng-if="!alloc.submitting">
+          <p class="hz-rail-note" ng-if="!alloc.submitting && alloc.complete">
             You can review everything in your cart before checking out.
           </p>
 
