@@ -1477,7 +1477,10 @@ contentmodal2 a:hover{
   padding: 16px 18px;
   margin-bottom: 26px;
 }
-.hz-held-text { min-width: 0; }
+/* `flex: 1 1 320px` so the sentence shrinks to fit beside the button rather than sizing to
+   its own max-content and shoving the button onto a second row. Below ~460px of room it
+   wraps anyway, which is the phone layout. */
+.hz-held-text { flex: 1 1 320px; min-width: 0; }
 .hz-held-h { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
 /* The count carries the emphasis; it is the thing being explained. */
 .hz-held-h b { font-size: 22px; margin-right: 4px; }
