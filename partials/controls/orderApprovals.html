@@ -1,35 +1,52 @@
-<style>
-  .checkout-title {
-    color: #208fad;
-    font-size: 35px;
-    font-weight: bold;
-    letter-spacing: -0.74px;
-    padding-right: 10px;
-  }
-  .checkout-circle {
-    padding-top: 10px;
-    padding-right: 10px;
-  }
-.checkout-container {
-  background-color: none;
-  border-color: none;
-  border-bottom: 1px solid #d2e8ee;
-}
-.checkout-textarea {
-  background: white !important;
-}
-</style>
-<div class="panel-order">
-    <div class="panel-heading checkout-container" ng-class="{'no': cart_approval.$invalid, 'yes': !cart_approval.$invalid }" style="background-color: white;">
-        <h3 class="panel-title">
-            <i class="fa fa-info-circle pull-left checkout-circle"></i>
-            <span class="checkout-title">{{'Approval' | r}} {{'Rules' | r}}</span>
-        </h3>
+<!--
+  Checkout · approval rules.
+
+  Rendered only when the order has approvals (`checkOutView.html` gates it on
+  `currentOrder.Approvals`), which is why this was the last section still in the stock
+  theme's markup: it is invisible on the ordinary path, so nobody saw it.
+
+  Three things were wrong with it.
+
+  1. It injected a `<style>` block into the document on every checkout render, and none of
+     the four rules were scoped. `.checkout-title` set a 35px teal heading GLOBALLY — on a
+     page whose headings are 18px ink — and `.checkout-textarea` carried `!important`. The
+     classes were used nowhere else in the storefront, so the whole block went with them.
+
+  2. It was raw Bootstrap: `panel-order`, `panel-heading`, `panel-title`, `panel-body`,
+     plus an inline `style="background-color: white"`. Inside the single checkout panel that
+     drew a bordered card within a card. It now uses the same `hz-co-card` parts as every
+     other section, so it reads as one more section rather than as a visitor.
+
+  3. **`<approvalrulelist order="currentOrder" />` was self-closed.** A custom element is not
+     void, so the browser parses that as an unclosed opener and every following sibling
+     becomes its child — which put the approval-comment textarea inside the rule list, where
+     the directive's own template then replaced it. An approver with `EditApprovalOrder`
+     had nowhere to type a comment. Closed properly.
+
+  Every binding is the stock one: `cart_approval.$invalid`, the `approvalrulelist` directive
+  and its `order` attribute, `currentOrder.ApprovalComment`, and the `EditApprovalOrder` /
+  `AwaitingApproval` condition.
+-->
+<div class="hz-co-card">
+  <div class="hz-co-card-h">
+    <i class="hz-co-step-icon"
+       ng-class="{'fa fa-exclamation-circle is-todo': cart_approval.$invalid,
+                  'fa fa-check-circle is-done': !cart_approval.$invalid}"
+       aria-hidden="true"></i>
+    <h3 class="hz-co-card-t">{{'Approval' | r}} {{'Rules' | r}}</h3>
+  </div>
+
+  <div class="hz-co-card-b">
+    <approvalrulelist order="currentOrder"></approvalrulelist>
+
+    <div class="hz-co-field"
+         ng-if="user.Permissions.contains('EditApprovalOrder') && currentOrder.Status == 'AwaitingApproval'">
+      <label class="hz-co-label" for="hz-co-approval-comment">
+        {{'Approval' | r}} {{'Comments' | r}}
+      </label>
+      <textarea id="hz-co-approval-comment" class="hz-co-input" rows="4"
+                ng-model="currentOrder.ApprovalComment"
+                ng-attr-placeholder="{{'Approval' | r}} {{'Comments' | r}}"></textarea>
     </div>
-    <div class="panel-body">
-        <approvalrulelist order="currentOrder" />
-        <div ng-if="user.Permissions.contains('EditApprovalOrder') && currentOrder.Status == 'AwaitingApproval'">
-            <textarea class="form-control" ng-model="currentOrder.ApprovalComment" ng-attr-placeholder="{{'Approval' | r}} {{'Comments' | r}}"></textarea>
-        </div>
-    </div>
+  </div>
 </div>

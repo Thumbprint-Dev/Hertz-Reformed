@@ -177,6 +177,13 @@ if ($scope.conSpringUser == true || $scope.conOfficeSpringUser === true) {
               $scope.displayLoadingIndicator = false;
               $scope.shippingUpdatingIndicator = false;
               $scope.shippingFetchIndicator = false;
+              // `submitOrder` sets `submitClicked` and then calls this. Every other
+              // indicator was cleared here but not that one, so a save that failed during
+              // submit left the button reading "Submitting…" and disabled for good: the
+              // error told you what went wrong and then gave you no way to try again short
+              // of reloading. The inner Order.submit handler already resets it; this is the
+              // path that did not.
+              $scope.submitClicked = false;
             }
           );
       };

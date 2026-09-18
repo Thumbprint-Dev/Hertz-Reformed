@@ -17,7 +17,26 @@
     <a class="hz-co-back" href="cart">&larr; Back to cart</a>
   </div>
 
-  <div class="hz-co-grid">
+  <!--
+    Waiting for the order.
+
+    `currentOrder` is loaded asynchronously, and only the form column was gated on it — so
+    before it arrived the page rendered the summary rail alone, stretched across the grid,
+    offering a live Submit button for an order that did not exist yet. A short line is more
+    honest and does not invite a click that cannot work.
+
+    `undefined` is not `null` here either: undefined means not answered yet, null means there
+    is no order to check out. They get different text.
+  -->
+  <div class="hz-co-wait" ng-if="currentOrder === undefined">
+    <p>Loading your order&hellip;</p>
+  </div>
+
+  <div class="hz-co-wait" ng-if="currentOrder === null">
+    <p>There is nothing in your cart to check out. <a href="allocation">Choose your uniform</a>.</p>
+  </div>
+
+  <div class="hz-co-grid" ng-if="currentOrder">
     <div class="hz-co-main" ng-show="currentOrder && currentOrder.isEditable">
       <!--
         One panel, not three cards.

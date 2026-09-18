@@ -67,10 +67,17 @@
           {{'Custom ' + ('Address' | r) | xlat}}
         </button>
 
-        <loadingindicator ng-show="shippingUpdatingIndicator"
-                          title="{{'Please wait while ' + ('Shipping' | rc) + ' costs are updated' | r | xlat}}"></loadingindicator>
-        <loadingindicator ng-show="shippingFetchIndicator"
-                          title="{{'Please wait while available shippers are updated' | r | xlat}}"></loadingindicator>
+        <!--
+          One indicator, not two.
+
+          These were two separate `loadingindicator`s that fire together on virtually every
+          address change — one for shipping costs, one for available shippers. Each paints a
+          pale scrim over the section, so they stacked: the wash doubled and the two captions
+          printed on top of each other. The distinction is internal to Four51 and means
+          nothing to an employee, who is waiting for the same thing either way.
+        -->
+        <loadingindicator ng-show="shippingUpdatingIndicator || shippingFetchIndicator"
+                          title="{{'Updating delivery details' | r | xlat}}"></loadingindicator>
 
         <!-- ─────────────────────────────────────────────── single address -->
         <div ng-show="!currentOrder.IsMultipleShip()">
@@ -159,14 +166,23 @@
         </div>
 
         <!-- ─────────────────────────────────────── where it is going -->
+        <!-- `&& !showResult`: a failed lookup printed "Address not found" directly above the
+             address the order is going to, which contradicts itself on one screen. The
+             failure now replaces the address block rather than stacking on top of it. -->
         <div class="hz-co-ship"
-             ng-show="!currentOrder.IsMultipleShip() && orderShipAddress.ID && orderShipAddress.AddressName != '_Multiple Shipping Address'">
+             ng-show="!currentOrder.IsMultipleShip() && orderShipAddress.ID && !showResult && orderShipAddress.AddressName != '_Multiple Shipping Address'">
           <div class="hz-co-ship-top">
             <p class="hz-co-ship-h">Your order is going to</p>
             <!-- The way out of a prefilled address, where someone looks for it: next to the
-                 address, not as a search field permanently occupying the step above. -->
+                 address, not as a search field permanently occupying the step above.
+
+                 Hidden when `readonlyshipping` — the controller sets that when the employee
+                 has exactly one shipping address, which is the ordinary case. Offering
+                 "Change" there opened a field they cannot type into, so the only shopper who
+                 saw the control was the one it could not help. Where a custom address is
+                 genuinely allowed, the Custom Address button above is the route. -->
             <button class="hz-co-linkbtn" type="button"
-                    ng-hide="changeAddress"
+                    ng-hide="changeAddress || readonlyshipping"
                     ng-click="changeAddress = true">Change</button>
           </div>
 

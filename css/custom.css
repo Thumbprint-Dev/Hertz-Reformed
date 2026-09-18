@@ -2774,7 +2774,13 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-co-back { font-size: 13.5px; font-weight: 600; color: var(--body); }
 .hz-co-back:hover { color: var(--ink); }
 
-.hz-co-grid { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 24px; align-items: start; }
+/* Bounded, and centred. At minmax(0,1fr) the form column ran to 984px on a 1440 screen for
+   a form holding an address and a checkbox, which reads as an empty page rather than a calm
+   one. The reference checkout holds its column near 600px. */
+.hz-co-grid {
+  display: grid; grid-template-columns: minmax(0, 620px) 340px;
+  gap: 48px; align-items: start; justify-content: center;
+}
 .hz-co-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .hz-co-side { position: sticky; top: 16px; }
 
@@ -2803,7 +2809,16 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   display: flex; align-items: center; gap: 10px;
   padding: 26px 26px 0; border-top: 1px solid var(--line); background: transparent;
 }
-.hz-co-panel > :first-child .hz-co-card-h { border-top: 0; }
+/* The first VISIBLE section, not the first in the DOM.
+   `orderdetails` is first in source but is hidden for a shopper with no Order ID, cost
+   centre or Champion panel — so Shipping became the top section while still drawing its
+   divider, doubling it against the panel's own border.
+
+   Deliberately not the chained `.ng-hide + .ng-hide + *` form: `orderbilling` is hidden in
+   this tenant ALWAYS, so that pattern would also strip the divider from Approvals, which
+   genuinely needs one. This matches only a hidden FIRST child, which is the real case. */
+.hz-co-panel > :first-child .hz-co-card-h,
+.hz-co-panel > .ng-hide:first-child + * .hz-co-card-h { border-top: 0; }
 .hz-co-card-t {
   margin: 0; font-family: 'Open Sans', Arial, sans-serif;
   font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink);
@@ -2817,11 +2832,19 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-co-step-icon.is-todo { color: #b7791f; }
 
 .hz-co-card-b { padding: 14px 26px 26px; display: flex; flex-direction: column; gap: 18px; }
+/* The gap above applies to the card body's children — but every section's real content is
+   inside a <form>, which was the only child, so the rhythm reached nothing and fields stacked
+   flush. Carry it through the form. */
+.hz-co-card-b > form { display: flex; flex-direction: column; gap: 18px; }
 
 /* ---- fields ---- */
 .hz-co-field { display: flex; flex-direction: column; gap: 6px; }
+/* One answer for a field label. This declared 11px/700/uppercase but rendered 13px/600/ink
+   because the blanket rule above outranked it — while KEEPING the caps tracking, so labels
+   came out a hybrid neither rule intended. Sentence case at 13px, matching the reference and
+   the cart. */
 .hz-co-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none;
   color: var(--muted); margin: 0;
 }
 .hz-co-label.is-required::after { content: ' *'; }
@@ -2836,7 +2859,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   padding: 12px 14px; border: 1px solid var(--line); border-radius: 2px;
   background: #fff; box-shadow: none; appearance: none;
 }
-/* A select must not look like a text box — it has a caret drawn in. */
+/* A select must not look like a text box — it has a caret drawn in.
+   Qualified with `.hz-co` so it outranks the generic control rule below, which sets a
+   symmetric padding that would otherwise run the text under the caret. */
+.hz-co .hz-co-select,
 .hz-co-select {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%235f6778' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 13px center; background-size: 11px;
@@ -2957,7 +2983,14 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-co-card-b .form-control:focus {
   border-color: var(--ink); outline: 2px solid var(--yellow); outline-offset: 1px;
 }
-.hz-co-card-b label { font-size: 13px; font-weight: 600; color: var(--body); }
+/* Narrowed to the stock markup it was written for.
+   As `.hz-co-card-b label` it matched OUR label components too and, at (0,0,1,1) against
+   their (0,0,1,0), silently won — so `.hz-co-label` and `.hz-co-confirm` rendered at sizes,
+   weights and colours they do not declare. The directives still emit bare and `.required`
+   labels, which is what this is for. */
+.hz-co-card-b label:not([class]),
+.hz-co-card-b label.required,
+.hz-co-card-b .form-group > label { font-size: 13px; font-weight: 600; color: var(--body); }
 .hz-co-card-b label.required::after { content: ' *'; color: var(--muted); }
 .hz-co-card-b .btn {
   font: inherit; font-size: 14px; font-weight: 600; padding: 10px 15px;
@@ -2965,6 +2998,65 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   box-shadow: none; text-transform: none; letter-spacing: 0;
 }
 .hz-co-card-b .btn:hover { background: var(--sub); border-color: var(--ink); }
+
+/* The state before the order has loaded, and the state where there is no order. */
+.hz-co-wait { padding: 28px 0 60px; font-size: 15px; color: var(--muted); }
+.hz-co-wait p { margin: 0; }
+.hz-co-wait a { color: var(--ink); font-weight: 600; text-decoration: underline; }
+
+/* ---- waiting ----
+   `bootstrap-451.css:8486` makes every loadingindicator an absolutely-positioned sheet over
+   its container — `inset: 0`, a pale blue fill at 75% opacity, `z-index: 1029` — with the
+   spinner pinned at 49%/49% and the caption wherever it lands. Inside the Shipping section
+   that washed out the address and covered the "Address not found" message that explains what
+   went wrong; at page level it covered the header, the logo and the nav.
+
+   A wait of a second or two does not need to take the screen away. It is a line with a
+   spinner, in place, and the content stays readable underneath. */
+.hz-co .app-loading-indicator-cell {
+  position: static; background: none; opacity: 1; z-index: auto;
+  display: flex; align-items: center; gap: 10px;
+  float: none; width: auto; padding: 10px 0; text-align: left;
+}
+.hz-co .app-loading-indicator-cell i {
+  position: static; top: auto; left: auto; margin: 0;
+  font-size: 15px; color: var(--muted);
+}
+.hz-co .app-loading-indicator-cell p { margin: 0; }
+.hz-co .app-loading-indicator-cell small { font-size: 13px; color: var(--muted); }
+
+/* ---- the address lookup ----
+   These rules replace the <style> block `largeAddressListSearch.js` used to inject into the
+   document, which was global and contained a syntax error. Scoped here so they only apply on
+   checkout and sit next to the components they have to match.
+
+   The two resets below are the whole reason that field had 53px of empty space above it:
+   `bootstrap-451.css:6122` puts `margin: 35px 0 0` on the wrapper and `:6202` positions the
+   label absolutely at `top: -20px`, so the label floated out and left a hole behind it. */
+.hz-co .largeaddress { margin-left: 0; margin-right: 0; }
+.hz-co .largeaddress > div { padding-left: 0; padding-right: 0; }
+.hz-co .view-form-icon > div:not(.panel-heading) { margin: 0; }
+.hz-co .view-form-icon label {
+  position: static; top: auto; display: block;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  letter-spacing: 0; text-transform: none; margin: 0 0 6px;
+}
+/* Nothing is painted over an input on this page. `.view-form-icon` exists to float an icon
+   into the field; here it covered the first 30px of the address box — the part you click. */
+.hz-co .view-form-icon i { display: none; }
+
+.hz-co .hz-addr-hint { margin: 6px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.hz-co .hz-addr-hint--bad { color: #8a2f27; }
+
+/* The typeahead list. The injected version was the only 10px radius and the only drop shadow
+   on the page, and painted the highlighted row pure black with !important. */
+.hz-co .largeaddress .dropdown-menu {
+  background-color: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); padding: 4px 0; margin-top: 2px;
+}
+.hz-co .largeaddress .dropdown-menu > li > a { padding: 9px 14px; font-size: 14px; color: var(--ink); white-space: normal; }
+.hz-co .largeaddress .dropdown-menu .active > a,
+.hz-co .largeaddress .dropdown-menu > li > a:hover { background-color: var(--sub); color: var(--ink); }
 
 /* ---- summary ---- */
 
@@ -3005,7 +3097,12 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-co .form-control, .hz-co input[type="text"], .hz-co select, .hz-co textarea {
   font: inherit; font-size: 15px; color: var(--ink); height: auto; padding: 12px 14px;
-  border: 1px solid var(--line); border-radius: 2px; box-shadow: none; background: #fff;
+  border: 1px solid var(--line); border-radius: 2px; box-shadow: none;
+  /* `background-color`, NOT the `background` shorthand. This rule also matches
+     `select.hz-co-select`, and the shorthand reset its `background-image` — which is the
+     caret — so with `appearance: none` already removing the native arrow, EVERY select on
+     the checkout rendered as a plain box you could not tell was a dropdown. */
+  background-color: #fff;
 }
 .hz-co .form-control:focus { border-color: var(--ink); box-shadow: none; outline: 2px solid var(--yellow); outline-offset: 1px; }
 .hz-co .btn {
@@ -3016,10 +3113,18 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-co .btn:hover { background: var(--sub) !important; border-color: var(--ink) !important; }
 .hz-co .btn span { color: inherit !important; }
+/* Stock alerts, kept legible but NOT flattened.
+   This was one neutral grey with `!important` on every property, which collapsed
+   alert-info, alert-warning, alert-danger and alert-success into the same box — so a
+   directive's warning and a directive's confirmation looked identical, and an error read as
+   a note. The neutral stays the default; the three that carry meaning keep it. */
 .hz-co .alert {
-  background: var(--sub) !important; border: 1px solid var(--line) !important;
-  color: var(--body) !important; border-radius: 4px; font-size: 13.5px;
+  background: var(--sub); border: 1px solid var(--line);
+  color: var(--body); border-radius: 2px; font-size: 13.5px;
 }
+.hz-co .alert-warning { background: #fdf6e7; border-color: #e6d3a3; color: #7a5a12; }
+.hz-co .alert-danger  { background: #fdf3f2; border-color: #e7c9c6; color: #8a2f27; }
+.hz-co .alert-success { background: #eef7f2; border-color: #bfdccd; color: #1d6f4f; }
 
 /* ---- summary ---- */
 .hz-co-summary {
@@ -3047,7 +3152,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-co-btn:hover, .hz-co-btn:focus { background: var(--sub); border-color: var(--ink); text-decoration: none; }
 .hz-co-btn--primary { background: var(--yellow); border-color: var(--yellow); color: #434244; }
-.hz-co-btn--primary:hover { background: var(--yellow-press); border-color: var(--yellow-press); color: #434244; }
+/* :focus as well as :hover — on keyboard focus this dropped back to the base yellow while
+   the cart's equivalent did not. */
+.hz-co-btn--primary:hover,
+.hz-co-btn--primary:focus { background: var(--yellow-press); border-color: var(--yellow-press); color: #434244; }
 .hz-co-btn--primary[disabled] { background: #EDEFF2; border-color: var(--line); color: var(--muted); cursor: not-allowed; }
 /* The lines being ordered, in the summary. */
 .hz-co-items { list-style: none; margin: 0 0 4px; padding: 0 0 10px; border-bottom: 1px solid var(--line); }
