@@ -45,6 +45,25 @@
 
       <div class="hz-co-alert" ng-show="errorMessage"><p>{{errorMessage}}</p></div>
       <div class="hz-co-said" ng-show="actionMessage"><p>{{actionMessage}}</p></div>
+
+      <!--
+        Where to get help, at the foot of the page.
+
+        It was the body of the "Order" step, which for an ordinary shopper meant checkout
+        opened on a heading with nothing under it but this. It is not a step and nothing
+        waits on it, so it belongs after the form rather than in front of it. The champion
+        carve-out is kept verbatim: an employee is told to ask their Uniform Champion, and a
+        Champion is not told to ask themselves.
+      -->
+      <div class="hz-co-help">
+        <p ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">
+          Questions about your uniform? Speak to your Uniform Champion.
+        </p>
+        <p>
+          Trouble checking out? Use the Chat button while signed in, or email
+          <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.
+        </p>
+      </div>
     </div>
 
     <aside class="hz-co-side" aria-label="Order summary">

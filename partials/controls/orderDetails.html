@@ -17,7 +17,25 @@
   different tenant or a permission change brings them back; removing them would be removing
   functionality, which is not what restyling means.
 -->
-<div class="hz-co-card">
+<!--
+  Shown only when there is something in it to fill in.
+
+  For an ordinary Hertz shopper there is nothing: no Order ID (that needs `EditPOID`), no
+  cost centre, and no Champion panel. The section still rendered, so checkout opened on a
+  heading called "Order" with no fields under it, above the step that actually matters.
+
+  `ng-show`, not `ng-if`: `cart_order` is one of the three forms `orderSummary.html` reads
+  to enable Submit, and a form removed from the DOM evaluates to `undefined` there. Hidden,
+  it stays registered and valid.
+
+  The condition mirrors the inner ones exactly — change a field's condition and change this
+  with it, or the section reappears empty.
+-->
+<div class="hz-co-card"
+     ng-show="user.Permissions.contains('EditPOID')
+           || (user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && user.CostCenters.length > 0)
+           || (user.Permissions.contains('CostCenterPerOrder') && user.Permissions.contains('FreeFormCostCenter'))
+           || hertzChampionUser || dollarChampionUser || thriftyChampionUser">
   <div class="hz-co-card-h">
     <!-- Status, not decoration: it tells you which step is holding up Submit. -->
     <i class="hz-co-step-icon"
@@ -50,20 +68,11 @@
       </div>
 
       <!--
-        The support notice. Kept verbatim, including the champion carve-out: an employee is
-        told to ask their Uniform Champion, and a Champion is not told to ask themselves.
+        The support notice used to sit here. It has moved to the foot of the page
+        (`checkOutView.html`), because it is help rather than a step: for an ordinary
+        shopper it was the ONLY thing in this section, so the checkout opened with a
+        heading reading "Order" above a box of text with nothing to do in it.
       -->
-      <div class="hz-co-note">
-        <p ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">
-          If you have any questions or concerns about your uniform requirements please reach
-          out to your Uniform Champion.
-        </p>
-        <p>
-          If you have any issues with checking out or need to make changes to your order,
-          use the Chat button while signed in, or email
-          <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.
-        </p>
-      </div>
 
       <div class="hz-co-field"
            ng-show="user.Permissions.contains('CostCenterPerOrder') && !user.Permissions.contains('CostCenterPerLine') && user.CostCenters.length > 0 || user.Permissions.contains('CostCenterPerOrder') && user.Permissions.contains('FreeFormCostCenter')">

@@ -74,7 +74,26 @@
 
         <!-- ─────────────────────────────────────────────── single address -->
         <div ng-show="!currentOrder.IsMultipleShip()">
-          <largeshipaddresssearch></largeshipaddresssearch>
+
+          <!--
+            The search is put away once there is an address to show.
+
+            It was on screen permanently, prefilled with the address, directly above a
+            second copy of the same address — so the page printed where the order was going
+            twice and asked the employee to read a lookup field to find out. Almost nobody
+            changes it: the address comes from their own location.
+
+            `ng-show`, never `ng-if`. The input inside `largeshipaddresssearch` is
+            `required`, so removing it from the DOM would take a required control out of
+            `cart_shipping` and flip the form to valid — the opposite of what hiding it
+            should mean. Hidden, it keeps its value and its validity.
+          -->
+          <div ng-show="!orderShipAddress.ID || changeAddress || showResult">
+            <largeshipaddresssearch></largeshipaddresssearch>
+            <button class="hz-co-linkbtn" type="button"
+                    ng-show="orderShipAddress.ID && changeAddress"
+                    ng-click="changeAddress = false">Cancel</button>
+          </div>
 
           <div class="hz-co-alert hz-co-alert--bad" role="alert" ng-show="showResult">
             Address not found. Type a location code or address, then choose the right
@@ -142,15 +161,30 @@
         <!-- ─────────────────────────────────────── where it is going -->
         <div class="hz-co-ship"
              ng-show="!currentOrder.IsMultipleShip() && orderShipAddress.ID && orderShipAddress.AddressName != '_Multiple Shipping Address'">
-          <p class="hz-co-ship-h">{{('Shipping' | r) + ' ' + ('Location' | r) | xlat}}</p>
+          <div class="hz-co-ship-top">
+            <p class="hz-co-ship-h">Your order is going to</p>
+            <!-- The way out of a prefilled address, where someone looks for it: next to the
+                 address, not as a search field permanently occupying the step above. -->
+            <button class="hz-co-linkbtn" type="button"
+                    ng-hide="changeAddress"
+                    ng-click="changeAddress = true">Change</button>
+          </div>
 
           <address class="hz-co-ship-a">
             <span ng-show="orderShipAddress.AddressName">{{orderShipAddress.AddressName}}</span>
-            <span ng-show="orderShipAddress.FirstName">{{orderShipAddress.FirstName}} {{orderShipAddress.LastName}}</span>
-            <span ng-show="orderShipAddress.CompanyName">{{orderShipAddress.CompanyName}}</span>
-            <span ng-show="(orderShipAddress.FirstName || orderShipAddress.LastName) && (!user.Permissions.contains('EditShipToName') && !orderShipAddress.IsCustEditable)">
-              {{orderShipAddress.FirstName + ' ' + orderShipAddress.LastName}}
+            <!--
+              One name line.
+
+              Stock printed the name twice — once unconditionally, once again for a user
+              without `EditShipToName` on a non-editable address, which is the ordinary
+              Hertz shopper. Every employee saw their own name repeated back to them, which
+              reads as a bug in the address rather than as a style. The second copy is gone;
+              this line covers both cases.
+            -->
+            <span ng-show="orderShipAddress.FirstName || orderShipAddress.LastName">
+              {{orderShipAddress.FirstName}} {{orderShipAddress.LastName}}
             </span>
+            <span ng-show="orderShipAddress.CompanyName">{{orderShipAddress.CompanyName}}</span>
             <span ng-show="orderShipAddress.Street1">{{orderShipAddress.Street1}}</span>
             <span ng-show="orderShipAddress.Street2">{{orderShipAddress.Street2}}</span>
             <span ng-show="orderShipAddress.City || orderShipAddress.State || order.ShipAddress.Zip">
