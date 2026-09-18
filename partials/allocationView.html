@@ -125,10 +125,10 @@
                   for something that cannot be given.
                 -->
                 <i class="hz-pool-tag hz-pool-tag--must"
-                   ng-if="pool.required && pool.orderable && alloc.leftIn(pool) > 0">required</i>
+                   ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) > 0">required</i>
                 <i class="hz-pool-tag hz-pool-tag--done"
-                   ng-if="pool.required && pool.orderable && alloc.leftIn(pool) === 0">&#10003; done</i>
-                <i class="hz-pool-tag hz-pool-tag--may" ng-if="!pool.required">optional</i>
+                   ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) === 0">&#10003; done</i>
+                <i class="hz-pool-tag hz-pool-tag--may" ng-if="pool.required === false">optional</i>
                 <!-- Makes the row add up. Without it "2 remaining" against a kit the
                      employee knows gives five is just a wrong number; with it, 2 and 3
                      account for the 5 they expect. Whose cart depends on who is looking —
@@ -220,7 +220,7 @@
             with no way to have known. The rule is the same either way; this is the
             difference between being told and finding out.
           -->
-          <div class="hz-rail-need" ng-if="!alloc.complete && alloc.pools.length">
+          <div class="hz-rail-need" ng-if="alloc.knowsRequirements && !alloc.complete && alloc.pools.length">
             <p class="hz-rail-need-h">Your allocation must be taken in full</p>
             <ul class="hz-rail-need-list">
               <li ng-repeat="item in alloc.outstanding">
@@ -229,7 +229,7 @@
             </ul>
           </div>
 
-          <p class="hz-rail-done" ng-if="alloc.complete && alloc.pools.length">
+          <p class="hz-rail-done" ng-if="alloc.knowsRequirements && alloc.complete && alloc.pools.length">
             &#10003; That is everything you need.
           </p>
 
