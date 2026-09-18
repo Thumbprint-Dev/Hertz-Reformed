@@ -13,6 +13,25 @@
 <div class="hz-co-summary">
   <p class="hz-co-summary-h">Order summary</p>
 
+  <!--
+    What is actually being ordered.
+
+    The summary counted the lines and never named them, so the last screen before an order
+    is placed was the only one in the journey that did not say what was in it — leaving
+    "Items 2" as the whole description of a uniform someone is about to receive. The size is
+    in the SKU rather than the name, which is why it is shown: it is the detail people
+    actually want to re-check before submitting, and the one that is expensive to get wrong.
+  -->
+  <ul class="hz-co-items">
+    <li class="hz-co-item" ng-repeat="item in currentOrder.LineItems" ng-hide="item.Kit">
+      <span class="hz-co-item-text">
+        <span class="hz-co-item-n">{{item.Product.Name}}</span>
+        <span class="hz-co-item-sku">{{item.Product.InteropID}}</span>
+      </span>
+      <span class="hz-co-item-q">&times;{{item.Quantity}}</span>
+    </li>
+  </ul>
+
   <div class="hz-co-row">
     <span>Items</span>
     <span>{{currentOrder.LineItems.length}}</span>
@@ -57,7 +76,21 @@
   <p class="hz-co-blocked"
      ng-if="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
     <span ng-if="cart_order.$invalid">Order details are incomplete. </span>
-    <span ng-if="cart_shipping.$invalid || !currentOrder.ShipAddressID">A shipping address is needed. </span>
+
+    <!--
+      Two different gaps, and they were saying the same thing.
+
+      "A shipping address is needed" is right when the order carries none. It is actively
+      misleading once one is chosen and only the confirmation tick is outstanding — which is
+      the common case, because the address arrives prefilled from the employee's location
+      and the tick does not. Being told to supply an address that is already on screen sends
+      people looking for a field that is not missing.
+    -->
+    <span ng-if="!currentOrder.ShipAddressID">A shipping address is needed. </span>
+    <span ng-if="currentOrder.ShipAddressID && cart_shipping.$invalid">
+      Confirm the shipping address to continue.
+    </span>
+
     <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
   </p>
 
