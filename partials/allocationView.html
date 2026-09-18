@@ -51,35 +51,57 @@
       </div>
 
       <!--
-        What is already in the cart.
+        What is already reserved in a cart.
 
-        `remaining` has these units taken off it, so an employee who put three tops in the
-        cart comes back to a page that says two rather than five, with their picks cleared
-        and nothing on screen accounting for the difference. That reads as items going
-        missing, and the natural response is to pick three more — which they cannot.
+        `remaining` has these units taken off it, so someone who put three tops in the cart
+        returns to a page reading two rather than five, with their selections cleared and
+        nothing on screen accounting for the difference. That reads as items going missing,
+        and the natural response is to select three more — which they cannot.
 
-        So it says the number, where the items are, and what to do about it, in that order,
-        in the words someone would use themselves. "Held" rather than "reserved" because
-        reserved is what a table at a restaurant is; "put them back" rather than "release
-        the allocation" because nobody outside this codebase says release.
+        TWO AUDIENCES, AND THE DIFFERENCE MATTERS.
 
-        Shown whenever anything is held, not only after adding — arriving fresh the next
-        morning with a full cart is exactly when the number needs explaining.
+        A shopper can act: the cart is theirs, so the notice tells them how to release the
+        items and offers the way there. **A Uniform Champion cannot.** A cart belongs to the
+        employee who owns it, and Four51 gives a Champion no access to anyone else's — so
+        offering them a cart link would send them somewhere that shows their own cart, and
+        telling them to remove the items would be asking for something they have no way to
+        do. For them this is a status to relay, not an action, which is why the button is
+        absent from that branch and the release path is named instead.
+
+        The 24-hour figure is the real one: `release-stale-holds` runs nightly at 02:30 ET
+        and releases holds with no activity for `DEFAULT_STALE_HOURS` (24). Keep the wording
+        and that constant in step.
+
+        Shown whenever anything is reserved, not only after adding — arriving the next
+        morning to a smaller number is exactly when it needs explaining.
       -->
       <div class="hz-held" ng-show="!alloc.loading && !alloc.error && alloc.totalReserved > 0">
         <div class="hz-held-text">
           <p class="hz-held-h">
             <b>{{alloc.totalReserved}}</b>
-            <span ng-if="alloc.totalReserved === 1">item is waiting in your cart</span>
-            <span ng-if="alloc.totalReserved !== 1">items are waiting in your cart</span>
+            <span ng-if="alloc.totalReserved === 1">item is reserved in</span>
+            <span ng-if="alloc.totalReserved !== 1">items are reserved in</span>
+            <span ng-if="!alloc.onBehalf">your cart</span>
+            <span ng-if="alloc.onBehalf">this employee&rsquo;s cart</span>
           </p>
-          <p class="hz-held-sub">
-            They are held for you until you check out, so the numbers below do not count
-            them. Changed your mind? Take them out of your cart and they come straight back
-            here.
+
+          <p class="hz-held-sub" ng-if="!alloc.onBehalf">
+            These items are held against your allocation until you complete checkout, so the
+            quantities below exclude them. To make them available again, remove them from
+            your cart. A cart left inactive is released automatically after 24 hours.
+          </p>
+
+          <p class="hz-held-sub" ng-if="alloc.onBehalf">
+            These items are held against this employee&rsquo;s allocation until they complete
+            checkout, so the quantities below exclude them. A cart belongs to the employee
+            who owns it and cannot be accessed on their behalf &mdash; they will need to
+            remove the items themselves, or the cart will be released automatically after
+            24 hours of inactivity.
           </p>
         </div>
-        <a class="hz-held-go" href="cart">Go to my cart</a>
+
+        <!-- Only where there is a cart to go to. See the note above. -->
+        <a class="hz-held-go" href="cart" ng-if="!alloc.onBehalf">View cart</a>
       </div>
 
       <div class="hz-pick-grid" ng-show="!alloc.loading && !alloc.error && alloc.view">
@@ -94,8 +116,11 @@
                 {{pool.name | hzPool}}
                 <!-- Makes the row add up. Without it "2 remaining" against a kit the
                      employee knows gives five is just a wrong number; with it, 2 and 3
-                     account for the 5 they expect. -->
-                <i class="hz-pool-held" ng-if="pool.reserved > 0">{{pool.reserved}} in your cart</i>
+                     account for the 5 they expect. Whose cart depends on who is looking —
+                     see the notice above. -->
+                <i class="hz-pool-held" ng-if="pool.reserved > 0">
+                  {{pool.reserved}} reserved in <span ng-if="!alloc.onBehalf">your cart</span><span ng-if="alloc.onBehalf">their cart</span>
+                </i>
               </span>
               <span class="hz-pool-n">{{alloc.leftIn(pool)}}<i>remaining</i></span>
               <span class="hz-chev" aria-hidden="true"></span>
