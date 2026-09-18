@@ -38,6 +38,17 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       /** sku -> { qty, size } */
       picked: {},
       totalPicked: 0,
+      /**
+       * Required pools that still have units to take, as [{name, left}] — decision 53.
+       *
+       * Recomputed on every add and remove rather than from a function in the template.
+       * An `ng-repeat` over a function that returns a fresh array runs it on every digest
+       * and re-renders the list each time; that is what once made the size-chart table 66
+       * rows long. This is a plain property the template can watch.
+       */
+      outstanding: [],
+      /** True when nothing required is left — the only state that may go to the cart. */
+      complete: false,
       /** Units already in the Four51 cart, held against the allocation but not yet ordered. */
       totalReserved: 0,
       preview: null,
@@ -231,7 +242,29 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       angular.forEach($scope.alloc.picked, function(row) { n += row.qty; });
       $scope.alloc.totalPicked = n;
       $scope.alloc.result = null;
+      recount();
     }
+
+    /**
+     * What is still required, and whether the selection may go to the cart.
+     *
+     * A pool counts only when it is BOTH required and orderable. Seasonal Outerwear is
+     * required but has no SKUs and a seasonal gate, so demanding it would leave the button
+     * disabled for ever with no way for the employee to satisfy it — the same trap the
+     * server-side rule avoids in `orders/required.ts`, and the two have to agree or the
+     * picker asks for something checkout does not want.
+     */
+    function recount() {
+      var out = [];
+      angular.forEach($scope.alloc.pools, function(p) {
+        if (!p.required || !p.orderable) return;
+        var left = $scope.alloc.leftIn(p);
+        if (left > 0) out.push({ name: p.name, left: left });
+      });
+      $scope.alloc.outstanding = out;
+      $scope.alloc.complete = out.length === 0;
+    }
+    $scope.alloc.recount = recount;
 
     $scope.alloc.add = function(pool, product) {
       if (!$scope.alloc.canAdd(pool)) return;
@@ -631,6 +664,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
               if (!biggest || p.remaining > biggest.remaining) biggest = p;
             });
             if (biggest) biggest.open = true;
+            // The employee has taken nothing yet, so this is what they owe on arrival.
+            recount();
           }
           $scope.alloc.loading = false;
         })
