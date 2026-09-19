@@ -221,7 +221,7 @@
             difference between being told and finding out.
           -->
           <div class="hz-rail-need" ng-if="alloc.knowsRequirements && !alloc.complete && alloc.pools.length">
-            <p class="hz-rail-need-h">Your allocation must be taken in full</p>
+            <p class="hz-rail-need-h">Required</p>
             <ul class="hz-rail-need-list">
               <li ng-repeat="item in alloc.outstanding">
                 <b>{{item.left}}</b> {{item.name | hzPool}}
@@ -245,18 +245,19 @@
           <!-- Fills the cart; it does not place the order. The cart is where someone
                checks it over, and checkout is the step after that. -->
           <!--
-            Disabled until the allocation is complete, and it SAYS so on its face. Checkout
-            refuses an incomplete order anyway (decision 53), so allowing the cart to be
-            filled first would only move the refusal to the step where it costs the most.
-            A disabled control with no explanation is the commonest way a checkout strands
-            someone, so the label carries the reason.
+            Disabled until the allocation is complete. Checkout refuses an incomplete order
+            anyway (decision 53), so letting the cart be filled first would only move the
+            refusal to the step where it costs the most.
+
+            The label stays "Add to cart" in both states, at the client's request. What
+            explains the disabled state is the Required list directly above it — the reason
+            is adjacent rather than on the control itself.
           -->
           <button class="hz-btn hz-btn--block" type="button"
                   ng-click="alloc.addToCart()"
                   ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting">
             <span ng-if="alloc.submitting">Adding&hellip;</span>
-            <span ng-if="!alloc.submitting && alloc.complete">Add to cart</span>
-            <span ng-if="!alloc.submitting && !alloc.complete">Choose everything to continue</span>
+            <span ng-if="!alloc.submitting">Add to cart</span>
           </button>
           <p class="hz-rail-note" ng-if="!alloc.submitting && alloc.complete">
             You can review everything in your cart before checking out.
