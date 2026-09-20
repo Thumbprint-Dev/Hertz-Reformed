@@ -23,21 +23,48 @@
   <div class="hz-lp-hero">
 
     <div class="hz-lp-hero-text">
-      <p class="hz-lp-kicker">Official marketplace</p>
+      <!--
+        The hero speaks to whoever is reading it.
 
-      <h1 class="hz-lp-h1">Choose the apparel that matches your&nbsp;style.</h1>
+        It used to say the same thing to everyone: "Choose the apparel that matches your
+        style", over a sentence about "your allocation". A Uniform Champion has no
+        allocation of their own, so the first thing they read was about something they do
+        not have, and the only part of the page that acknowledged them was the button.
+
+        The programme names itself in the kicker, from `home.brand`, with Hertz as the
+        fallback because a brand we cannot read should still give a usable page.
+
+        No em dashes anywhere in this block, at the client's request.
+      -->
+      <p class="hz-lp-kicker">Official {{home.brand || 'Hertz'}} marketplace</p>
+
+      <h1 class="hz-lp-h1" ng-if="!home.isChampion">
+        Choose the uniform that fits how you&nbsp;work.
+      </h1>
+      <h1 class="hz-lp-h1" ng-if="home.isChampion">
+        Order uniforms for your&nbsp;team.
+      </h1>
       <span class="hz-lp-bar" aria-hidden="true"></span>
 
-      <p class="hz-lp-sub">
-        <!--
-          This promised the opposite until 18 September 2026: "Take what you need now; the
-          rest stays available." Decision 53 made the allocation required rather than
-          offered, so that sentence became untrue the moment checkout started refusing a
-          partial order — and it is the first thing an employee reads.
-        -->
-        Build a kit from your allocation &mdash; tops, layering, bottoms and headwear.
-        Your allocation is meant to be taken in full, so choose everything in one go.
-        Let&rsquo;s go!
+      <!--
+        The shopper's line says what the allocation covers and that it has to be taken in
+        full. It promised the opposite until 18 September ("Take what you need now; the rest
+        stays available"), which decision 53 made untrue the moment checkout began refusing
+        a partial order.
+      -->
+      <p class="hz-lp-sub" ng-if="!home.isChampion">
+        Your allocation covers tops, layering, bottoms, headwear and a belt. It is meant to
+        be taken in full, so choose everything in one go.
+      </p>
+
+      <!--
+        The champion's line describes what actually happens when they order: whose
+        allocation it spends, where it ships, and whose name is on it. All three are facts
+        they get asked about.
+      -->
+      <p class="hz-lp-sub" ng-if="home.isChampion">
+        Choose someone on your team, then order against their allocation. It ships to their
+        location and your name is recorded on the order.
       </p>
 
       <!-- Same hero either way; only the primary action differs, because a champion has no
