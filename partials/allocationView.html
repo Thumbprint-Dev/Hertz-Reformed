@@ -94,7 +94,7 @@
           <p class="hz-held-sub" ng-if="alloc.onBehalf">
             These items are held against this employee&rsquo;s allocation until they complete
             checkout, so the quantities below exclude them. A cart belongs to the employee
-            who owns it and cannot be accessed on their behalf &mdash; they will need to
+            who owns it and cannot be accessed on their behalf, so they will need to
             remove the items themselves, or the cart will be released automatically after
             24 hours of inactivity.
           </p>
@@ -108,7 +108,11 @@
 
         <div class="hz-pools">
 
-          <section class="hz-pool" ng-repeat="pool in alloc.pools" ng-class="{open: pool.open}">
+          <!-- `is-full` turns the meter green once a pool has nothing left to take. Guarded on
+               `pool.remaining > 0` so a pool that was granted nothing does not read as
+               complete — 0 of 0 is not an achievement. -->
+          <section class="hz-pool" ng-repeat="pool in alloc.pools"
+                   ng-class="{open: pool.open, 'is-full': pool.remaining > 0 && alloc.leftIn(pool) === 0}">
             <button class="hz-pool-head" type="button"
                     ng-click="alloc.toggle(pool)"
                     aria-expanded="{{pool.open ? 'true' : 'false'}}">
@@ -126,8 +130,6 @@
                 -->
                 <i class="hz-pool-tag hz-pool-tag--must"
                    ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) > 0">required</i>
-                <i class="hz-pool-tag hz-pool-tag--done"
-                   ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) === 0">&#10003; done</i>
                 <i class="hz-pool-tag hz-pool-tag--may" ng-if="pool.required === false">optional</i>
                 <!-- Makes the row add up. Without it "2 remaining" against a kit the
                      employee knows gives five is just a wrong number; with it, 2 and 3
@@ -151,7 +153,7 @@
                 <!-- A category with no product mapped is our gap, not the employee's, so
                      it is named rather than silently absent (decision 42). -->
                 <p class="hz-cat-empty" ng-if="!cat.products.length">
-                  {{cat.name}} &mdash; not available yet
+                  {{cat.name}}: not available yet
                 </p>
 
                 <div class="hz-item" ng-repeat="product in cat.products">
@@ -221,7 +223,7 @@
             difference between being told and finding out.
           -->
           <div class="hz-rail-need" ng-if="alloc.knowsRequirements && !alloc.complete && alloc.pools.length">
-            <p class="hz-rail-need-h">Your allocation must be taken in full</p>
+            <p class="hz-rail-need-h">Required</p>
             <ul class="hz-rail-need-list">
               <li ng-repeat="item in alloc.outstanding">
                 <b>{{item.left}}</b> {{item.name | hzPool}}
@@ -229,9 +231,6 @@
             </ul>
           </div>
 
-          <p class="hz-rail-done" ng-if="alloc.knowsRequirements && alloc.complete && alloc.pools.length">
-            &#10003; That is everything you need.
-          </p>
 
           <div class="hz-rail-list">
             <button class="hz-rail-row" type="button" ng-repeat="pool in alloc.pools"
@@ -248,18 +247,19 @@
           <!-- Fills the cart; it does not place the order. The cart is where someone
                checks it over, and checkout is the step after that. -->
           <!--
-            Disabled until the allocation is complete, and it SAYS so on its face. Checkout
-            refuses an incomplete order anyway (decision 53), so allowing the cart to be
-            filled first would only move the refusal to the step where it costs the most.
-            A disabled control with no explanation is the commonest way a checkout strands
-            someone, so the label carries the reason.
+            Disabled until the allocation is complete. Checkout refuses an incomplete order
+            anyway (decision 53), so letting the cart be filled first would only move the
+            refusal to the step where it costs the most.
+
+            The label stays "Add to cart" in both states, at the client's request. What
+            explains the disabled state is the Required list directly above it — the reason
+            is adjacent rather than on the control itself.
           -->
           <button class="hz-btn hz-btn--block" type="button"
                   ng-click="alloc.addToCart()"
                   ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting">
             <span ng-if="alloc.submitting">Adding&hellip;</span>
-            <span ng-if="!alloc.submitting && alloc.complete">Add to cart</span>
-            <span ng-if="!alloc.submitting && !alloc.complete">Choose everything to continue</span>
+            <span ng-if="!alloc.submitting">Add to cart</span>
           </button>
           <p class="hz-rail-note" ng-if="!alloc.submitting && alloc.complete">
             You can review everything in your cart before checking out.
@@ -327,7 +327,7 @@
 
         <div class="hz-modal-foot">
           <span class="hz-modal-note">
-            Draws on {{alloc.preview.pool.name | hzPool}} &mdash;
+            Draws on {{alloc.preview.pool.name | hzPool}}.
             {{alloc.leftIn(alloc.preview.pool)}} remaining.
           </span>
           <button class="hz-btn" type="button"
