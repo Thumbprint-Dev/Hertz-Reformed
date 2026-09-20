@@ -1513,7 +1513,6 @@ contentmodal2 a:hover{
    yellow (§3.2) — not the generic warning gold this used to be. A required item is the
    thing to notice on the row, so it takes the accent; the other two states stay quiet. */
 .hz-pool-tag--must { background: var(--a); color: var(--on-a); border: 1px solid var(--a); }
-.hz-pool-tag--done { background: transparent; color: var(--muted); border: 1px solid var(--line); }
 .hz-pool-tag--may  { background: transparent; color: var(--muted); border: 1px solid var(--line); }
 
 /* What is still owed, in the rail, above the button. */
@@ -1796,6 +1795,11 @@ contentmodal2 a:hover{
 /* ------------------- Choose your uniform (the picker) ------------------- */
 .hz-pick {
   --a: #fc0; --a-deep: #e8b800; --on-a: #11172b;
+  /* The one green on this site, and only ever for a bar that has reached its full amount —
+     at the client's request, 19 Sep. It is a state, not decoration: everywhere else that
+     had a success green was taken off brand deliberately. Defined here so "full" looks the
+     same in the pool meter and in the rail. */
+  --full: #1d8a5f;
   --ink: #11172b; --body: #2c3140; --muted: #5f6778;
   --line: #e3e7ef; --firm: #c9d0dd; --sub: #f8f9fc;
   /* The page ground is white to match the rest of the site, so the pool and rail cards
@@ -1859,6 +1863,9 @@ contentmodal2 a:hover{
 
 .hz-meter { height: 3px; background: var(--line); }
 .hz-meter i { display: block; height: 100%; background: var(--a); }
+/* Green only at the full amount. `is-full` is set from the pool having something to take
+   AND nothing left of it, so a pool granted zero does not read as complete. */
+.hz-pool.is-full .hz-meter i { background: var(--full); }
 
 .hz-items { padding: 4px 20px 16px; border-top: 1px solid var(--line); }
 .hz-cat-empty { font-size: 13px; color: var(--muted); padding: 12px 0 4px; margin: 0; font-style: italic; }
@@ -1937,6 +1944,7 @@ contentmodal2 a:hover{
 .hz-rail-row.done .hz-rail-n { color: var(--ink); font-weight: 700; }
 .hz-rail-bar { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
 .hz-rail-bar i { display: block; height: 100%; background: var(--a); }
+.hz-rail-row.done .hz-rail-bar i { background: var(--full); }
 
 .hz-btn {
   background: var(--a); color: var(--on-a); border: 1px solid var(--a-deep); border-radius: 4px;

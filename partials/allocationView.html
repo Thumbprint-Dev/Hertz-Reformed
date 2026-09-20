@@ -108,7 +108,11 @@
 
         <div class="hz-pools">
 
-          <section class="hz-pool" ng-repeat="pool in alloc.pools" ng-class="{open: pool.open}">
+          <!-- `is-full` turns the meter green once a pool has nothing left to take. Guarded on
+               `pool.remaining > 0` so a pool that was granted nothing does not read as
+               complete — 0 of 0 is not an achievement. -->
+          <section class="hz-pool" ng-repeat="pool in alloc.pools"
+                   ng-class="{open: pool.open, 'is-full': pool.remaining > 0 && alloc.leftIn(pool) === 0}">
             <button class="hz-pool-head" type="button"
                     ng-click="alloc.toggle(pool)"
                     aria-expanded="{{pool.open ? 'true' : 'false'}}">
@@ -126,8 +130,6 @@
                 -->
                 <i class="hz-pool-tag hz-pool-tag--must"
                    ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) > 0">required</i>
-                <i class="hz-pool-tag hz-pool-tag--done"
-                   ng-if="pool.required === true && pool.orderable && alloc.leftIn(pool) === 0">&#10003; done</i>
                 <i class="hz-pool-tag hz-pool-tag--may" ng-if="pool.required === false">optional</i>
                 <!-- Makes the row add up. Without it "2 remaining" against a kit the
                      employee knows gives five is just a wrong number; with it, 2 and 3
