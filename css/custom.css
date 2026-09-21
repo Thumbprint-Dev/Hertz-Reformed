@@ -2122,13 +2122,29 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-lp-btn--onyellow:focus { background: var(--black-90); border-color: var(--black-90); color: #fff; }
 
 /* ---- hero ---- */
+/*
+  The row is pinned to a fixed height, and that is the whole point of `min-height` here.
+  Both cells stretch to the tallest, so without it the row is whatever the text column
+  happens to need — and the two versions of this hero do not carry the same copy. The
+  Uniform Champion heading is a line shorter than the shopper's, so the champion hero came
+  out shorter and the photograph was cropped down with it. Same page, same picture, two
+  sizes, for no reason the reader can see.
+
+  520px is the tallest the shopper column measured across 1440 to 1920 (503px), plus room
+  for the heading to take a third line. Below 860px the grid stacks and the media cell
+  carries its own height, so the pin is released there.
+*/
 .hz-lp-hero {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  min-height: 520px;
   border-bottom: 2px solid var(--ink);
 }
 .hz-lp-hero-text {
   padding: clamp(28px, 5vw, 72px) var(--gutter);
   display: flex; flex-direction: column; align-items: flex-start;
+  /* Centred, because the column no longer fills the row it sits in. Top-aligned, the
+     shorter copy would hang from the top with the gap pooled underneath it. */
+  justify-content: center;
 }
 .hz-lp-kicker {
   font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
@@ -2303,6 +2319,9 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-lp-alloc-grid { grid-template-columns: 1fr; }
   .hz-lp-count { border-right: 0; border-bottom: 1px solid var(--rule); }
   .hz-lp-cats { border-bottom: 1px solid var(--rule); }
+  /* Stacked: the media is its own row and sets its own height, so the pin above would only
+     add empty space under the copy. */
+  .hz-lp-hero { min-height: 0; }
   .hz-lp-hero-media { min-height: 260px; border-left: 0; border-top: 1px solid var(--rule); }
 }
 @media (max-width: 600px) {
@@ -3231,4 +3250,292 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 @media (max-width: 900px) {
   .hz-co-grid { grid-template-columns: minmax(0,1fr); }
   .hz-co-side { position: static; }
+}
+
+/* =========================================================================
+   Account pages — order history, order detail, addresses, contact
+   =========================================================================
+
+   One scope for the four pages behind the header's Orders link and Account
+   menu. They were the last of the stock theme: Bootstrap panels, injected
+   <style> blocks, `fa` icons and tables with a border on every cell.
+
+   They share a scope rather than taking one each because they are the same
+   page furniture four times over — a title, a card, a table, an empty state.
+   Four copies of these tokens is four places for them to drift.
+
+   Tokens match .hz-cart and .hz-co exactly, so a card here and a card at
+   checkout are the same object. Custom properties do not cross a scope
+   boundary, so they have to be restated; they must not be re-chosen.
+*/
+.hz-pg {
+  --yellow: #FFCC00;
+  --yellow-press: #E6B800;
+  --ink: #11172b;
+  --body: #2c3140;
+  --muted: #5f6778;
+  --line: #e3e7ef;
+  --edge: #dae0ea;
+  --sub: #f8f9fc;
+  --stop-ink: #a4192d;
+  --stop-bg: #fcebed;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+
+  font-family: 'Open Sans', Arial, sans-serif;
+  color: var(--body);
+  background: #fff;
+  /* Cancel .mainContainer's 10% side padding so these sit flush with the cart
+     and checkout: the content box is 80% of the whole, and 10/80 = 12.5%. */
+  margin-left: -12.5%;
+  margin-right: -12.5%;
+  padding: 28px clamp(16px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  min-height: calc(100vh - 150px);
+}
+.hz-pg, .hz-pg *, .hz-pg *::before, .hz-pg *::after { box-sizing: border-box; }
+@media screen and (max-width: 425px) {
+  .hz-pg { margin-left: -2.0833%; margin-right: -2.0833%; }
+}
+
+/* ---- page head ---- */
+.hz-pg-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
+}
+.hz-pg-title {
+  font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.02; letter-spacing: -0.008em; color: var(--ink); margin: 0;
+}
+.hz-pg-sub { font-size: 15px; line-height: 1.55; color: var(--muted); margin: 0 0 22px; max-width: 62ch; }
+.hz-pg-back {
+  display: inline-block; font-size: 13px; font-weight: 600; color: var(--muted);
+  text-decoration: none; margin: 0 0 10px;
+}
+.hz-pg-back:hover, .hz-pg-back:focus { color: var(--ink); text-decoration: underline; }
+
+/* ---- cards ---- */
+.hz-pg-card {
+  border: 1px solid var(--edge); border-radius: 8px; background: #fff;
+  margin: 0 0 20px;
+}
+.hz-pg-card-h {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 15px 20px; border-bottom: 1px solid var(--line);
+}
+.hz-pg-card-t {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin: 0;
+}
+.hz-pg-card-b { padding: 20px; }
+
+/* ---- tables ----
+   No vertical rules and no zebra. A row is separated from the next by one hairline,
+   which is all a reader needs to track across it. */
+.hz-pg-table { width: 100%; border-collapse: collapse; }
+.hz-pg-table th {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); text-align: left; padding: 0 16px 10px; border-bottom: 1px solid var(--edge);
+  white-space: nowrap;
+}
+.hz-pg-table td {
+  padding: 14px 16px; border-bottom: 1px solid var(--line);
+  font-size: 14.5px; color: var(--body); vertical-align: middle;
+}
+.hz-pg-table tr:last-child td { border-bottom: 0; }
+.hz-pg-table .hz-pg-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hz-pg-table a { color: var(--ink); font-weight: 700; text-decoration: none; }
+.hz-pg-table a:hover, .hz-pg-table a:focus { text-decoration: underline; }
+.hz-pg-scroll { overflow-x: auto; }
+
+/* Status. One neutral pill for every state: the page reports what happened, it does
+   not grade it, and a palette of semantic colours here would be off brand. */
+.hz-pg-pill {
+  display: inline-block; padding: 4px 10px; border-radius: 2px;
+  background: var(--sub); border: 1px solid var(--edge);
+  font-size: 12px; font-weight: 700; letter-spacing: .02em; color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---- buttons ---- */
+.hz-pg-btn {
+  display: inline-block; background: var(--yellow); border: 1px solid var(--yellow);
+  border-radius: 2px; font: inherit; font-size: 14px; font-weight: 700;
+  /* Type on yellow is the brand's own dark grey, never black and never white. */
+  color: #434244; padding: 11px 22px; cursor: pointer; text-decoration: none;
+  line-height: 1.2;
+}
+.hz-pg-btn:hover, .hz-pg-btn:focus {
+  background: var(--yellow-press); border-color: var(--yellow-press); color: #434244;
+  text-decoration: none;
+}
+.hz-pg-btn[disabled] { opacity: .45; cursor: not-allowed; }
+.hz-pg-btn--ghost {
+  background: #fff; border-color: var(--edge); color: var(--body);
+  font-size: 13px; font-weight: 600; padding: 10px 16px;
+}
+.hz-pg-btn--ghost:hover, .hz-pg-btn--ghost:focus {
+  background: #fff; border-color: var(--ink); color: var(--ink);
+}
+.hz-pg-btn--stop { background: #fff; border-color: var(--edge); color: var(--muted); }
+.hz-pg-btn--stop:hover:not([disabled]), .hz-pg-btn--stop:focus:not([disabled]) {
+  background: var(--stop-bg); border-color: var(--stop-ink); color: var(--stop-ink);
+}
+.hz-pg-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* ---- filter chips ---- */
+.hz-pg-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.hz-pg-chip {
+  background: #fff; border: 1px solid var(--edge); border-radius: 2px;
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--body);
+  padding: 9px 14px; cursor: pointer; white-space: nowrap;
+}
+.hz-pg-chip:hover { border-color: var(--ink); color: var(--ink); }
+/* The chosen filter is a yellow fill with the brand's dark grey on it, the same
+   relationship the primary button uses. */
+.hz-pg-chip.is-on {
+  background: var(--yellow); border-color: var(--yellow); color: #434244;
+}
+.hz-pg-chip-n { font-variant-numeric: tabular-nums; opacity: .7; margin-left: 6px; }
+.hz-pg-chip.is-on .hz-pg-chip-n { opacity: .85; }
+
+/* ---- fields ---- */
+.hz-pg-fields {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px; align-items: end;
+}
+.hz-pg-field { min-width: 0; }
+.hz-pg-field label {
+  display: block; font-size: 12px; font-weight: 700; color: var(--ink);
+  margin: 0 0 6px; letter-spacing: .01em;
+}
+/* `background-color`, never the `background` shorthand: the shorthand also resets
+   background-image, which is how the select caret disappeared at checkout. */
+.hz-pg-field input,
+.hz-pg-field select {
+  width: 100%; height: 42px; padding: 0 12px;
+  border: 1px solid var(--edge); border-radius: 2px;
+  background-color: #fff; font: inherit; font-size: 14px; color: var(--body);
+}
+.hz-pg-field input:focus, .hz-pg-field select:focus {
+  border-color: var(--ink); outline: 0;
+}
+.hz-pg-field-hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+.hz-pg-search { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.hz-pg-search .hz-pg-field { flex: 1 1 260px; }
+
+/* ---- notices ----
+   The house shape: a light ground with a 3px yellow rule down the left edge. Yellow
+   is a fill here and the type stays ink, per the brand guide. */
+.hz-pg-note {
+  background: var(--sub); border-left: 3px solid var(--yellow);
+  padding: 14px 16px; margin: 0 0 20px; border-radius: 0 4px 4px 0;
+  font-size: 14px; line-height: 1.55; color: var(--body);
+}
+.hz-pg-note strong { color: var(--ink); }
+.hz-pg-note p { margin: 0; }
+.hz-pg-note p + p { margin-top: 8px; }
+.hz-pg-note--stop {
+  background: var(--stop-bg); border-left-color: var(--stop-ink); color: var(--stop-ink);
+}
+.hz-pg-note--stop strong { color: var(--stop-ink); }
+
+/* ---- empty state ---- */
+.hz-pg-empty {
+  border: 1px solid var(--edge); border-radius: 8px; background: #fff;
+  padding: clamp(32px, 6vw, 64px) 24px; text-align: center;
+}
+/* Qualified with the element, because `.hz-pg-empty p` below is (0,0,1,1) and would
+   otherwise beat a bare `.hz-pg-empty-t` at (0,0,1,0) and take the title's size and
+   colour with it. */
+.hz-pg-empty p.hz-pg-empty-t {
+  font-family: var(--display); font-size: 24px; font-weight: 600; color: var(--ink);
+  margin: 0 0 8px; max-width: none;
+}
+.hz-pg-empty p { font-size: 15px; color: var(--muted); margin: 0 0 20px; max-width: 46ch; margin-inline: auto; }
+
+/* ---- pagination ----
+   The theme's <pagination> directive emits Bootstrap markup, so it is restyled in
+   place rather than replaced. */
+.hz-pg .pagination { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 18px 0 0; list-style: none; }
+.hz-pg .pagination > li > a,
+.hz-pg .pagination > li > span {
+  display: block; border: 1px solid var(--edge); border-radius: 2px; background: #fff;
+  color: var(--body); font-size: 13px; font-weight: 600; padding: 8px 12px; text-decoration: none;
+  float: none; margin: 0; font-variant-numeric: tabular-nums;
+}
+.hz-pg .pagination > li > a:hover { border-color: var(--ink); color: var(--ink); }
+.hz-pg .pagination > .active > a,
+.hz-pg .pagination > .active > span,
+.hz-pg .pagination > .active > a:hover,
+.hz-pg .pagination > .active > span:hover {
+  background: var(--yellow); border-color: var(--yellow); color: #434244;
+}
+.hz-pg .pagination > .disabled > a,
+.hz-pg .pagination > .disabled > span { opacity: .4; }
+
+.hz-pg-count { font-size: 13px; color: var(--muted); margin: 14px 0 0; }
+.hz-pg :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+/* ---- two-column layout, used by the order detail page ---- */
+.hz-pg-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px; align-items: start;
+}
+.hz-pg-side { position: sticky; top: 16px; }
+@media (max-width: 900px) {
+  .hz-pg-grid { grid-template-columns: minmax(0, 1fr); }
+  .hz-pg-side { position: static; }
+}
+
+/* ---- definition rows, for order and address detail ---- */
+.hz-pg-dl { margin: 0; }
+.hz-pg-dl-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  font-size: 14px; padding: 7px 0; border-bottom: 1px solid var(--line);
+}
+.hz-pg-dl-row:last-child { border-bottom: 0; }
+.hz-pg-dl-k { color: var(--muted); }
+.hz-pg-dl-v { color: var(--ink); font-weight: 600; text-align: right; }
+.hz-pg-dl-v--total { font-family: var(--display); font-size: 20px; font-weight: 600; }
+
+/* ---- order detail: one row per item ----
+   Same shape as a cart row, so an order looks like the cart it came from. */
+.hz-pg-li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px; align-items: start;
+  padding: 18px 20px; border-top: 1px solid var(--line);
+}
+.hz-pg-li:first-child { border-top: 0; }
+.hz-pg-li-main { min-width: 0; }
+.hz-pg-li-name { font-size: 15.5px; font-weight: 700; color: var(--ink); margin: 0 0 3px; }
+.hz-pg-li-sku {
+  font-family: var(--display); font-size: 13px; letter-spacing: .02em;
+  color: var(--muted); margin: 0;
+}
+.hz-pg-li-spec { font-size: 13px; color: var(--body); margin: 4px 0 0; }
+.hz-pg-li-spec > span:first-child { color: var(--muted); }
+.hz-pg-li-spec-v { font-weight: 600; color: var(--ink); }
+.hz-pg-li-addr { font-size: 13px; color: var(--muted); margin: 6px 0 0; font-style: normal; }
+.hz-pg-li-links { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 0; }
+.hz-pg-li-links a { font-size: 13px; font-weight: 600; color: var(--ink); }
+
+.hz-pg-li-meta { text-align: right; white-space: nowrap; }
+.hz-pg-li-qty { margin: 0; }
+.hz-pg-li-qty-l {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.hz-pg-li-qty-n {
+  font-family: var(--display); font-size: 26px; font-weight: 600; color: var(--ink);
+  line-height: 1.1; font-variant-numeric: tabular-nums;
+}
+.hz-pg-li-price { font-size: 14.5px; font-weight: 700; color: var(--ink); margin: 6px 0 0; }
+.hz-pg-li-price span {
+  display: block; font-size: 12px; font-weight: 400; color: var(--muted);
+}
+.hz-pg-li-proof { grid-column: 1 / -1; margin: 12px 0 0; }
+.hz-pg-li-proof img { max-height: 360px; border: 1px solid var(--line); border-radius: 4px; }
+
+@media (max-width: 560px) {
+  .hz-pg-li { grid-template-columns: minmax(0, 1fr); }
+  .hz-pg-li-meta { text-align: left; }
 }

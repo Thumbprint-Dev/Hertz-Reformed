@@ -1,130 +1,147 @@
-<style>
-  .cart-title {
-    color: #208fad;
-    font-size: 40px;
-    font-weight: bold;
-    letter-spacing: -0.74px;
-    line-height: 63px;
-  }
-  .order-details-container {
-    background-color: #ededed;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 100px;
- }
- 
-   @media screen and (max-width: 1250px) {
-  .order-details-container {
-    width: 400px;
- }
-}
-   @media screen and (max-width: 1110px) {
-  .order-details-container {
-    width: 350px;
- }
-}
-   @media screen and (max-width: 950px) {
-  .order-details-container {
-    width: unset;
- }
-}
-</style>
-<section>
-    <loadingindicator ng-show="loadingIndicator" title="{{'Please wait while we fetch your order' | r | xlat}}"></loadingindicator>
-    <div class="hidden-print">
-        <div>
-            <orderacknowledgemessage ng-show="order.recent" />
-        </div>
-        <nav class="nav">
-            <ul>
-                <li><span class="text-primary">{{(order.Type) + ' ' + ('Order' | r) | xlat}}<span ng-show="order.ExternalID"> {{'ID' | r}}: </span>{{order.ExternalID}}</span></li>
-                <li class="pull-right" ng-click="onPrint()"><span><i class="fa fa-print text-primary" rel="tooltip" title="{{'Print' | r | xlat}}"></i></span></li>
-            </ul>
-        </nav>
+<!--
+  One order, after it was placed. Reached by choosing an order on /order.
 
-        <div style="padding-bottom: 800px;">
-        <div class="col-md-3 col-md-offset-1 col-md-push-7">
-            <div class="row">
-                <div class="order-details-container">
-                    <!--<div class="panel-heading">
-                        <h3 class="panel-title">
-                            {{('Order' | r) + ' ' + ('Details' | r) | xlat}}
-                        </h3>
-                    </div>-->
-                    <p class="cart-title">Order Details</p>
-                    <div class="panel-body">
-                        <orderhistorydetails></orderhistorydetails>
-                        <orderhistorysummary ng-if="!(user.Permissions.contains('HidePricing'))" ng-hide="order.LineItems[0].Product.InteropID === 'CDC-APP-KIT-001' || order.LineItems[0].Product.Name === 'New Hire Kit'"></orderhistorysummary>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-7 col-md-pull-4" style="border-bottom: 1px solid #979797;">
-            <div class="">
-                <div class="">
-                    <p class="cart-title" style="border-bottom: 1px solid #979797;">
-                        {{'Order Confirmation'}}
-                    </p>
-                    <p>{{order.LineItems.length}} {{'Item' + (order.LineItems.length > 1 ? 's' : '') | rl | xlat}} {{'in this' | rl | xlat:(currentOrder.LineItems.length)}} {{'Order' | rl | xlat}}</p>
-                </div>
-                <lineitemhistorygrid />
+  Rebuilt from the stock theme. What was there: an injected <style> block carrying three
+  width-only media queries, Bootstrap `col-md-push-7` / `col-md-pull-4` column reordering
+  that put the summary before the contents in source and after it on screen, and
+  `padding-bottom: 800px` on the wrapper — an 800px void under every order, which is what
+  the media queries were really fighting.
 
-				<div class="panel-body" ng-show="shipments" ng-repeat="s in shipments">
-					<b>Shipper:</b> {{s.Shipper}}<br/>
-					<b>Tracking number:</b> {{s.TrackingNumber}}<br/>
-					<b>URL:</b> <a href="{{s.TrackingURL}}">{{s.TrackingURL}}</a><br>
-					<b>Items: </b> <ul><li ng-repeat="item in s.Items">{{item.ProductID}} - {{item.QuantityShipped}}</li></ul>
-					<hr>
-				</div>
+  The directives are unchanged and still do the work: `orderhistorydetails`,
+  `orderhistorysummary`, `lineitemhistorygrid`, `approval`, `approvalrulelist` and
+  `orderprint`. Their own templates are restyled in place beside this file.
+-->
+<section class="hz-pg">
 
+  <loadingindicator ng-show="loadingIndicator" title="{{'Please wait while we fetch your order' | r | xlat}}"></loadingindicator>
 
+  <div class="hidden-print">
 
-                <div class="panel-footer" ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer'" style="background-color: white;border: none;">
-                   <loadingindicator ng-show="displayLoadingIndicator" />
-                   <div class="form-group view-form-icon">
-                        <div class="input-group">
-                            <input type="text" ng-model="order.FavoriteName" placeholder="{{('Favorite' | r) + ' ' + ('Name' | r) | xlat}}" class="form-control" autocomplete="off" />
-                            <i class="fa fa-star"></i>
-                            <span class="input-group-btn">
-                                <button type="button" ng-click="saveFavorite()" class="btn btn-info">{{('Save' | r) + ' ' + ('Favorite' | r) | xlat}}</button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-footer" ng-if="order.FromUserID == user.ID && order.Status == 'Unsubmitted'" style="background-color: white;border: none;">
-                    <loadingindicator ng-show="displayLoadingIndicator" />
-                    <div class="form-group view-form-icon">
-                        <div class="pull-right">
-                            <loadingindicator  ng-show="currentLoadingIndicator" />
-                            <i class="fa fa-icon-random"></i>
-                            <button ng-if="order.ID != currentOrder.ID" type="button" ng-click="currentLoadingIndicator = true; setCurrent()" class="btn btn-info">
-                                {{'Set as Current' | r}} {{'Order' | r}}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Shown when the order was just placed: this is the confirmation. -->
+    <orderacknowledgemessage ng-show="order.recent" />
 
-            <div ng-show="order.Approvals" class="panel panel-default approval-rule-status-summary" style="border: none;">
-                <div class="">
-                    <h3 class="" style="padding-bottom: 10px;border-bottom: 1px solid #979797;font-weight: 600;">{{'Approvals' | r | xlat}}</h3>
-                </div>
-                <div class="panel-body">
-                    <approval ng-show="order.Status == 'AwaitingApproval' && (order.UserCanApprove || user.Permissions.contains('ApproveAllOrders'))" order="order"/>
-                    <approvalrulelist order="order" />
-                </div>
-            </div>
-        </div>
+    <a class="hz-pg-back" href="order">&larr; All orders</a>
 
-        <div class="navbar-fixed-bottom">
-            <div class="view-response-message alert-success text-center" alert-show="actionMessage">
-                <p>{{actionMessage | r | xlat}}</p>
-            </div>
-            <div class="view-response-message alert-danger text-center" alert-show="errorMessage">
-                <p>{{errorMessage | r | xlat}}</p>
-            </div>
-        </div>
-        </div>
+    <div class="hz-pg-head">
+      <h1 class="hz-pg-title">
+        Order {{order.ExternalID}}
+      </h1>
+      <div class="hz-pg-actions">
+        <span class="hz-pg-pill" ng-show="order.StatusText">{{order.StatusText | r | xlat}}</span>
+        <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="onPrint()">Print</button>
+      </div>
     </div>
-    <orderprint class="visible-print" />
+    <p class="hz-pg-sub">
+      {{order.LineItems.length}} {{order.LineItems.length === 1 ? 'item' : 'items'}} in this order.
+    </p>
+
+    <div class="hz-pg-grid">
+
+      <!-- Contents first in source order as well as on screen, so the reading order and
+           the tab order agree with what the page looks like. -->
+      <div>
+        <div class="hz-pg-card">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">What was ordered</p>
+          </div>
+          <lineitemhistorygrid />
+        </div>
+
+        <!-- Tracking. Previously a run of bold labels and <br> tags with the raw URL
+             printed in full as its own link text. -->
+        <div class="hz-pg-card" ng-show="shipments.length">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">Shipping</p>
+          </div>
+          <div class="hz-pg-card-b">
+            <div ng-repeat="s in shipments" style="margin-bottom: 18px;">
+              <div class="hz-pg-dl">
+                <div class="hz-pg-dl-row" ng-show="s.Shipper">
+                  <span class="hz-pg-dl-k">Carrier</span>
+                  <span class="hz-pg-dl-v">{{s.Shipper}}</span>
+                </div>
+                <div class="hz-pg-dl-row" ng-show="s.TrackingNumber">
+                  <span class="hz-pg-dl-k">Tracking number</span>
+                  <span class="hz-pg-dl-v">
+                    <a ng-if="s.TrackingURL" ng-href="{{s.TrackingURL}}" target="_blank"
+                       rel="noopener noreferrer">{{s.TrackingNumber}}</a>
+                    <span ng-if="!s.TrackingURL">{{s.TrackingNumber}}</span>
+                  </span>
+                </div>
+                <div class="hz-pg-dl-row" ng-repeat="item in s.Items">
+                  <span class="hz-pg-dl-k">{{item.ProductID}}</span>
+                  <span class="hz-pg-dl-v">{{item.QuantityShipped}} shipped</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Approvals. Kept because the directive is still wired, though Phase 5 was
+             cancelled on 18 Sep 2026 and no Hertz order reaches an approval state. -->
+        <div class="hz-pg-card" ng-show="order.Approvals">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">Approvals</p>
+          </div>
+          <div class="hz-pg-card-b">
+            <approval ng-show="order.Status == 'AwaitingApproval' && (order.UserCanApprove || user.Permissions.contains('ApproveAllOrders'))" order="order" />
+            <approvalrulelist order="order" />
+          </div>
+        </div>
+      </div>
+
+      <div class="hz-pg-side">
+        <div class="hz-pg-card">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">Order details</p>
+          </div>
+          <div class="hz-pg-card-b">
+            <orderhistorydetails></orderhistorydetails>
+            <!-- Kit orders carry no price the employee pays, so the money panel is
+                 hidden for them exactly as it was before. -->
+            <orderhistorysummary ng-if="!(user.Permissions.contains('HidePricing'))"
+                                 ng-hide="order.LineItems[0].Product.InteropID === 'CDC-APP-KIT-001' || order.LineItems[0].Product.Name === 'New Hire Kit'"></orderhistorysummary>
+          </div>
+        </div>
+
+        <!-- Save as a favourite, for a repeat order. -->
+        <div class="hz-pg-card"
+             ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer'">
+          <div class="hz-pg-card-b">
+            <loadingindicator ng-show="displayLoadingIndicator" />
+            <div class="hz-pg-field">
+              <label for="hzFav">Save this order</label>
+              <input id="hzFav" type="text" ng-model="order.FavoriteName"
+                     placeholder="Name it, so you can reorder it" autocomplete="off" />
+              <p class="hz-pg-field-hint">Saved orders appear under Account, Favorites.</p>
+            </div>
+            <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="saveFavorite()"
+                    style="margin-top: 10px;">Save</button>
+          </div>
+        </div>
+
+        <!-- An unsubmitted order can be made the working cart again. -->
+        <div class="hz-pg-card" ng-if="order.FromUserID == user.ID && order.Status == 'Unsubmitted'">
+          <div class="hz-pg-card-b">
+            <loadingindicator ng-show="currentLoadingIndicator" />
+            <p class="hz-pg-field-hint" style="margin: 0 0 10px;">
+              This order has not been placed yet.
+            </p>
+            <button ng-if="order.ID != currentOrder.ID" type="button"
+                    ng-click="currentLoadingIndicator = true; setCurrent()"
+                    class="hz-pg-btn">Make this my cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hz-pg-note" alert-show="actionMessage" ng-show="actionMessage">
+      <p>{{actionMessage | r | xlat}}</p>
+    </div>
+    <div class="hz-pg-note hz-pg-note--stop" alert-show="errorMessage" ng-show="errorMessage">
+      <p>{{errorMessage | r | xlat}}</p>
+    </div>
+  </div>
+
+  <orderprint class="visible-print" />
 </section>

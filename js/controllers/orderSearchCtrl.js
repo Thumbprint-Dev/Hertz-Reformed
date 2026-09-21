@@ -10,7 +10,32 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 			$scope.hasStandardTypes = _hasType(data, 'Standard');
 			$scope.hasReplenishmentTypes = _hasType(data, 'Replenishment');
 			$scope.hasPriceRequestTypes = _hasType(data, 'PriceRequest');
+
+			// Show the orders on arrival.
+			//
+			// Nothing was queried until the employee clicked a criteria link, so the page
+			// opened on a search console with no results under it — the one thing it exists
+			// to show, absent until you asked twice. Query starts the broadest criteria
+			// that has anything in it, which is what someone opening "Order history"
+			// means by opening it.
+			var opening = _broadest(data);
+			if (opening) {
+				$scope.currentCriteria = opening;
+				Query(opening);
+			}
 		});
+
+		// The criteria come back as buckets — all orders, open orders, last 30 days — with
+		// a count on each. The broadest is simply the one holding the most; picking by
+		// DisplayName would tie this to whatever Four51 happens to call them.
+		function _broadest(data) {
+			var best = null;
+			angular.forEach(data, function(o) {
+				if (o.Type == 'Standard' && o.Count > 0 && (!best || o.Count > best.Count))
+					best = o;
+			});
+			return best;
+		}
 
 		$scope.$watch('settings.currentPage', function() {
 			Query($scope.currentCriteria);
