@@ -296,6 +296,21 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
       },
 
       /**
+       * Who the employee is, according to the Hertz HR feed: department, job title,
+       * allocation group, when the cycle turns over.
+       *
+       * Read-only, and there is no counterpart that writes. The feed is the authority for
+       * every field, so anything typed into the storefront is overwritten on the next
+       * ingest — see the note on the account page.
+       *
+       * @param forEmployeeId optional — a Champion reading a beneficiary's profile,
+       *   authorised server-side by the same scope rule the cart uses.
+       */
+      profile: function(forEmployeeId) {
+        return authed('GET', '/me/profile' + beneficiaryQuery(forEmployeeId), null);
+      },
+
+      /**
        * Turn this order's reservations into consumption. Called after Four51 accepts a
        * submit — see the note in allocationGate.js on why after rather than before.
        */

@@ -9,6 +9,10 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         return 'specform.hcf?id=' + routeParams.productInteropID;
     }
 
+    /* The champion-only guard on /address* is a run block at the bottom of this file,
+       not a route `resolve`. See the note there for why the obvious version does not
+       work, and why `/insights` below is quietly broken in the same way. */
+
     $routeProvider.
         when('/listOrders', { templateUrl: 'partials/listOrders.html', controller: 'ListOrdersCtrl' }).
         when('/orderdetails/:orderid', {templateUrl: 'partials/orderDetails.html', controller: 'OrderDetailsCtrl'}).
@@ -88,3 +92,57 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         
         otherwise({redirectTo: '/catalog'});
 }]);
+
+/**
+ * The address book is for Uniform Champions only.
+ *
+ * An allocation user does not choose where their uniform goes: it ships to their
+ * location, resolved from the department code in the HR feed. Offering them an address
+ * book offers a decision they do not have, and an address they created would be ignored
+ * by everything downstream. The menu entries are hidden in `controls/accountnav.html`
+ * and `lib/oc/headerNavigation.js`, and this stops the routes being typed.
+ *
+ * ## Why this is a run block and not a route `resolve`
+ *
+ * The obvious version is a `resolve` that rejects and calls `$location.path()`, which is
+ * what the `/insights` route above does. It does not work, and `/insights` has the bug
+ * today: the address bar changes and the page renders nothing at all. Rejecting a resolve
+ * makes ngRoute unwind the transition without setting `$route.current`, and a location
+ * change made inside that same turn is swallowed rather than starting the next
+ * navigation. Rejecting first and deferring the redirect with `$timeout` does not fix it
+ * either; the route then simply stays where it was, still blank.
+ *
+ * Redirecting from `$routeChangeStart` instead leaves the failed navigation out of it
+ * entirely: the address book briefly begins to load and is then replaced by an ordinary
+ * navigation to `/admin`, which renders. A blink of a page they may not keep is a better
+ * outcome than a blank one, and this is a UX gate rather than a security boundary: the
+ * addresses in question are the user's own, and nothing secret is behind it.
+ *
+ * ## Two sources of truth, deliberately
+ *
+ * `Allocation.hasRole` is the real answer, because champion status lives in our database,
+ * but it reads a cached identity that is empty until the session exchange has happened,
+ * so on a cold load straight into /addresses it would refuse a genuine champion. The
+ * Four51 group match resolves through `User.get` and covers exactly that case. Either
+ * passes.
+ */
+four51.app.run(['$rootScope', '$location', 'User', 'Allocation',
+    function($rootScope, $location, User, Allocation) {
+        $rootScope.$on('$routeChangeStart', function(event, next) {
+            var path = next && next.$$route && next.$$route.originalPath;
+            if (!path || path.indexOf('/address') !== 0) return;
+
+            User.get(function(user) {
+                var byGroup = user && user.Groups && user.Groups.some(function(g) {
+                    return g.Name === '5_Hertz Uniform Champions'
+                        || g.Name === '6_Dollar Uniform Champions'
+                        || g.Name === '7_Thrifty Uniform Champions';
+                });
+                var byRole = Allocation.hasRole('champion') || Allocation.hasRole('admin');
+                if (byGroup || byRole) return;
+
+                // Their own details, which is what they were probably after.
+                $location.path('/admin').replace();
+            });
+        });
+    }]);

@@ -3606,3 +3606,13 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-pg-sect address {
   font-size: 14px; line-height: 1.55; font-style: normal; color: var(--body); margin: 0;
 }
+
+/* A field that is shown, not asked for.
+   `readonly` rather than `disabled`, because a disabled input is skipped by the keyboard
+   and by most screen readers, and the whole point of the account page is to let someone
+   read a value and quote it to their Uniform Champion. Styled so it plainly is not an
+   input: the page should not invite an edit it will silently drop. */
+.hz-pg-field input[readonly] {
+  background-color: var(--sub); color: var(--ink); cursor: default;
+}
+.hz-pg-field input[readonly]:focus { border-color: var(--edge); }

@@ -1,118 +1,172 @@
 <!--
-  User information, under Account.
+  Your information, under Account. Read-only.
 
-  What this replaces: 498 lines, of which 140 were an injected <style> block setting a
-  #ededed grey ground on every panel, a purple #4E2683 50px title, 70px and 40px display
-  type, and a 265px pill button with a 24px radius. None of it was the Hertz palette.
+  The client's instruction, 21 September: lock every field, remove Save, say to contact
+  the Uniform Champion if anything is wrong, and show the detail we hold about the
+  employee rather than only the four contact fields Four51 has.
 
-  The bigger problem was duplication. The same form existed FOUR times — a signed-in
-  copy, a sign-up copy, and mobile copies of the sign-in and sign-up forms — switched
-  with `hidden-md hidden-lg` against `hidden-xs hidden-sm`. Three of those elements
-  carried `id="user_form"`, so the document had three nodes with the same id, and a
-  change to a field had to be made in up to four places or the phone and the desktop
-  quietly disagreed. The layout is responsive in CSS now, so each form appears once.
+  That is the right shape for this programme, and the old page was wrong twice over. The
+  Hertz HR feed is the authority for who someone is: a name edited in a storefront is
+  overwritten on the next ingest, so the form accepted an edit and silently lost it. And
+  the things an employee actually wants to check — their department, their job title,
+  which allocation group decides their kit, when the cycle turns over — were not on the
+  page at all, because Four51 does not hold them. We do, and `GET /me/profile` returns
+  them.
 
-  The two states are mutually exclusive and use `ng-if` rather than `ng-show`, so only
-  one is ever in the DOM. That matters here beyond weight: both branches name their form
-  `user_form`, and two live forms of the same name on one scope overwrite each other's
-  controller, which is what `user_form.$invalid` reads to enable Save.
+  Every field is `readonly` rather than `disabled`. A disabled input is skipped by the
+  keyboard and by most screen readers, so the values would be unreachable to anyone not
+  using a mouse; readonly keeps them focusable and selectable, which matters when the
+  point of the page is to let someone read a value and quote it to their champion.
 
-  For the same reason `id="451_btn_user"` appears twice below and that is not a duplicate
-  id: the two submit buttons are in opposite branches of the `ng-if`, so the document only
-  ever holds one. The `451_btn_*` ids are Four51's own test-hook convention and are kept
-  verbatim. The page this replaces genuinely did have duplicates, three elements carrying
-  `id="user_form"` at once, because its four form copies were switched with CSS.
+  What this replaces: 498 lines, 140 of them an injected <style> block setting a #ededed
+  grey ground, a purple 50px title and a 265px pill button, and four copies of the same
+  form (signed-in, sign-up, and mobile duplicates of both) switched with hidden-md
+  hidden-lg, three of which carried id="user_form".
 
-  `loginasuser` is initialised as `{}` by UserEditCtrl, so the child scope `ng-if`
-  creates still writes through to the controller's object and `loginExisting()` sees the
-  values. An `ng-if` around a model that did NOT already exist on the parent would break
-  exactly there.
+  The TempCustomer sign-in and registration path is kept. Hertz employees arrive already
+  provisioned through Four51 so it should be unreachable, but should-be-unreachable is
+  not a reason to delete a login route. It stays editable, because creating an account is
+  the one case where the person really is the authority.
 
-  Kept as found: the TempCustomer sign-in and sign-up path. Hertz employees arrive
-  already provisioned through Four51, so it should be unreachable for this program, but
-  "should be unreachable" is not a reason to delete a login route.
+  No em dashes in the copy, per the client.
 -->
 <section class="hz-pg user-view">
 
-  <loadingindicator title="{{'Please wait while we save your changes' | r | xlat}}"
-                    ng-show="displayLoadingIndicator" />
+  <loadingindicator title="{{'Please wait' | r | xlat}}" ng-show="displayLoadingIndicator" />
   <accountnavigation />
   <identifyusermessage ng-show="user.Type == 'TempCustomer'" />
 
-  <!-- ─────────────────────────────────────────────── signed in: your details -->
+  <!-- ───────────────────────────────────────────── signed in: read your details -->
   <div ng-if="user.Type != 'TempCustomer'">
     <div class="hz-pg-head">
       <h1 class="hz-pg-title">Your information</h1>
     </div>
     <p class="hz-pg-sub">
-      How we reach you about an order. Your name comes from Hertz HR, so if it is wrong
-      here it is wrong there too, and your Uniform Champion can get it corrected.
+      What Hertz HR holds about you, and what it means for your uniform.
     </p>
 
-    <form name="user_form" ng-submit="save()" ng-show="user.Permissions.contains('ViewSelfAdmin')">
-      <div class="hz-pg-panel">
-        <div class="hz-pg-sect">
-          <p class="hz-pg-sect-t">Contact details</p>
+    <div class="hz-pg-cards">
+
+      <div class="hz-pg-card">
+        <div class="hz-pg-card-h">
+          <p class="hz-pg-card-t">Contact details</p>
+        </div>
+        <div class="hz-pg-card-b">
           <div class="hz-pg-fields">
             <div class="hz-pg-field">
               <label for="hzFirst">First name</label>
-              <input id="hzFirst" name="firstname" type="text" required
-                     ng-model="user.FirstName" autocomplete="off" />
+              <input id="hzFirst" type="text" ng-model="user.FirstName" readonly />
             </div>
             <div class="hz-pg-field">
               <label for="hzLast">Last name</label>
-              <input id="hzLast" name="lastname" type="text" required
-                     ng-model="user.LastName" autocomplete="off" />
+              <input id="hzLast" type="text" ng-model="user.LastName" readonly />
             </div>
             <div class="hz-pg-field">
               <label for="hzEmail">Email</label>
-              <input id="hzEmail" name="email" type="email" required
-                     ng-model="user.Email" autocomplete="off" />
-              <p class="hz-pg-field-hint">Order confirmations and shipping updates go here.</p>
+              <input id="hzEmail" type="email" ng-model="user.Email" readonly />
             </div>
             <div class="hz-pg-field">
               <label for="hzPhone">Phone</label>
-              <input id="hzPhone" name="phone" type="text" ng-model="user.Phone"
-                     ui-mask="(999) 999-9999" autocomplete="off" />
-              <p class="hz-pg-field-hint">Optional. Used only if a delivery needs sorting out.</p>
+              <input id="hzPhone" type="text" ng-model="user.Phone" readonly />
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Any per-program fields Four51 is configured to show the shopper. The stock
-             page had this block commented out on the signed-in form and live on the
-             sign-up form; it is live on both here, because a field an administrator
-             marked DisplayToUser is one they meant the shopper to see. -->
-        <div class="hz-pg-sect" ng-if="user.CustomFields.length">
-          <p class="hz-pg-sect-t">Additional details</p>
-          <div class="hz-pg-fields">
-            <div ng-repeat="field in user.CustomFields">
-              <customfilefield customfield="field" ng-if="field.ControlType == 'File' && field.DisplayToUser"></customfilefield>
-              <customtextfield customfield="field" ng-if="field.ControlType == 'Text' && field.DisplayToUser"></customtextfield>
-              <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection' && field.DisplayToUser"></customselectionfield>
+      <!--
+        From the HR feed, through GET /me/profile. Rows use ng-if rather than printing an
+        empty value: a blank beside a label reads as "we hold nothing for you", which is
+        different from a field this programme does not populate.
+      -->
+      <div class="hz-pg-card">
+        <div class="hz-pg-card-h">
+          <p class="hz-pg-card-t">Your role at Hertz</p>
+        </div>
+        <div class="hz-pg-card-b">
+          <div class="hz-pg-dl" ng-if="profile">
+            <div class="hz-pg-dl-row" ng-if="profile.employeeId">
+              <span class="hz-pg-dl-k">Employee ID</span>
+              <span class="hz-pg-dl-v">{{profile.employeeId}}</span>
+            </div>
+            <div class="hz-pg-dl-row" ng-if="profile.jobTitle">
+              <span class="hz-pg-dl-k">Job title</span>
+              <span class="hz-pg-dl-v">{{profile.jobTitle}}</span>
+            </div>
+            <div class="hz-pg-dl-row" ng-if="profile.deptCode">
+              <span class="hz-pg-dl-k">Department</span>
+              <span class="hz-pg-dl-v">{{profile.deptCode}}</span>
+            </div>
+            <div class="hz-pg-dl-row" ng-if="profile.brand">
+              <span class="hz-pg-dl-k">Brand</span>
+              <span class="hz-pg-dl-v">{{profile.brand}}</span>
+            </div>
+            <!-- FT and PT are how the feed spells it; they are expanded here because the
+                 employee did not write the feed. -->
+            <div class="hz-pg-dl-row" ng-if="profile.employmentType">
+              <span class="hz-pg-dl-k">Employment</span>
+              <span class="hz-pg-dl-v">{{profile.employmentType === 'FT' ? 'Full time' : (profile.employmentType === 'PT' ? 'Part time' : profile.employmentType)}}</span>
+            </div>
+            <!-- Only when Hertz has supplied a ship-to address for the department code.
+                 None are loaded yet, so this row is absent today and appears on its own
+                 the day they arrive. -->
+            <div class="hz-pg-dl-row" ng-if="profile.locationCity">
+              <span class="hz-pg-dl-k">Location</span>
+              <span class="hz-pg-dl-v">{{profile.locationCity}}<span ng-if="profile.locationState">, {{profile.locationState}}</span></span>
+            </div>
+            <div class="hz-pg-dl-row" ng-if="profile.hireDate">
+              <span class="hz-pg-dl-k">Hire date</span>
+              <span class="hz-pg-dl-v">{{profile.hireDate | hzDate}}</span>
             </div>
           </div>
-        </div>
-
-        <div class="hz-pg-sect">
-          <div class="hz-pg-actions">
-            <input class="hz-pg-btn" type="submit" id="451_btn_user"
-                   ng-disabled="user_form.$invalid" value="Save changes" />
-          </div>
-          <div class="hz-pg-note" ng-show="actionMessage" style="margin: 14px 0 0;">
-            <p ng-bind-html="actionMessage | r | xlat"></p>
-          </div>
+          <p class="hz-pg-quiet" ng-if="profileError">
+            Your role details could not be loaded just now. Refresh the page, or ask your
+            Uniform Champion.
+          </p>
         </div>
       </div>
-    </form>
+    </div>
 
-    <!-- Four51 can be configured without self-administration, in which case the form
-         above never renders and the page would otherwise be a heading on its own. -->
-    <div class="hz-pg-panel" ng-hide="user.Permissions.contains('ViewSelfAdmin')">
-      <div class="hz-pg-sect">
-        <p>Your details are managed for you and cannot be edited here. Your Uniform
-          Champion can have them corrected.</p>
+    <!--
+      The allocation half. Separated from the role above because this is the part that
+      answers "why do I get what I get", which is the question the account page was never
+      able to answer before.
+    -->
+    <div class="hz-pg-card" ng-if="profile && (profile.groupName || profile.cycleEnd || profile.eligibilityDate)">
+      <div class="hz-pg-card-h">
+        <p class="hz-pg-card-t">Your uniform allocation</p>
       </div>
+      <div class="hz-pg-card-b">
+        <div class="hz-pg-sect-two">
+          <div ng-if="profile.groupName">
+            <p class="hz-pg-card-t">Allocation group</p>
+            <p>{{profile.groupName}}</p>
+            <p class="hz-pg-quiet">This is what decides which items and how many you are
+              allocated.</p>
+          </div>
+          <div ng-if="profile.cycleEnd">
+            <p class="hz-pg-card-t">Current cycle ends</p>
+            <p>{{profile.cycleEnd | hzDate}}</p>
+            <p class="hz-pg-quiet">Anything you have not ordered by then does not carry
+              over. A new allocation opens the next day.</p>
+          </div>
+          <div ng-if="!profile.cycleEnd && profile.eligibilityDate">
+            <p class="hz-pg-card-t">You can order from</p>
+            <p>{{profile.eligibilityDate | hzDate}}</p>
+            <p class="hz-pg-quiet">New hires become eligible 90 days after their hire
+              date.</p>
+          </div>
+        </div>
+        <p style="margin-top: 18px;">
+          <a class="hz-pg-btn hz-pg-btn--ghost" href="allocation">See what you can order</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- The client asked for this explicitly: say what to do when something is wrong. -->
+    <div class="hz-pg-note">
+      <p><strong>Something here not right?</strong> These details come from Hertz HR and
+        cannot be changed on this site, so editing them here would not reach anyone.
+        Contact your Uniform Champion and they will get the record corrected.</p>
     </div>
   </div>
 
@@ -127,7 +181,6 @@
     </p>
 
     <div class="hz-pg-grid">
-
       <div>
         <form name="user_form" ng-submit="save()" ng-show="user.Permissions.contains('ViewSelfAdmin')">
           <div class="hz-pg-panel">

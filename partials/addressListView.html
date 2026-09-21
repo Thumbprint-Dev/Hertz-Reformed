@@ -24,9 +24,13 @@
             ng-if="user.Permissions.contains('CreateShipToAddress') || user.Permissions.contains('CreateBillToAddress')"
             ng-click="newAddress($event)">Add an address</button>
   </div>
+  <!-- Champion audience. This page is guarded in js/routing.js and its menu entries are
+       hidden for everyone else, because an allocation user does not choose where their
+       uniform goes: it ships to their location, resolved from the department code in the
+       HR feed. The copy used to address that employee and no longer needs to. -->
   <p class="hz-pg-sub">
-    Where your uniform can be sent. Most people never need to change this: uniforms ship
-    to your location, and your Uniform Champion can update it for you.
+    Ship-to addresses available at checkout. Uniforms normally go to the employee's own
+    location, resolved from their department code, so these are for the exceptions.
   </p>
 
   <form name="searchForm" ng-submit="search()" ng-show="addresses.length">

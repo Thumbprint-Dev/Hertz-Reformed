@@ -1,11 +1,29 @@
-four51.app.controller('UserEditCtrl', ['$scope', '$location', '$sce', '$injector', 'User', 'Order',
-    function ($scope, $location, $sce, $injector, User, Order) {
+four51.app.controller('UserEditCtrl', ['$scope', '$location', '$sce', '$injector', 'User', 'Order', 'Allocation',
+    function ($scope, $location, $sce, $injector, User, Order, Allocation) {
         var _AnonRouter;
         if ($scope.user) $scope.existingUser = $scope.user.Type != 'TempCustomer';
         try {
             _AnonRouter = $injector.get('AnonRouter');
         }
         catch(ex){}
+
+        /**
+         * Who the employee is, from the HR feed: department, job title, allocation group,
+         * when the cycle turns over. Four51 holds none of this, which is why the account
+         * page showed four editable contact fields and nothing an employee wanted.
+         *
+         * Read-only. The feed is the authority, so there is nothing to save; the page
+         * says so and points at the Uniform Champion.
+         *
+         * A failure here is not fatal to the page. The Four51 contact fields still render
+         * and `profileError` lets the view say the rest could not be loaded, rather than
+         * showing a column of blanks that look like missing data about the person.
+         */
+        $scope.profile = null;
+        $scope.profileError = false;
+        Allocation.profile()
+            .then(function(p) { $scope.profile = p; })
+            .catch(function() { $scope.profileError = true; });
 
         User.get(function(user) {
             $scope.user = user;
