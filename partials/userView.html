@@ -86,22 +86,44 @@
         <img class="hz-pg-prof-logo"
              src="https://images.hertz.com/misc/overlay/hertz-logo-black.png" alt="Hertz" />
         <p class="hz-pg-prof-name">{{profile.firstName}} {{profile.lastName}}</p>
-        <p class="hz-pg-prof-role" ng-if="profile.jobTitle">{{profile.jobTitle}}</p>
+        <!-- Job title and email sit with the name rather than down in the list. They are
+             who the person is and how to reach them, which is the same thought as their
+             name; the list below is what Hertz records about them. The two wrap onto
+             separate lines on a narrow screen and the separator goes with them. -->
+        <p class="hz-pg-prof-role">
+          <span ng-if="profile.jobTitle">{{profile.jobTitle}}</span>
+          <span class="hz-pg-prof-sep" ng-if="profile.jobTitle && profile.email" aria-hidden="true">·</span>
+          <span class="hz-pg-prof-mail" ng-if="profile.email">{{profile.email}}</span>
+        </p>
       </div>
 
+      <!--
+        Row order is the client's, given 21 September: brand, department, employment,
+        allocation group, hire date. It reads outward from the company to the person:
+        which brand they work for, at which location, on what terms, and therefore what
+        they are allocated, with the date the record starts last. The allocation group
+        lands after the three facts that determine it, which is the order it is actually
+        derived in.
+
+        Location slots in after department because it IS the department, resolved. It is
+        absent until Hertz supplies ship-to addresses per department code.
+
+        `groupLabel` is the group written out, `Full Time Cold Weather`, composed
+        server-side from the group's own columns rather than from its name.
+      -->
       <div class="hz-pg-card-b">
         <div class="hz-pg-dl" ng-if="profile">
-          <div class="hz-pg-dl-row" ng-if="profile.email">
-            <span class="hz-pg-dl-k">Email</span>
-            <span class="hz-pg-dl-v">{{profile.email}}</span>
+          <div class="hz-pg-dl-row" ng-if="profile.brand">
+            <span class="hz-pg-dl-k">Brand</span>
+            <span class="hz-pg-dl-v">{{profile.brand}}</span>
           </div>
           <div class="hz-pg-dl-row" ng-if="profile.deptCode">
             <span class="hz-pg-dl-k">Department</span>
             <span class="hz-pg-dl-v">{{profile.deptCode}}</span>
           </div>
-          <div class="hz-pg-dl-row" ng-if="profile.brand">
-            <span class="hz-pg-dl-k">Brand</span>
-            <span class="hz-pg-dl-v">{{profile.brand}}</span>
+          <div class="hz-pg-dl-row" ng-if="profile.locationCity">
+            <span class="hz-pg-dl-k">Location</span>
+            <span class="hz-pg-dl-v">{{profile.locationCity}}<span ng-if="profile.locationState">, {{profile.locationState}}</span></span>
           </div>
           <!-- FT and PT are how the feed spells it; expanded here because the employee
                did not write the feed. -->
@@ -109,22 +131,13 @@
             <span class="hz-pg-dl-k">Employment</span>
             <span class="hz-pg-dl-v">{{profile.employmentType === 'FT' ? 'Full time' : (profile.employmentType === 'PT' ? 'Part time' : profile.employmentType)}}</span>
           </div>
-          <!-- Only once Hertz has supplied a ship-to address for the department code.
-               None are loaded yet, so this row is absent today and appears on its own
-               the day they arrive. -->
-          <div class="hz-pg-dl-row" ng-if="profile.locationCity">
-            <span class="hz-pg-dl-k">Location</span>
-            <span class="hz-pg-dl-v">{{profile.locationCity}}<span ng-if="profile.locationState">, {{profile.locationState}}</span></span>
+          <div class="hz-pg-dl-row" ng-if="profile.groupLabel">
+            <span class="hz-pg-dl-k">Allocation group</span>
+            <span class="hz-pg-dl-v">{{profile.groupLabel}}</span>
           </div>
           <div class="hz-pg-dl-row" ng-if="profile.hireDate">
             <span class="hz-pg-dl-k">Hire date</span>
             <span class="hz-pg-dl-v">{{profile.hireDate | hzDate}}</span>
-          </div>
-          <!-- `groupLabel` is the group written out, `Full Time Cold Weather`, composed
-               server-side from the group's own columns rather than from its name. -->
-          <div class="hz-pg-dl-row" ng-if="profile.groupLabel">
-            <span class="hz-pg-dl-k">Allocation group</span>
-            <span class="hz-pg-dl-v">{{profile.groupLabel}}</span>
           </div>
         </div>
 

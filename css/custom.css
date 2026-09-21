@@ -3638,10 +3638,18 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   display: block; height: 26px; width: auto; margin: 0 0 14px;
 }
 .hz-pg-prof-name {
-  font-family: var(--display); font-size: 25px; font-weight: 600; line-height: 1.1;
-  color: var(--ink); margin: 0;
+  font-family: var(--display); font-size: 34px; font-weight: 600; line-height: 1.05;
+  letter-spacing: -0.005em; color: var(--ink); margin: 0;
 }
-.hz-pg-prof-role { font-size: 14px; color: var(--muted); margin: 3px 0 0; }
+/* Job title and email on one line under the name. `flex-wrap` rather than a plain inline
+   run so the email drops whole onto its own line on a phone instead of breaking mid
+   address, and the separator wraps with it. */
+.hz-pg-prof-role {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px;
+  font-size: 14.5px; color: var(--muted); margin: 5px 0 0;
+}
+.hz-pg-prof-sep { color: var(--edge); }
+.hz-pg-prof-mail { overflow-wrap: anywhere; }
 /* The value column can hold an email address, which has no spaces to break on and would
    otherwise push the row wider than the card. */
 .hz-pg-prof .hz-pg-dl-v { overflow-wrap: anywhere; }
