@@ -1,207 +1,167 @@
-<style>
-  .cart-title {
-    font-size: 40px;
-    font-weight: bold;
-    letter-spacing: -0.74px;
-    line-height: 63px;
-  }
-  .standard-order {
-    border-bottom: 1px solid #dddddd;
-  }
-  </style>
-<section class="order-search-view marginTop">
-    <div class="panel-standard-order" ng-if="!hasStandardTypes && !hasReplenishmentTypes && !hasPriceRequestTypes">
-        <!--<div class="panel-heading">
-            <h3 class="panel-title">{{'Orders' | r | xlat}}</h3>
-        </div>-->
-        <!--<p class="cart-title standard-order">Orders</p>-->
-        <div class="panel-body">
-            <p class="alert alert-warning">{{'Your search resulted in no records. Please refine your search.' | r | xlat}}</p>
-        </div>
-        <div class="panel-footer" style="background: none;">
-            <button type="button" class="btn btn-primary pull-right" redirect="catalog">{{'Continue Shopping' | r}}</button>
-        </div>
-    </div>
-    <div class="order-types">
-        <div class="panel-standard-order" ng-show="hasStandardTypes">
-            <!--<div class="panel-heading">
-                <h3 class="panel-title">{{('Standard' | r) + ' ' + ('Orders' | r) | xlat}}</h3>
-            </div>-->
-            <p class="cart-title standard-order">Standard Orders</p>
-            <div class="panel-body">
-                <ul class="list-inline">
-                    <li ng-repeat="criteria in OrderSearchCriteria | filter:{Type:'Standard'}" ng-show="criteria.Count">
-                        <a class="btn btn-default mobileBtn" ng-href="#" ng-click="OrderSearch($event,{{criteria}})">{{criteria.DisplayName | r | xlat}} <span class="badge">{{criteria.Count}}</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="panel panel-default" ng-show="hasReplenishmentTypes">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{('Replenishment' | r) + ' ' + ('Orders' | r) | xlat}}</h3>
-            </div>
-            <div class="">
-                <ul>
-                    <li ng-repeat="criteria in OrderSearchCriteria | filter:{Type:'Replenishment'}" ng-show="criteria.Count">
-                        <a ng-href="#" ng-click="OrderSearch($event,{{criteria}})">{{criteria.DisplayName | r | xlat}} <span class="badge" >{{criteria.Count}}</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="panel panel-info" ng-show="hasPriceRequestTypes">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{'Price Request' | r | xlat}}</h3>
-            </div>
-            <div class="panel-body">
-                <ul>
-                    <li ng-repeat="criteria in OrderSearchCriteria | filter:{Type:'PriceRequest'}" ng-show="criteria.Count">
-                        <a ng-href="#" ng-click="OrderSearch($event,{{criteria}})">{{criteria.DisplayName | r | xlat}} <span clas="badge">{{criteria.Count}}</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class=""ng-show="hasStandardTypes || hasReplenishmentTypes || hasPriceRequestTypes">
-        <div class="">
-            <a data-toggle="collapse" data-target="#orderSearch" aria-expanded="true" aria-controls="orderSearch" style="width: 100%;text-decoration: none;"><!--<h3 class="panel-title" style="text-decoration: underline">{{('Search' | r) + ' ' + ('Orders' | r) | xlat}}</h3>-->
-              <p class="cart-title standard-order">Search Orders</p>
-                <i class="" style="color: #4E2683;" ng-class="{'fa fa-caret-up': checkOutSection == 'shipping', 'fa fa-caret-down': checkOutSection == 'order' || checkOutSection == 'billing' }"></i>
-            </a>
-        </div>
-        <div class="panel-body" id="orderSearch">
-            <div class="form-inline">
-                <div class="col-sm-7 col-lg-9">
-                    <div class="view-form-icon">
-                        <div class="form-group">
-                            <label ng-show="criteria.OrderID">{{'Order ID' | r | xlat}}</label>
-                            <input class="form-control" type="text" ng-model="criteria.OrderID" placeholder="{{('Order' | r) + ' ' + ('ID' | r) | xlat}}" autocomplete="off" />
-                            <i class="fa">#</i>
-                        </div>
-                        <div class="form-group">
-                            <label ng-show="criteria.ShippingAddress">{{('Shipping' | r) + ' ' + ('Address' | r) | xlat}}</label>
-                            <input class="form-control" type="text" ng-model="criteria.ShippingAddress" placeholder="{{('Shipping' | r) + ' ' + ('Address' | r) | xlat}}" autocomplete="off" />
-                            <i class="fa fa-map-marker"></i>
-                        </div>
-                        <!--<div class="form-group">
-                            <label ng-show="criteria.Submitted">{{('Submitted' | r) + ' ' + ('By' | r) | xlat}}</label>
-                            <input class="form-control" type="text" ng-model="criteria.Submitted" placeholder="{{('Submitted' | r) + ' ' + ('By' | r) | xlat}}" autocomplete="off" />
-                            <i class="fa fa-map-marker"></i>
-                        </div>-->
-                        <div class="form-group">
-                            <label ng-show="criteria.DateRangeFrom">{{('Start' | r) + ' ' + ('Date' | r) | xlat}}</label>
-                            <div class="btn btn-default btn-block btn-date hidden-lg hidden-md"
-                                 ng-click="$event.preventDefault();$event.stopPropagation();startopened = !startopened;"
-                                 style="margin:0; height:40px; padding-top:8px;">
-                                {{criteria.DateRangeFrom ? '' : 'Tap'}}
-                                <span class="text-info">{{criteria.DateRangeFrom | date:user.Culture.DateFormat.short}}</span>
-                            </div>
-                            <input name="daterangefrom" placeholder="{{('Start' | r) + ' ' + ('Date' | r) | xlat}}" ng-model="criteria.DateRangeFrom"
-                                   type="text"
-                                   class="form-control"
-                                   datepicker-popup="{{user.Culture.DateFormat.short}}"
-                                   is-open="startopened"/>
-                            <i class="fa fa-calendar"></i>
-                        </div>
-                        <div class="form-group">
-                            <label ng-show="criteria.DateRangeTo">{{('End' | r) + ' ' + ('Date' | r) | xlat}}</label>
-                            <div class="btn btn-default btn-block btn-date hidden-lg hidden-md"
-                                 ng-click="$event.preventDefault();$event.stopPropagation();endopened = !endopened;"
-                                 style="margin:0; height:40px; padding-top:8px;">
-                                {{criteria.DateRangeTo ? '' : 'Tap'}}
-                                <span class="text-info">{{criteria.DateRangeTo | date:user.Culture.DateFormat.short}}</span>
-                            </div>
-                            <input name="daterangeto" placeholder="{{('End' | r) + ' ' + ('Date' | r) | xlat}}" ng-model="criteria.DateRangeTo"
-                                   type="text"
-                                   class="form-control"
-                                   datepicker-popup="{{user.Culture.DateFormat.short}}"
-                                   is-open="endopened"
-                                   min="criteria.DateRangeFrom"/>
-                            <i class="fa fa-calendar"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-5 col-lg-3">
-                    <div class="alert alert-info">
-                        <i class="fa fa-info-circle"></i>
-                        {{'Only display last' | r | xlat}}
-                        <div class="view-form-icon">
-                            <div>
-                                <label ng-show="criteria.LastN"># {{'of' | xlat}} {{'Orders' | r | xlat}}</label>
-                                <input class="form-control" type="text" ng-model="criteria.LastN" placeholder="# {{'of' | xlat}} {{'Orders' | r | xlat}}" autocomplete="off" />
-                                <i class="fa fa-edit"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary pull-right" ng-click="OrderSearch($event, criteria)">{{'Search' | r | xlat}}</button>
-            </div>
-        </div>
+<!--
+  Order history — the page behind the header's Orders link.
 
+  Rebuilt from the stock theme, which was a Bootstrap search console: three panels of
+  radio-style criteria, a five-field search form opened by default, an injected <style>
+  block and a table with a border on every cell. The employee it is actually for has
+  placed two or three orders in their life and wants to know where they are.
+
+  So the shape is: the orders, immediately. Filters are chips above them, and the
+  search form is there for the rare case, closed until asked for.
+
+  Every binding the stock template used is kept, because OrderSearchCtrl is unchanged
+  apart from opening a default search: `criteria.*` for the form, `OrderSearch($event,
+  criteria)` to run one, `orders` / `settings` / `showNoResults` for the results.
+
+  One trap worth naming: the stock template repeated over `criteria in
+  OrderSearchCriteria`, which SHADOWED the search form's own `criteria` model, and it
+  worked around that by interpolating the object into the click expression
+  (`OrderSearch($event,{{criteria}})`). The repeat variable here is `c`, so there is no
+  shadow and no interpolation.
+-->
+<section class="hz-pg order-search-view">
+
+  <div class="hz-pg-head">
+    <h1 class="hz-pg-title">Order history</h1>
+    <div class="hz-pg-actions">
+      <a class="hz-pg-btn hz-pg-btn--ghost" href="allocation">My allocation</a>
+      <a class="hz-pg-btn hz-pg-btn--ghost" href="catalog">Shop uniforms</a>
     </div>
-    <div class="panel panel-default" ng-show="showNoResults">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="alert alert-info">
-                    {{'Your search resulted in no records. Please refine your search.' | r | xlat}}
-                </span>
-            </h3>
-        </div>
+  </div>
+  <p class="hz-pg-sub">
+    Every uniform order placed by you or on your behalf. Choose an order to see what was
+    in it and where it shipped.
+  </p>
+
+  <loadingindicator ng-show="pagedIndicator" />
+
+  <!--
+    Filters. The stock page had these as three separate panels headed Standard,
+    Replenishment and Price Request, each a bulleted list of links. They are one row of
+    chips: the same criteria, with their counts, and the running one marked.
+  -->
+  <div class="hz-pg-chips" ng-show="hasStandardTypes || hasReplenishmentTypes || hasPriceRequestTypes">
+    <button type="button" class="hz-pg-chip"
+            ng-repeat="c in OrderSearchCriteria"
+            ng-show="c.Count"
+            ng-class="{'is-on': orderSearchStat.DisplayName === c.DisplayName}"
+            ng-click="OrderSearch($event, c)">
+      {{c.DisplayName | r | xlat}}<span class="hz-pg-chip-n">{{c.Count}}</span>
+    </button>
+  </div>
+
+  <!--
+    Find a specific order. Closed by default: it is five fields for a question most
+    people never ask, and open it crowded out the orders themselves.
+  -->
+  <div class="hz-pg-card" ng-show="hasStandardTypes || hasReplenishmentTypes || hasPriceRequestTypes">
+    <div class="hz-pg-card-h">
+      <p class="hz-pg-card-t">Find an order</p>
+      <button type="button" class="hz-pg-btn hz-pg-btn--ghost"
+              ng-click="showFind = !showFind">
+        {{showFind ? 'Close' : 'Open'}}
+      </button>
     </div>
-    <div class="order-search-view" ng-show="orders">
-        <div class="panel-heading">
-            <!--<h3 class="panel-title">
-                <span class="text-info" ng-show="orderSearchStat.Type">
-                    {{(orderSearchStat.Type) + ' ' + ('Orders' | rl) | xlat}}:
-                </span>
-                {{orderSearchStat.DisplayName | r | xlat}}
-                <span ng-show="!orderSearchStat.Type">
-                    {{'Search' | r | xlat}}
-                </span>
-            </h3>-->
-            <p class="cart-title standard-order" style="font-size: 25px;">
-              <span class="text-info" ng-show="orderSearchStat.Type">
-                  {{(orderSearchStat.Type) + ' ' + ('Orders' | rl) | xlat}}:
-              </span>
-              {{orderSearchStat.DisplayName | r | xlat}}
-              <span ng-show="!orderSearchStat.Type">
-                  {{'Search' | r | xlat}}
-              </span>
-            </p>
+    <div class="hz-pg-card-b" ng-show="showFind">
+      <div class="hz-pg-fields">
+        <div class="hz-pg-field">
+          <label for="hzOrderId">Order number</label>
+          <input id="hzOrderId" type="text" ng-model="criteria.OrderID" autocomplete="off" />
         </div>
-        <div class="">
-            <loadingindicator ng-show="pagedIndicator" />
-            <div ng-show="settings.listCount > settings.pageSize">
-                <pagination page="settings.currentPage" max-size="8" rotate="false" boundary-links="true" total-items="settings.listCount"
-                            items-per-page="settings.pageSize" direction-links="true"></pagination>
-            </div>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>{{'ID' | r | xlat}}</th>
-            <!--<th class="hidden-xs">{{'Type' | r | xlat}}</th>-->
-            <th>{{'Status' | r | xlat}}</th>
-            <th>{{'Submitted' | r | xlat}}</th>
-            <th>{{('Submitted' | r) + ' ' + ('Date' | r) | xlat}}</th>
-            <th class="hidden-xs" ng-if="!(user.Permissions.contains('HidePricing'))">{{'Total' | r | xlat}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <loadingindicator ng-show="pagedIndicator" />
-        <tr ng-repeat="order in orders | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize">
-            <td><a ng-href="{{currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID}}" style="text-decoration: underline">{{order.ExternalID || ('(unspecified)' | xlat)}}</a></td>
-           <!-- <td class="hidden-xs">{{order.Type}}</td>-->
-            <td>{{order.StatusText}}</td>
-            <td>{{order.FromUserFirstName + ' ' + order.FromUserLastName}}</td>
-            <td>{{order.DateSubmitted || order.DateCreated | date:user.Culture.DateFormat.long}}</td>
-            <td class="hidden-xs">{{order.Total | culturecurrency}}</td>
-        </tr>
-    </tbody>
-    
-</table>
-            <div ng-show="settings.listCount > settings.pageSize">
-                <pagination page="settings.currentPage" max-size="8" rotate="false" boundary-links="true" total-items="settings.listCount"
-                            items-per-page="settings.pageSize" direction-links="true"></pagination>
-            </div>
+        <div class="hz-pg-field">
+          <label for="hzShipTo">Ships to</label>
+          <input id="hzShipTo" type="text" ng-model="criteria.ShippingAddress" autocomplete="off" />
         </div>
+        <div class="hz-pg-field">
+          <label for="hzFrom">Ordered after</label>
+          <input id="hzFrom" name="daterangefrom" type="text" ng-model="criteria.DateRangeFrom"
+                 datepicker-popup="{{user.Culture.DateFormat.short}}" is-open="startopened"
+                 ng-click="startopened = true" autocomplete="off" />
+        </div>
+        <div class="hz-pg-field">
+          <label for="hzTo">Ordered before</label>
+          <input id="hzTo" name="daterangeto" type="text" ng-model="criteria.DateRangeTo"
+                 datepicker-popup="{{user.Culture.DateFormat.short}}" is-open="endopened"
+                 ng-click="endopened = true" min="criteria.DateRangeFrom" autocomplete="off" />
+        </div>
+        <div class="hz-pg-field">
+          <label for="hzLastN">Show at most</label>
+          <input id="hzLastN" type="text" ng-model="criteria.LastN" placeholder="25" autocomplete="off" />
+        </div>
+        <div class="hz-pg-field hz-pg-field--action">
+          <button type="submit" class="hz-pg-btn" ng-click="OrderSearch($event, criteria)">Search</button>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Nothing matched a search the employee ran. -->
+  <div class="hz-pg-note" ng-show="showNoResults">
+    <p><strong>No orders matched.</strong> Widen the dates, or clear the fields and choose
+      a filter above to see everything.</p>
+  </div>
+
+  <!--
+    Nothing at all. Distinct from the case above, and it needs to say what to do next
+    rather than report a failed search.
+
+    The three type flags rather than `OrderSearchCriteria.length`: the criteria list can
+    come back populated with every count at zero, which is still "no orders" but would
+    read as a non-empty list and leave the page showing a title and nothing under it.
+    This is the same test the stock template used to decide the same thing.
+  -->
+  <div class="hz-pg-empty"
+       ng-show="!pagedIndicator && !orders.length && !hasStandardTypes && !hasReplenishmentTypes && !hasPriceRequestTypes">
+    <p class="hz-pg-empty-t">No orders yet</p>
+    <p>When you order your uniform it will appear here, with its status and where it shipped.</p>
+    <a class="hz-pg-btn" href="allocation">Choose your uniform</a>
+  </div>
+
+  <div ng-show="orders.length">
+    <div class="hz-pg-card">
+      <div class="hz-pg-card-h">
+        <p class="hz-pg-card-t">
+          {{orderSearchStat.DisplayName ? (orderSearchStat.DisplayName | r | xlat) : 'Results'}}
+        </p>
+        <p class="hz-pg-card-t">{{settings.listCount}} total</p>
+      </div>
+      <div class="hz-pg-scroll">
+        <table class="hz-pg-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Status</th>
+              <th>Ordered by</th>
+              <th>Date</th>
+              <th ng-if="!(user.Permissions.contains('HidePricing'))">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="order in orders | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize">
+              <td class="hz-pg-num">
+                <!-- An order that is still the working cart opens as the cart, not as
+                     history: it has not been placed yet. -->
+                <a ng-href="{{currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID}}">
+                  {{order.ExternalID || ('(unspecified)' | xlat)}}
+                </a>
+              </td>
+              <td><span class="hz-pg-pill">{{order.StatusText}}</span></td>
+              <td>{{order.FromUserFirstName + ' ' + order.FromUserLastName}}</td>
+              <td class="hz-pg-num">{{order.DateSubmitted || order.DateCreated | date:user.Culture.DateFormat.long}}</td>
+              <td class="hz-pg-num" ng-if="!(user.Permissions.contains('HidePricing'))">{{order.Total | culturecurrency}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div ng-show="settings.listCount > settings.pageSize">
+      <pagination page="settings.currentPage" max-size="8" rotate="false" boundary-links="true"
+                  total-items="settings.listCount" items-per-page="settings.pageSize"
+                  direction-links="true" previous-text="{{'Previous' | xlat}}"
+                  next-text="{{'Next' | xlat}}" first-text="{{'First' | xlat}}"
+                  last-text="{{'Last' | xlat}}"></pagination>
+    </div>
+  </div>
+
 </section>

@@ -1,32 +1,29 @@
-<style>
-  .order-summary-body {
-    color: #000000;
-    font-family: 'Lato',sans-serif;
-    font-size: 20px;
-    letter-spacing: -0.37px;
-    line-height: 24px;
-    padding-bottom: 15px;
-  }
-</style>
-<div class="order-summary-body">
-    <p>
-        <span class="text-info" >{{'Subtotal' | r | xlat}}</span>
-        <span class="pull-right">{{order.Subtotal | culturecurrency}}</span>
-    </p>
-    <p>
-        <span class="text-info">{{'Shipping & Handling' | r | xlat}}</span>
-        <span class="pull-right">{{order.ShippingCost | culturecurrency}}</span>
-    </p>
-    <p>
-        <span class="text-info">{{'Tax' | r | xlat}}</span>
-        <span class="pull-right">{{order.TaxCost | culturecurrency}}</span>
-    </p>
-    <p ng-if="order.Coupon">
-        <span class="text-info">{{'Coupon' | r | xlat}} ({{order.Coupon.Label}})</span>
-        <span class="pull-right">{{order.Coupon.OrderDiscount * -1 | culturecurrency}}</span>
-    </p>
-    <p><span class="text-info">{{'Total' | r | xlat}}</span>
-        <span class="pull-right">{{order.Total | culturecurrency}}</span>
-    </p>
-</div>
+<!--
+  The money, under the order's facts. Same label/value rows as
+  orderHistoryDetailsView.html, with the total picked out in the display face so the
+  figure people look for is the one that reads first.
 
+  Was 20px Lato with `pull-right` values, from its own injected <style> block.
+-->
+<div class="hz-pg-dl" style="margin-top: 16px; border-top: 1px solid #e3e7ef; padding-top: 10px;">
+  <div class="hz-pg-dl-row">
+    <span class="hz-pg-dl-k">Subtotal</span>
+    <span class="hz-pg-dl-v">{{order.Subtotal | culturecurrency}}</span>
+  </div>
+  <div class="hz-pg-dl-row">
+    <span class="hz-pg-dl-k">Shipping and handling</span>
+    <span class="hz-pg-dl-v">{{order.ShippingCost | culturecurrency}}</span>
+  </div>
+  <div class="hz-pg-dl-row">
+    <span class="hz-pg-dl-k">Tax</span>
+    <span class="hz-pg-dl-v">{{order.TaxCost | culturecurrency}}</span>
+  </div>
+  <div class="hz-pg-dl-row" ng-if="order.Coupon">
+    <span class="hz-pg-dl-k">Coupon ({{order.Coupon.Label}})</span>
+    <span class="hz-pg-dl-v">{{order.Coupon.OrderDiscount * -1 | culturecurrency}}</span>
+  </div>
+  <div class="hz-pg-dl-row">
+    <span class="hz-pg-dl-k">Total</span>
+    <span class="hz-pg-dl-v hz-pg-dl-v--total">{{order.Total | culturecurrency}}</span>
+  </div>
+</div>

@@ -1,145 +1,77 @@
-<style media="screen">
-  .panel-order-history {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e5e5e5;
-  }
+<!--
+  The items in an order.
 
-  .panel-order-history h3 {
-    margin-top: 0;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
+  Was a 68-line injected <style> block on top of Bootstrap `col-sm-6` halves, with
+  `.order-img { max-width: 500px; width: 1000px; }` and three width-only media queries
+  walking it back. Each item was a card with its own shadow, nested inside the card the
+  page already drew around them.
 
-  .panel-order-history span {
-    display: inline-block;
-    margin-bottom: 10px;
-    color: #666666;
-  }
+  Now one row per item, in the same shape the cart uses: name and code on the left, the
+  chosen specifications under it, quantity and price on the right.
 
-  .lineitem-metadata {
-    margin-top: 10px;
-  }
+  A bug fixed on the way: the product-preview block carried
+  `ng-show="(order.Status == 'AwaitingApproval' && (item.Variant.IsMpowerVariant)"` —
+  an unbalanced parenthesis, so Angular threw a parse error on that expression for every
+  line item on every digest. The parentheses are balanced here.
+-->
+<div class="hz-pg-li" ng-repeat="item in order.LineItems">
 
-  .lineitem-metadata p {
-    margin-bottom: 6px;
-  }
+  <div class="hz-pg-li-main">
+    <p class="hz-pg-li-name">{{item.Product.Name}}</p>
+    <p class="hz-pg-li-sku">{{item.ProductIDText}}</p>
 
-  .lineitem-metadata small.text-info {
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-size: 11px;
-  }
+    <!-- Size, colour, anything else chosen for this line. -->
+    <p class="hz-pg-li-spec"
+       ng-repeat="spec in item.Specs | onproperty:{Property: 'CanSetForLineItem', Value: true}">
+      <span>{{spec.Name}}</span>
+      <a ng-if="spec.ControlType == 'File'" ng-href="{{spec.File.Url}}">{{spec.File.OriginalName + Extension}}</a>
+      <span ng-if="spec.ControlType != 'File'" class="hz-pg-li-spec-v">{{spec.Value || ('(unspecified)' | xlat)}}</span>
+    </p>
 
-  .lineitem-metadata .text-success {
-    font-weight: 600;
-  }
+    <p class="hz-pg-li-spec" ng-if="item.CostCenter">
+      <span>Cost centre</span> <span class="hz-pg-li-spec-v">{{item.CostCenter}}</span>
+    </p>
+    <p class="hz-pg-li-spec" ng-if="item.ShipperName">
+      <span>Carrier</span> <span class="hz-pg-li-spec-v">{{item.ShipperName}}</span>
+    </p>
 
-  .order-img {
-    float: left;
-    max-width: 500px;
-    width: 1000px;
-  }
+    <!-- Only worth printing per item when the order ships to more than one place;
+         otherwise the side panel already says where it went. -->
+    <address class="hz-pg-li-addr" ng-show="item.ShipAddress && order.IsMultipleShip()">
+      Ships to {{item.ShipAddress.Street1}}<span ng-show="item.ShipAddress.Street2">, {{item.ShipAddress.Street2}}</span>,
+      {{item.ShipAddress.City}}, {{item.ShipAddress.State}} {{item.ShipAddress.Zip}}
+    </address>
 
-  .product-image-large-approval {
-    max-height: 500px;
-  }
-
-  .approval-image {
-    padding-top: 110px;
-  }
-
-  @media screen and (max-width: 1200px) {
-    .order-img {
-      width: 450px;
-    }
-  }
-
-  @media screen and (max-width: 767px) {
-    .approval-image {
-      padding-top: 10px;
-    }
-    .panel-order-history {
-      padding: 15px;
-    }
-  }
-</style>
-  <div class="panel-order-history" ng-repeat="item in order.LineItems">
-    <a href="{{item.ProofUrl}}" target="_blank" title="{{'Download' | r | xlat}}" ng-if="order.Status != 'AwaitingApproval' && (item.Product.Type == 'VariableText' && item.ProofUrl)"><i class="fa fa-download"></i></a>
-    <a href="" title="{{'Download' | r | xlat}}" ng-click="downloadProof(item)" ng-if="order.Status == 'AwaitingApproval' && (item.Variant.IsMpowerVariant)"><i class="fa fa-download"></i></a>
-    <div class="col-sm-6">
-      <h3 class="text-primary">
-        {{item.ProductIDText}}
-      </h3>
-      <span>{{item.Product.Name}}</span>
-      <ul ng-show="item.Specs | filter:{'CanSetForLineItem':true}.length > 0">
-        <li class="text-center" ng-repeat="spec in item.Specs | onproperty:{Property: 'CanSetForLineItem', Value: true} ">
-          <span class="text-info">{{spec.Name}}</span>
-          <span ng-if="spec.ControlType == 'File'"><a ng-href="{{spec.File.Url}}">{{spec.File.OriginalName + Extension}}</a></span>
-          <span ng-if="spec.ControlType != 'File'">{{spec.Value || ('(unspecified)' | xlat)}}</span>
-        </li>
-      </ul>
-      <a ng-if="item.ProductionURL" class="btn btn-primary printable-pdf-link" href="{{item.ProductionURL}}" target="_blank">
-        <span><i class="fa fa-download"></i> {{'Download Printable File' | r | xlat}}</span>
-      </a>
+    <div class="hz-pg-li-links">
+      <a ng-href="{{item.ProofUrl}}" target="_blank" rel="noopener noreferrer"
+         ng-if="order.Status != 'AwaitingApproval' && (item.Product.Type == 'VariableText' && item.ProofUrl)">Download proof</a>
+      <a href="" ng-click="downloadProof(item)"
+         ng-if="order.Status == 'AwaitingApproval' && item.Variant.IsMpowerVariant">Download proof</a>
+      <a ng-if="item.ProductionURL" ng-href="{{item.ProductionURL}}" target="_blank"
+         rel="noopener noreferrer">Download printable file</a>
     </div>
-    <div class="col-sm-6 lineitem-metadata" ng-hide="order.LineItems[0].Product.InteropID === 'CDC-APP-KIT-001' || order.LineItems[0].Product.Name === 'New Hire Kit'">
-      <div class="row">
-        <div ng-if="!(user.Permissions.contains('HidePricing'))" class="col-xs-12 col-sm-4">
-          <p>
-            <small class="text-info">{{'Total' | r | xlat}}</small><br />
-            <span class="text-success">{{item.LineTotal | culturecurrency}}</span>
-          </p>
-        </div>
-        <div ng-if="!(user.Permissions.contains('HidePricing'))" class="col-xs-12 col-sm-4">
-          <p>
-            <small class="text-info">{{'Unit Price' | r | xlat}}</small><br />
-            <span class="text-success">{{item.UnitPrice | culturecurrency}}</span> x {{item.Quantity}}
-          </p>
-        </div>
-        <div class="col-xs-12 col-sm-4" ng-show="item.Quantity">
-          <p>
-            <small class="text-info">{{('Quantity' | r) + ' ' + ('Ordered' | r) | xlat}}</small><br />
-            {{item.Quantity}}
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-6">
-          <p ng-if="item.CostCenter">
-            <span class="text-info">{{('Item' | r) + ' ' + ('Cost Center' | r) | xlat}}</span> {{item.CostCenter}}
-          </p>
-          <p ng-if="item.ShipperName">
-            <strong>{{('Shipper' | r) + ' ' + ('Name' | r) | xlat}}</strong><br />
-            {{item.ShipperName}}
-          </p>
-          <address ng-show="item.ShipAddress">
-            <strong>{{'Ship to' | r | xlat}}</strong><br>
-            {{item.ShipAddress.Street1}}<br>
-            {{item.ShipAddress.Street2}}<br ng-show="item.ShipAddress.Street2">
-            {{item.ShipAddress.City}}, {{item.ShipAddress.State}} {{item.ShipAddress.Zip}}
-          </address>
-        </div>
-        <!--<div class="col-xs-6">
-          <p ng-if="item.ShipAccount">
-            <strong>{{('Shipper' | r) + ' ' + ('Account' | r) | xlat}}</strong><br />
-            {{item.ShipAccount}}
-          </p>
-        </div>-->
-      </div>
-  
-    </div>
-    <div class="approval-image" ng-show="(order.Status == 'AwaitingApproval' && (item.Variant.IsMpowerVariant)">
-      <p ng-hide="order.Status == 'Open'"><strong>Product Preview:</strong></p>
-      <!--<a href="" title="{{'Download' | r | xlat}}" ng-click="viewPreview(item)"><i class="fa fa-download"></i></a>-->
-      <figure>
-        <img id="451_img_prod_lg" class="product-image-large-approval img-responsive" ng-src="{{item.Variant.PreviewUrl || item.Variant.LargeImageUrl || item.Variant.SmallImageUrl}}" imageonload />
-      </figure>    
-    </div>
-    <!-- <a href="{{item.PreviewUrl}}" target="_blank" title="{{'Download' | r | xlat}}" ng-if="order.Status != 'AwaitingApproval' && (item.Product.Type == 'VariableText' && item.ProofUrl)"><i class="fa fa-download"></i></a>
-    <a href="" title="{{'Download' | r | xlat}}" ng-click="downloadPreview(item)" ng-if="order.Status == 'AwaitingApproval' && (item.Variant.IsMpowerVariant)"><i class="fa fa-download"></i></a> -->
   </div>
-  
+
+  <!-- Quantity is always shown; price only where the employee is allowed to see it, and
+       never for a kit, which they do not pay for. -->
+  <div class="hz-pg-li-meta"
+       ng-hide="order.LineItems[0].Product.InteropID === 'CDC-APP-KIT-001' || order.LineItems[0].Product.Name === 'New Hire Kit'">
+    <p class="hz-pg-li-qty" ng-show="item.Quantity">
+      <span class="hz-pg-li-qty-l">Quantity</span>
+      <span class="hz-pg-li-qty-n">{{item.Quantity}}</span>
+    </p>
+    <p class="hz-pg-li-price" ng-if="!(user.Permissions.contains('HidePricing'))">
+      {{item.LineTotal | culturecurrency}}
+      <span ng-show="item.Quantity > 1">{{item.UnitPrice | culturecurrency}} each</span>
+    </p>
+  </div>
+
+  <!-- Awaiting-approval preview. Phase 5 was cancelled, so no Hertz order reaches this,
+       but the directive is still wired and the image is real when it does. -->
+  <figure class="hz-pg-li-proof"
+          ng-show="order.Status == 'AwaitingApproval' && item.Variant.IsMpowerVariant">
+    <img class="img-responsive"
+         ng-src="{{item.Variant.PreviewUrl || item.Variant.LargeImageUrl || item.Variant.SmallImageUrl}}"
+         alt="Preview of {{item.Product.Name}}" imageonload />
+  </figure>
+</div>

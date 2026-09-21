@@ -1,498 +1,238 @@
-<style>
-  .margin-Top {
-    margin-top: 52px;
-    background: #ededed;
-    padding-top: 30px;
-}
-.panel-body {
-  background: #ededed;
-}
-.panel-heading {
-    border: none;
-    background: #ededed;
-}
-  .user-view-title {
-    color: #4E2683;
-    font-size: 50px;
-    font-weight: 800;
-    letter-spacing: -0.92px;
-    line-height: 50px;
-    text-align: center;
-    padding-bottom: 30px;
-}
-.user-view-text-1 {
-    color: #242629;
-    font-size: 20px;
-    letter-spacing: 2.03px;
-    line-height: 43px;
-    text-align: center;
-    margin: 0;
-}
-.user-view-text-2 {
-    color: #242629;
-    font-size: 40px;
-    font-weight: bold;
-    line-height: 43px;
-    text-align: center;
-}
-.user-view-text-3 {
-  color: #3B3E41;
-    font-size: 45px;
-    font-weight: bold;
-    line-height: 43px;
-    text-align: center;
-}
-.save-button {
-	align-items: center;
-	background-color: white;
-	border: 0px;
-	border-color: 1px #242629;
-	border-bottom-left-radius: 24px;
-	border-bottom-right-radius: 24px;
-	border-radius: 24px;
-	border-top-left-radius: 24px;
-	border-top-right-radius: 24px;
-	box-sizing: border-box;
-	color: #242629;
-	display: flex;
-	font-family: "Brown Regular", "Open Sans", sans-serif;
-	font-size: 15px;
-	font-stretch: normal;
-	font-style: normal;
-	font-weight: bold;
-	justify-content: center;
-	letter-spacing: 1.35px;
-	line-height: normal;
-	margin-top: 1rem;
-	min-height: 48px;
-	padding: 16px 32px;
-	text-align: center;
-	text-decoration: none;
-	text-transform: uppercase;
-	vertical-align: middle;
-	width: 265px;
-	margin: auto;
-	border: 1px solid #242629;
-}
-.save-button:hover {
-	background-color: #242629;
-	color: white;
-	text-decoration: none;
-}
-.user-login-text-1 {
-  color: #242629;
-  font-size: 70px;
-  font-weight: 800;
-  letter-spacing: -1.29px;
-  line-height: 63px;
-}
-.user-login-text-2 {
-  color: #242629;
-  font-size: 40px;
-  font-weight: bold;
-  letter-spacing: -0.74px;
-  line-height: 63px;
-}
-.user-container {
-    box-shadow: none;
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 50px;
-    background: #ededed;
-}
-@media screen and (max-width: 1300px) {
-.user-view-text-3 {
-    font-size: 35px;
-  }
-}
-@media screen and (max-width: 650px) {
-.user-login-text-1 {
-    font-size: 55px;
-  }
-}
-@media screen and (max-width: 600px) {
-.user-view-text-3 {
-    font-size: 30px;
-  }
-}
-@media screen and (max-width: 425px) {
-    .user-container {
-        margin-left: 5%;
-        margin-right: 5%;
-        margin-top: 0;
-    }
-.user-login-text-2 {
-    font-size: 30px;
-    }
-.user-login-text-1 {
-    font-size: 40px;
-    }
-    .user-form-mobile {
-        padding: 0 0 10px 0 !important;
-    }
-}
-@media screen and (max-width: 375px) {
-    .captionText {
-        font-size: 30px;
-    }
-}
-@media screen and (max-width: 325px) {
-    .user-container {
-        margin-left: 0;
-        margin-right: 0;
-        margin-top: 0;
-    }
-}
-</style>
-<section class="user-view margin-Top" style="padding-left: 5px;padding-right: 5px;border-radius: 24px;">
-  <div class="hidden-md hidden-lg" ng-class="{'panel panel-default':!user.Permissions.contains('ViewSelfAdmin')}">
-    <div class="panel-heading" ng-show="!user.Permissions.contains('ViewSelfAdmin')" style="border: none;">
-      <h3 class="panel-title">{{'My Account' | r | xlat}}</h3>
-    </div>
-    <div ng-class="{'panel-body':!user.Permissions.contains('ViewSelfAdmin')}">
-      <accountnavigation />
-    </div>
-  </div>
-  <loadingindicator title="{{'Please wait while we save your changes' | r | xlat}}" ng-show="displayLoadingIndicator" />
+<!--
+  User information, under Account.
+
+  What this replaces: 498 lines, of which 140 were an injected <style> block setting a
+  #ededed grey ground on every panel, a purple #4E2683 50px title, 70px and 40px display
+  type, and a 265px pill button with a 24px radius. None of it was the Hertz palette.
+
+  The bigger problem was duplication. The same form existed FOUR times — a signed-in
+  copy, a sign-up copy, and mobile copies of the sign-in and sign-up forms — switched
+  with `hidden-md hidden-lg` against `hidden-xs hidden-sm`. Three of those elements
+  carried `id="user_form"`, so the document had three nodes with the same id, and a
+  change to a field had to be made in up to four places or the phone and the desktop
+  quietly disagreed. The layout is responsive in CSS now, so each form appears once.
+
+  The two states are mutually exclusive and use `ng-if` rather than `ng-show`, so only
+  one is ever in the DOM. That matters here beyond weight: both branches name their form
+  `user_form`, and two live forms of the same name on one scope overwrite each other's
+  controller, which is what `user_form.$invalid` reads to enable Save.
+
+  For the same reason `id="451_btn_user"` appears twice below and that is not a duplicate
+  id: the two submit buttons are in opposite branches of the `ng-if`, so the document only
+  ever holds one. The `451_btn_*` ids are Four51's own test-hook convention and are kept
+  verbatim. The page this replaces genuinely did have duplicates, three elements carrying
+  `id="user_form"` at once, because its four form copies were switched with CSS.
+
+  `loginasuser` is initialised as `{}` by UserEditCtrl, so the child scope `ng-if`
+  creates still writes through to the controller's object and `loginExisting()` sees the
+  values. An `ng-if` around a model that did NOT already exist on the parent would break
+  exactly there.
+
+  Kept as found: the TempCustomer sign-in and sign-up path. Hertz employees arrive
+  already provisioned through Four51, so it should be unreachable for this program, but
+  "should be unreachable" is not a reason to delete a login route.
+-->
+<section class="hz-pg user-view">
+
+  <loadingindicator title="{{'Please wait while we save your changes' | r | xlat}}"
+                    ng-show="displayLoadingIndicator" />
+  <accountnavigation />
   <identifyusermessage ng-show="user.Type == 'TempCustomer'" />
 
-  <p class="user-view-title user-view-text-3" ng-hide="user.Type != 'TempCustomer'">Sign in or create an account to complete your order.</p>
-  
-  <div class="row" style="display: flex;justify-content: center;padding-bottom: 80px;background: #ededed;border-radius: 24px;">
-    
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" ng-show="user.Email == ''" style="border-right: 4px solid #ededed;background: #ededed;">
-
-      <form ng-show="user.Permissions.contains('ViewSelfAdmin')" name="login_existing" ng-submit="loginExisting()" ng-if="user.Type == 'TempCustomer'">
-        <div class="panel" id="user_form" style="box-shadow: none;background: #ededed;">
-          <div class="panel-heading" style="border: none;">
-            <!--<h3 class="panel-title">{{('Logon' | r) + ' ' + ('as existing user' | r) | xlat}}</h3>-->
-            <p class="user-view-text-1">ALREADY A MEMBER?</p>
-            <p class="user-view-text-2">Sign in here!</p>
-          </div>
-          <div class="panel-body">
-            <div class="col-md-6 col-md-offset-3">
-              <!--<label>{{'Username' | r | xlat}}</label>--><input name="username" class="form-control " type="text" ng-model="loginasuser.Username" autocomplete="off" required placeholder="{{'Username' | r | xlat}}" style="margin-bottom: 20px;margin-top: 20px;" /><br />
-              <!--<label>{{'Password' | r | xlat}}</label>--><input name="password" class="form-control" type="password" ng-model="loginasuser.Password" autocomplete="off" required placeholder="{{'Password' | r | xlat}}" /><br />
-            </div>
-          </div>
-          <div class="" style="text-align: center;background: #ededed;">
-            <input class="btn save-button" type="submit" ng-disabled="login_existing.$invalid" id="451_btn_login_existing" value="{{'Sign In' | r | xlat}}" />
-            <inlineerror ng-show="loginAsExistingError" title="{{loginAsExistingError}}" />
-          </div>
-        </div>
-      </form>
+  <!-- ─────────────────────────────────────────────── signed in: your details -->
+  <div ng-if="user.Type != 'TempCustomer'">
+    <div class="hz-pg-head">
+      <h1 class="hz-pg-title">Your information</h1>
     </div>
+    <p class="hz-pg-sub">
+      How we reach you about an order. Your name comes from Hertz HR, so if it is wrong
+      here it is wrong there too, and your Uniform Champion can get it corrected.
+    </p>
 
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 hidden-xs hidden-sm" style="" ng-hide="user.Type != 'TempCustomer'">
-      <form ng-show="user.Permissions.contains('ViewSelfAdmin')" name="user_form" ng-submit="save()">
-        <div class="panel" id="user_form" style="box-shadow: none;background: #ededed;">
-          <div class="panel-heading" style="border: none;">
-            <p class="user-view-text-1">NOT A MEMBER?</p>
-            <p class="user-view-text-2">Sign up here!</p>
-          </div>
-          <div class="panel-body">
-            <div class="col-sm-6 view-form-icon">
-              <div>
-                <!--<label ng-show="user.FirstName">{{('First' | r) + ' ' + ('Name' | r) | xlat}}</label>-->
-                <input name="firstname" class="form-control" type="text" required ng-model="user.FirstName" placeholder="{{('First' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <div>
-                <!--<label ng-show="user.LastName">{{('Last' | r) + ' ' + ('Name' | r) | xlat}}</label>-->
-                <input name="lastname" required class="form-control" type="text" ng-model="user.LastName" placeholder="{{('Last' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <div>
-                <!--<label ng-show="user.Phone">{{'Phone' | r | xlat}}</label>-->
-                <input name="phone" class="form-control" type="text" ng-model="user.Phone" ui-mask="(999) 999-9999" autocomplete="off" />
-                <i class="fa fa-phone"></i>
-              </div>
-              <div>
-                <!--<label class="required">{{'Email' | r | xlat}}</label>-->
-                <input name="email" class="form-control" type="email" ng-model="user.Email" required placeholder="{{'Email' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-envelope-o"></i>
-                <!--<inlineerror ng-show="user_form.email.$invalid" title="{{'Please enter a valid' + ' ' +  ('Email' | rl) + ' ' + ('Address' | rl) | xlat}}" />-->
-              </div>
+    <form name="user_form" ng-submit="save()" ng-show="user.Permissions.contains('ViewSelfAdmin')">
+      <div class="hz-pg-panel">
+        <div class="hz-pg-sect">
+          <p class="hz-pg-sect-t">Contact details</p>
+          <div class="hz-pg-fields">
+            <div class="hz-pg-field">
+              <label for="hzFirst">First name</label>
+              <input id="hzFirst" name="firstname" type="text" required
+                     ng-model="user.FirstName" autocomplete="off" />
             </div>
-            <div class="col-sm-6 view-form-icon">
-              <div>
-                <!--<label class="required">{{'Username' | r | xlat}}</label>-->
-                <input name="username" class="form-control" type="text" ng-model="user.TempUsername" required placeholder="{{'Username' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <!--TODO username input shouldn't default to temporary usernames, if the user is temp, make the placeholder show instead !-->
-              <div>
-                <input name="password" class="form-control" ng-required="user.Type == 'TempCustomer'" type="password" ng-model="user.Password" placeholder="{{'Password' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-lock"></i>
-              </div>
-              <div>
-                <input name="confirm_password" ng-match="user.Password" ng-required="user.Type == 'TempCustomer' || user.Password" class="form-control" type="password" ng-model="user.ConfirmPassword" placeholder="{{('Confirm' | r) + ' ' + ('Password' | r) | xlat}}"
-                  autocomplete="off" />
-                <i class="fa fa-lock"></i>
-              </div>
-              <span class="alert-warning" ng-show="securityWarning">
-                <ul>
-                  <li>{{'Your password does not meet the requirements set for length or complexity. It must be changed to meet the minimum requirements before continuing.' | xlat}}</li>
-                  <li>{{'There are three distinct password security levels. The rules are defined as:' | xlat}}</li>
-                  <ul>
-                    <li>{{'Low: No restrictions on passwords.' | xlat}}</li>
-                    <li>{{'Medium: A minimum of 6 characters required.' | xlat}}</li>
-                    <li>{{'High:' | xlat}}</li>
-                    <ul>
-                      <li>{{'Minimum of 8 alphanumeric characters.' | xlat}}</li>
-                      <li>{{'Two or more of the following kinds of characters' | xlat}}</li>
-                      <ol>
-                        <li>{{'Alphabetic (e.g., a-z, A-Z)' | xlat}}</li>
-                        <li>{{'Numeric (i.e. 0-9)' | xlat}}</li>
-                        <li>{{'Punctuation and other characters (e.g.,' | xlat}} !@#$%^&*()_+|~-=\`{}[]:";'<>?,./)</li>
-                      </ol>
-                      <li>{{'** After 6 failed logon attempts, the user will be locked out for 30 minutes.' | xlat}}</li>
-                    </ul>
-                  </ul>
-                </ul>
-              </span>
+            <div class="hz-pg-field">
+              <label for="hzLast">Last name</label>
+              <input id="hzLast" name="lastname" type="text" required
+                     ng-model="user.LastName" autocomplete="off" />
             </div>
-          </div>
-          <div class="panel-body">
-            <div ng-if="user.CustomFields" class="col-sm-6 view-form-icon">
-              <div ng-repeat="field in user.CustomFields">
-                <customfilefield customfield="field" ng-if="field.ControlType == 'File' && field.DisplayToUser"></customfilefield>
-                <customtextfield customfield="field" ng-if="field.ControlType == 'Text' && field.DisplayToUser"></customtextfield>
-                <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection' && field.DisplayToUser"></customselectionfield>
-              </div>
+            <div class="hz-pg-field">
+              <label for="hzEmail">Email</label>
+              <input id="hzEmail" name="email" type="email" required
+                     ng-model="user.Email" autocomplete="off" />
+              <p class="hz-pg-field-hint">Order confirmations and shipping updates go here.</p>
             </div>
-          </div>
-          <div class="text-center">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-9" style="background: #ededed;">
-                  <p class="alert alert-success" ng-show="actionMessage" ng-bind-html="actionMessage | r | xlat"></p>
-                </div>
-                <div class="col-md-12" style="background: #ededed;">
-                  <input class="btn save-button" type="submit" ng-disabled="user_form.$invalid" id="451_btn_user" value="{{(user.Type == 'TempCustomer' ? 'Create Account' : 'Save') | xlat}}" />
-                </div>
-              </div>
+            <div class="hz-pg-field">
+              <label for="hzPhone">Phone</label>
+              <input id="hzPhone" name="phone" type="text" ng-model="user.Phone"
+                     ui-mask="(999) 999-9999" autocomplete="off" />
+              <p class="hz-pg-field-hint">Optional. Used only if a delivery needs sorting out.</p>
             </div>
           </div>
         </div>
-      </form>
-    </div>
 
-<!-- user form if logged in -->
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="" ng-show="user.Type != 'TempCustomer'">
-      <form ng-show="user.Permissions.contains('ViewSelfAdmin')" name="user_form" ng-submit="save()">
-        <div class="panel user-container" id="user_form" style="box-shadow: none;border:none;background: #ededed;">
-          <!-- <div class="panel-heading" style="border: none;">
-            <p class="user-login-text-1">Welcome {{user.FirstName}}</p>
-          </div> -->
-          <div class="panel-body user-form-mobile">
-            <p class="user-login-text-2">Your Account</p>
-            <div class="col-sm-6 view-form-icon">
-              <div>
-                <!--<label ng-show="user.FirstName">{{('First' | r) + ' ' + ('Name' | r) | xlat}}</label>-->
-                <input name="firstname" class="form-control" type="text" required ng-model="user.FirstName" placeholder="{{('First' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <div>
-                <!--<label ng-show="user.Phone">{{'Phone' | r | xlat}}</label>-->
-                <input name="phone" class="form-control" type="text" ng-model="user.Phone" ui-mask="(999) 999-9999" autocomplete="off" />
-                <i class="fa fa-phone"></i>
-              </div>
-              <!-- <div>
-                <input name="password" class="form-control" ng-required="user.Type == 'TempCustomer'" type="password" ng-model="user.Password" placeholder="{{'Password' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-lock"></i>
-              </div> -->
-            </div>
-            <div class="col-sm-6 view-form-icon">
-              <div>
-                <!--<label ng-show="user.LastName">{{('Last' | r) + ' ' + ('Name' | r) | xlat}}</label>-->
-                <input name="lastname" required class="form-control" type="text" ng-model="user.LastName" placeholder="{{('Last' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <div>
-                <input name="email" class="form-control" type="email" ng-model="user.Email" required placeholder="{{'Email' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-envelope-o"></i>
-              </div>
-              <!-- <div>
-                <input name="username" class="form-control" type="text" ng-model="user.TempUsername" required placeholder="{{'Username' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div> -->
-              <!--TODO username input shouldn't default to temporary usernames, if the user is temp, make the placeholder show instead !-->
-              <!-- <div>
-                <input name="confirm_password" ng-match="user.Password" ng-required="user.Type == 'TempCustomer' || user.Password" class="form-control" type="password" ng-model="user.ConfirmPassword" placeholder="{{('Confirm' | r) + ' ' + ('Password' | r) | xlat}}"
-                  autocomplete="off" />
-                <i class="fa fa-lock"></i>
-              </div>
-              <span class="alert-warning" ng-show="securityWarning">
-                <ul>
-                  <li>{{'Your password does not meet the requirements set for length or complexity. It must be changed to meet the minimum requirements before continuing.' | xlat}}</li>
-                  <li>{{'There are three distinct password security levels. The rules are defined as:' | xlat}}</li>
-                  <ul>
-                    <li>{{'Low: No restrictions on passwords.' | xlat}}</li>
-                    <li>{{'Medium: A minimum of 6 characters required.' | xlat}}</li>
-                    <li>{{'High:' | xlat}}</li>
-                    <ul>
-                      <li>{{'Minimum of 8 alphanumeric characters.' | xlat}}</li>
-                      <li>{{'Two or more of the following kinds of characters' | xlat}}</li>
-                      <ol>
-                        <li>{{'Alphabetic (e.g., a-z, A-Z)' | xlat}}</li>
-                        <li>{{'Numeric (i.e. 0-9)' | xlat}}</li>
-                        <li>{{'Punctuation and other characters (e.g.,' | xlat}} !@#$%^&*()_+|~-=\`{}[]:";'<>?,./)</li>
-                      </ol>
-                      <li>{{'** After 6 failed logon attempts, the user will be locked out for 30 minutes.' | xlat}}</li>
-                    </ul>
-                  </ul>
-                </ul>
-              </span> -->
+        <!-- Any per-program fields Four51 is configured to show the shopper. The stock
+             page had this block commented out on the signed-in form and live on the
+             sign-up form; it is live on both here, because a field an administrator
+             marked DisplayToUser is one they meant the shopper to see. -->
+        <div class="hz-pg-sect" ng-if="user.CustomFields.length">
+          <p class="hz-pg-sect-t">Additional details</p>
+          <div class="hz-pg-fields">
+            <div ng-repeat="field in user.CustomFields">
+              <customfilefield customfield="field" ng-if="field.ControlType == 'File' && field.DisplayToUser"></customfilefield>
+              <customtextfield customfield="field" ng-if="field.ControlType == 'Text' && field.DisplayToUser"></customtextfield>
+              <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection' && field.DisplayToUser"></customselectionfield>
             </div>
           </div>
-          <!--<div class="panel-body">
-            <div ng-if="user.CustomFields" class="col-sm-6 view-form-icon">
-              <div ng-repeat="field in user.CustomFields">
-                <customfilefield customfield="field" ng-if="field.ControlType == 'File' && field.DisplayToUser"></customfilefield>
-                <customtextfield customfield="field" ng-if="field.ControlType == 'Text' && field.DisplayToUser"></customtextfield>
-                <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection' && field.DisplayToUser"></customselectionfield>
-              </div>
-            </div>
-          </div>-->
-          <!-- <div class="text-center">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-9 hidden">
-                  <p class="alert alert-success" ng-show="actionMessage" ng-bind-html="actionMessage | r | xlat" style="background: #ededed;"></p>
-                </div>
-                <div class="col-md-12" style="background: #ededed;">
-                  <input class="btn save-button" type="submit" ng-disabled="user_form.$invalid" id="451_btn_user" value="{{(user.Type == 'TempCustomer' ? 'Create Account' : 'Save') | xlat}}" />
-                </div>
-              </div>
-            </div>
-          </div> -->
         </div>
-      </form>
+
+        <div class="hz-pg-sect">
+          <div class="hz-pg-actions">
+            <input class="hz-pg-btn" type="submit" id="451_btn_user"
+                   ng-disabled="user_form.$invalid" value="Save changes" />
+          </div>
+          <div class="hz-pg-note" ng-show="actionMessage" style="margin: 14px 0 0;">
+            <p ng-bind-html="actionMessage | r | xlat"></p>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Four51 can be configured without self-administration, in which case the form
+         above never renders and the page would otherwise be a heading on its own. -->
+    <div class="hz-pg-panel" ng-hide="user.Permissions.contains('ViewSelfAdmin')">
+      <div class="hz-pg-sect">
+        <p>Your details are managed for you and cannot be edited here. Your Uniform
+          Champion can have them corrected.</p>
+      </div>
     </div>
-    <!-- end -->
   </div>
 
-
-  <div class="row hidden-md hidden-lg" style="padding-bottom: 80px;" ng-hide="user.Type != 'TempCustomer'">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="user.Email == ''" style="">
-
-      <form ng-show="user.Permissions.contains('ViewSelfAdmin')" name="login_existing" ng-submit="loginExisting()" ng-if="user.Type == 'TempCustomer'">
-        <div class="panel" id="user_form" style="box-shadow: none;background: #ededed;">
-          <div class="panel-heading" style="">
-            <!--<h3 class="panel-title">{{('Logon' | r) + ' ' + ('as existing user' | r) | xlat}}</h3>-->
-            <p class="user-view-text-1">ALREADY A MEMBER?</p>
-            <p class="user-view-text-2">Sign in here!</p>
-          </div>
-          <div class="panel-body">
-            <div class="col-md-6 col-md-offset-3">
-              <!--<label>{{'Username' | r | xlat}}</label>--><input name="username" class="form-control " type="text" ng-model="loginasuser.Username" autocomplete="off" required placeholder="{{'Username' | r | xlat}}" style="margin-bottom: 20px;margin-top: 20px;" /><br />
-              <!--<label>{{'Password' | r | xlat}}</label>--><input name="password" class="form-control" type="password" ng-model="loginasuser.Password" autocomplete="off" required placeholder="{{'Password' | r | xlat}}" /><br />
-            </div>
-          </div>
-          <div class="" style="text-align: center;background: #ededed;">
-            <input class="btn save-button" type="submit" ng-disabled="login_existing.$invalid" id="451_btn_login_existing" value="{{'Sign In' | r | xlat}}" />
-            <!--<inlineerror ng-show="loginAsExistingError" title="{{loginAsExistingError}}" />-->
-          </div>
-        </div>
-      </form>
+  <!-- ──────────────────────────────────── not signed in: sign in, or register -->
+  <div ng-if="user.Type == 'TempCustomer'">
+    <div class="hz-pg-head">
+      <h1 class="hz-pg-title">Sign in to finish your order</h1>
     </div>
-    </div>
-<div class="row hidden-md hidden-lg" ng-hide="user.Type != 'TempCustomer'">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <form ng-show="user.Permissions.contains('ViewSelfAdmin')" name="user_form" ng-submit="save()">
-        <div class="panel" id="user_form" style="box-shadow: none;background: #ededed;">
-          <div class="panel-heading" style="border: none;">
-            <!--<h3 class="panel-title">{{(user.Type == 'TempCustomer' ? 'Create' : 'My') + ' ' + ('Account' | r) | xlat}}</h3>-->
-            <p class="user-view-text-1">NOT A MEMBER?</p>
-            <p class="user-view-text-2">Sign up here!</p>
-          </div>
-          <div class="panel-body">
-            <div class="col-sm-6 view-form-icon">
-              <div>
-                <!--<label ng-show="user.FirstName">{{('First' | r) + ' ' + ('Name' | r) | xlat}}</label>-->
-                <input name="firstname" class="form-control" type="text" required ng-model="user.FirstName" placeholder="{{('First' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <div>
-                <!--<label ng-show="user.LastName">{{('Last' | r) + ' ' + ('Name' | r) | xlat}}</label>-->
-                <input name="lastname" required class="form-control" type="text" ng-model="user.LastName" placeholder="{{('Last' | r) + ' ' + ('Name' | r) | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <div>
-                <!--<label ng-show="user.Phone">{{'Phone' | r | xlat}}</label>-->
-                <input name="phone" class="form-control" type="text" ng-model="user.Phone" ui-mask="(999) 999-9999" autocomplete="off" />
-                <i class="fa fa-phone"></i>
-              </div>
-              <div>
-                <!--<label class="required">{{'Email' | r | xlat}}</label>-->
-                <input name="email" class="form-control" type="email" ng-model="user.Email" required placeholder="{{'Email' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-envelope-o"></i>
-                <!--<inlineerror ng-show="user_form.email.$invalid" title="{{'Please enter a valid' + ' ' +  ('Email' | rl) + ' ' + ('Address' | rl) | xlat}}" />-->
-              </div>
-            </div>
-            <div class="col-sm-6 view-form-icon">
-              <div>
-                <!--<label class="required">{{'Username' | r | xlat}}</label>-->
-                <input name="username" class="form-control" type="text" ng-model="user.TempUsername" required placeholder="{{'Username' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-user"></i>
-              </div>
-              <!--TODO username input shouldn't default to temporary usernames, if the user is temp, make the placeholder show instead !-->
-              <!-- <div>
-                <input name="password" class="form-control" ng-required="user.Type == 'TempCustomer'" type="password" ng-model="user.Password" placeholder="{{'Password' | r | xlat}}" autocomplete="off" />
-                <i class="fa fa-lock"></i>
-              </div> -->
-              <!-- <div>
-                <input name="confirm_password" ng-match="user.Password" ng-required="user.Type == 'TempCustomer' || user.Password" class="form-control" type="password" ng-model="user.ConfirmPassword" placeholder="{{('Confirm' | r) + ' ' + ('Password' | r) | xlat}}"
-                  autocomplete="off" />
-                <i class="fa fa-lock"></i>
-              </div> -->
-              <span class="alert-warning" ng-show="securityWarning">
-                <ul>
-                  <li>{{'Your password does not meet the requirements set for length or complexity. It must be changed to meet the minimum requirements before continuing.' | xlat}}</li>
-                  <li>{{'There are three distinct password security levels. The rules are defined as:' | xlat}}</li>
-                  <ul>
-                    <li>{{'Low: No restrictions on passwords.' | xlat}}</li>
-                    <li>{{'Medium: A minimum of 6 characters required.' | xlat}}</li>
-                    <li>{{'High:' | xlat}}</li>
-                    <ul>
-                      <li>{{'Minimum of 8 alphanumeric characters.' | xlat}}</li>
-                      <li>{{'Two or more of the following kinds of characters' | xlat}}</li>
-                      <ol>
-                        <li>{{'Alphabetic (e.g., a-z, A-Z)' | xlat}}</li>
-                        <li>{{'Numeric (i.e. 0-9)' | xlat}}</li>
-                        <li>{{'Punctuation and other characters (e.g.,' | xlat}} !@#$%^&*()_+|~-=\`{}[]:";'<>?,./)</li>
-                      </ol>
-                      <li>{{'** After 6 failed logon attempts, the user will be locked out for 30 minutes.' | xlat}}</li>
-                    </ul>
-                  </ul>
-                </ul>
-              </span>
-            </div>
-          </div>
-          <div class="panel-body">
-            <div ng-if="user.CustomFields" class="col-sm-6 view-form-icon">
-              <div ng-repeat="field in user.CustomFields">
-                <customfilefield customfield="field" ng-if="field.ControlType == 'File' && field.DisplayToUser"></customfilefield>
-                <customtextfield customfield="field" ng-if="field.ControlType == 'Text' && field.DisplayToUser"></customtextfield>
-                <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection' && field.DisplayToUser"></customselectionfield>
-              </div>
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-9">
-                  <p class="alert alert-success" ng-show="actionMessage" ng-bind-html="actionMessage | r | xlat" style="background: #ededed;"></p>
+    <p class="hz-pg-sub">
+      Sign in with your Hertz uniform account. If you have not set one up yet, create it
+      below and your order carries over.
+    </p>
+
+    <div class="hz-pg-grid">
+
+      <div>
+        <form name="user_form" ng-submit="save()" ng-show="user.Permissions.contains('ViewSelfAdmin')">
+          <div class="hz-pg-panel">
+            <div class="hz-pg-sect">
+              <p class="hz-pg-sect-t">Create an account</p>
+              <div class="hz-pg-fields">
+                <div class="hz-pg-field">
+                  <label for="hzNewFirst">First name</label>
+                  <input id="hzNewFirst" name="firstname" type="text" required
+                         ng-model="user.FirstName" autocomplete="off" />
                 </div>
-                <div class="col-md-12" style="background: #ededed;">
-                  <input class="btn save-button" type="submit" ng-disabled="user_form.$invalid" id="451_btn_user" value="{{(user.Type == 'TempCustomer' ? 'Create Account' : 'Save') | xlat}}" />
+                <div class="hz-pg-field">
+                  <label for="hzNewLast">Last name</label>
+                  <input id="hzNewLast" name="lastname" type="text" required
+                         ng-model="user.LastName" autocomplete="off" />
+                </div>
+                <div class="hz-pg-field">
+                  <label for="hzNewEmail">Email</label>
+                  <input id="hzNewEmail" name="email" type="email" required
+                         ng-model="user.Email" autocomplete="off" />
+                </div>
+                <div class="hz-pg-field">
+                  <label for="hzNewPhone">Phone</label>
+                  <input id="hzNewPhone" name="phone" type="text" ng-model="user.Phone"
+                         ui-mask="(999) 999-9999" autocomplete="off" />
+                </div>
+                <div class="hz-pg-field">
+                  <label for="hzNewUser">Username</label>
+                  <input id="hzNewUser" name="username" type="text" required
+                         ng-model="user.TempUsername" autocomplete="off" />
+                </div>
+                <div class="hz-pg-field">
+                  <label for="hzNewPass">Password</label>
+                  <input id="hzNewPass" name="password" type="password"
+                         ng-required="user.Type == 'TempCustomer'"
+                         ng-model="user.Password" autocomplete="off" />
+                </div>
+                <div class="hz-pg-field">
+                  <label for="hzNewPass2">Confirm password</label>
+                  <input id="hzNewPass2" name="confirm_password" type="password"
+                         ng-match="user.Password"
+                         ng-required="user.Type == 'TempCustomer' || user.Password"
+                         ng-model="user.ConfirmPassword" autocomplete="off" />
+                </div>
+              </div>
+
+              <!-- Password rules. Was a five-deep nest of <ul> and <ol> inside an
+                   alert-warning, printed in full whether or not it applied. -->
+              <div class="hz-pg-note hz-pg-note--stop" ng-show="securityWarning"
+                   style="margin: 16px 0 0;">
+                <p><strong>That password does not meet the requirements.</strong> It needs
+                  at least 8 characters, and at least two of: letters, numbers,
+                  punctuation.</p>
+                <p>After 6 failed sign-in attempts the account locks for 30 minutes.</p>
+              </div>
+            </div>
+
+            <div class="hz-pg-sect" ng-if="user.CustomFields.length">
+              <p class="hz-pg-sect-t">Additional details</p>
+              <div class="hz-pg-fields">
+                <div ng-repeat="field in user.CustomFields">
+                  <customfilefield customfield="field" ng-if="field.ControlType == 'File' && field.DisplayToUser"></customfilefield>
+                  <customtextfield customfield="field" ng-if="field.ControlType == 'Text' && field.DisplayToUser"></customtextfield>
+                  <customselectionfield customfield="field" ng-if="field.ControlType == 'Selection' && field.DisplayToUser"></customselectionfield>
                 </div>
               </div>
             </div>
+
+            <div class="hz-pg-sect">
+              <div class="hz-pg-actions">
+                <input class="hz-pg-btn" type="submit" id="451_btn_user"
+                       ng-disabled="user_form.$invalid" value="Create account" />
+              </div>
+              <div class="hz-pg-note" ng-show="actionMessage" style="margin: 14px 0 0;">
+                <p ng-bind-html="actionMessage | r | xlat"></p>
+              </div>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
+
+      <div class="hz-pg-side">
+        <form name="login_existing" ng-submit="loginExisting()"
+              ng-show="user.Permissions.contains('ViewSelfAdmin')">
+          <div class="hz-pg-panel">
+            <div class="hz-pg-sect">
+              <p class="hz-pg-sect-t">Already have an account</p>
+              <div class="hz-pg-field" style="margin-bottom: 12px;">
+                <label for="hzSignUser">Username</label>
+                <input id="hzSignUser" name="username" type="text" required
+                       ng-model="loginasuser.Username" autocomplete="off" />
+              </div>
+              <div class="hz-pg-field">
+                <label for="hzSignPass">Password</label>
+                <input id="hzSignPass" name="password" type="password" required
+                       ng-model="loginasuser.Password" autocomplete="off" />
+              </div>
+              <input class="hz-pg-btn" type="submit" id="451_btn_login_existing"
+                     ng-disabled="login_existing.$invalid" value="Sign in" />
+              <inlineerror ng-show="loginAsExistingError" title="{{loginAsExistingError}}" />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+
 </section>
