@@ -1,24 +1,28 @@
 <!--
   Contact us.
 
-  Two things were wrong with this file.
+  Two rewrites. The first got the content right and the layout wrong: a yellow-ruled
+  notice, two cards down the left and a third floating in a right-hand column, four boxes
+  at four different sizes with a field of white beside them. The client asked for simple
+  and uniform, which is the same note they gave on checkout.
 
-  First, it was a browser "save page as" dump: 80KB of full HTML document, with its own
-  <head>, <body> and an inlined New Relic agent, loaded as an Angular partial into a page
-  that already has all three. Roughly 1KB of it was content. The rest is gone.
-
-  Second, the words were written for a Thumbprint client, not a Hertz employee. The page
-  offered to "make your branded shopping experience seamless" and invited "feedback on
-  how we can better serve your team" — an account manager talking to a buyer. The person
-  who actually reaches this page is a rental agent whose polo did not arrive.
-
-  So it answers their question in the order they would ask it: their Uniform Champion
+  So it is one panel now. Same border around the lot, a hairline between each section,
+  the same padding on every one, in the order someone would ask: their Uniform Champion
   first, because a champion can fix most of this in a minute and support cannot; then
-  returns; then support, with the hours it keeps.
+  what to do when something arrived wrong; then support hours; then the offices.
 
-  Nothing here is invented. The hours, the live chat and the two office addresses are the
-  ones the old page carried. The email address and phone number that were commented out
-  on the old page are still commented out below, deliberately: they were taken down at
+  Before that it was a browser "save page as" dump — 80KB of full HTML document with its
+  own <head>, <body> and an inlined New Relic agent, loaded as an Angular partial into a
+  page that already had all three, of which about 1KB was content.
+
+  The words were written for a Thumbprint client rather than a Hertz employee: it offered
+  to "make your branded shopping experience seamless" and asked for "feedback on how we
+  can better serve your team". The person who reaches this page is a rental agent whose
+  polo did not arrive.
+
+  Nothing here is invented. The hours, the live chat and both office addresses are the
+  ones the old page carried. The email address and phone number that were already
+  commented out on the old page are still commented out below: they were taken down at
   some point, and putting them back is a decision for Hertz and Thumbprint rather than
   part of a rewrite.
 
@@ -34,83 +38,65 @@
     person closest to it.
   </p>
 
-  <div class="hz-pg-grid">
-    <div>
+  <div class="hz-pg-panel">
 
-      <!-- The champion is the answer to most of what arrives on this page, so it is the
-           first thing on it. The same three abilities are named in the site footer. -->
-      <div class="hz-pg-note">
-        <p><strong>Start with your Uniform Champion.</strong> They can adjust your
-          quantities, place an order on your behalf and start a return, usually the same
-          day. For anything about what you are allowed to order, they are the fastest
-          route.</p>
+    <div class="hz-pg-sect">
+      <p class="hz-pg-sect-t">Start here</p>
+      <p><strong>Your Uniform Champion.</strong> They can adjust your quantities, place an
+        order on your behalf and start a return, usually the same day. For anything about
+        what you are allowed to order, they are the fastest route.</p>
+    </div>
+
+    <div class="hz-pg-sect">
+      <p class="hz-pg-sect-t">Something arrived wrong</p>
+      <p>Wrong size, wrong item, or damaged on the way? Start a return. The allocation
+        goes back to you, so you can order the right one.</p>
+      <a class="hz-pg-btn" href="https://thumbprint.com/hertz/UniformReturn"
+         target="_blank" rel="noopener noreferrer">Start a return</a>
+    </div>
+
+    <div class="hz-pg-sect">
+      <p class="hz-pg-sect-t">Still need a hand</p>
+      <div class="hz-pg-dl">
+        <div class="hz-pg-dl-row">
+          <span class="hz-pg-dl-k">Support hours</span>
+          <span class="hz-pg-dl-v">Monday to Friday, 9:00am to 5:00pm ET</span>
+        </div>
+        <div class="hz-pg-dl-row">
+          <span class="hz-pg-dl-k">Live chat</span>
+          <span class="hz-pg-dl-v">The chat button, bottom right of any page</span>
+        </div>
+        <!--
+          Email and phone were on this page once and were commented out before the
+          rewrite. Left as found rather than restored, because whether employees get a
+          direct line is a client decision:
+            Email  hertzsupport@thumbprint.com
+            Phone  317.703.3449
+        -->
       </div>
+      <p style="margin-top: 12px; color: #5f6778;">
+        Outside those hours, leave a message in chat and it is picked up the next working
+        morning.
+      </p>
+    </div>
 
-      <div class="hz-pg-card">
-        <div class="hz-pg-card-h">
-          <p class="hz-pg-card-t">Something arrived wrong</p>
-        </div>
-        <div class="hz-pg-card-b">
-          <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.6;">
-            Wrong size, wrong item, or damaged on the way? Start a return. The allocation
-            goes back to you, so you can order the right one.
-          </p>
-          <a class="hz-pg-btn" href="https://thumbprint.com/hertz/UniformReturn"
-             target="_blank" rel="noopener noreferrer">Start a return</a>
-        </div>
-      </div>
-
-      <div class="hz-pg-card">
-        <div class="hz-pg-card-h">
-          <p class="hz-pg-card-t">Still need a hand</p>
-        </div>
-        <div class="hz-pg-card-b">
-          <div class="hz-pg-dl">
-            <div class="hz-pg-dl-row">
-              <span class="hz-pg-dl-k">Support hours</span>
-              <span class="hz-pg-dl-v">Monday to Friday, 9:00am to 5:00pm ET</span>
-            </div>
-            <div class="hz-pg-dl-row">
-              <span class="hz-pg-dl-k">Live chat</span>
-              <span class="hz-pg-dl-v">The chat button, bottom right of any page</span>
-            </div>
-            <!--
-              Email and phone were on this page once and were commented out before this
-              rewrite. Left as found rather than restored, because whether employees get
-              a direct line is a client decision:
-                Email  hertzsupport@thumbprint.com
-                Phone  317.703.3449
-            -->
-          </div>
-          <p style="margin: 14px 0 0; font-size: 14px; color: #5f6778;">
-            Outside those hours, leave a message in chat and it is picked up the next
-            working morning.
-          </p>
-        </div>
+    <div class="hz-pg-sect">
+      <!-- Offices, not a returns address. Returns go through the link above, which is
+           what routes the garment and credits the allocation back. -->
+      <p class="hz-pg-sect-t">Thumbprint offices</p>
+      <div class="hz-pg-sect-two">
+        <address>
+          <strong>Headquarters</strong><br />
+          15255 Endeavor Drive<br />
+          Noblesville, IN 46060
+        </address>
+        <address>
+          <strong>Florida</strong><br />
+          2478 E Michigan St<br />
+          Orlando, FL 32806
+        </address>
       </div>
     </div>
 
-    <div class="hz-pg-side">
-      <div class="hz-pg-card">
-        <div class="hz-pg-card-h">
-          <p class="hz-pg-card-t">Thumbprint offices</p>
-        </div>
-        <div class="hz-pg-card-b">
-          <!-- Offices, not a returns address. Returns go through the link above, which is
-               what routes the garment and credits the allocation back. -->
-          <p class="hz-pg-card-t" style="margin: 0 0 4px;">Headquarters</p>
-          <address style="font-size: 14px; line-height: 1.55; margin: 0 0 16px; color: #2c3140;">
-            15255 Endeavor Drive<br />
-            Noblesville, IN 46060
-          </address>
-
-          <p class="hz-pg-card-t" style="margin: 0 0 4px;">Florida</p>
-          <address style="font-size: 14px; line-height: 1.55; margin: 0; color: #2c3140;">
-            2478 E Michigan St<br />
-            Orlando, FL 32806
-          </address>
-        </div>
-      </div>
-    </div>
   </div>
 </section>

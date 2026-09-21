@@ -3397,12 +3397,25 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-pg-chip-n { font-variant-numeric: tabular-nums; opacity: .7; margin-left: 6px; }
 .hz-pg-chip.is-on .hz-pg-chip-n { opacity: .85; }
 
-/* ---- fields ---- */
+/* ---- fields ----
+   `align-items: start`, not `end`. With `end` the cells in a row align their BOTTOMS, so
+   one field carrying a hint under its input is taller than its neighbours and drags them
+   down: on the account form the email hint pushed first and last name a line lower than
+   the email box beside them, and the row read as broken. Aligned at the top, every label
+   sits on one line and every input sits on the next, and hints hang off the bottom where
+   they belong.
+
+   240px rather than 190px: at 190 a four-field form in a 760px panel broke three-two,
+   which puts first name, last name and email on one row and phone alone underneath. At
+   240 it is an even two by two, and the wider cards further down still get their five. */
 .hz-pg-fields {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 14px; align-items: end;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px; align-items: start;
 }
 .hz-pg-field { min-width: 0; }
+/* A cell holding a button rather than an input. It has no label, so it needs the label's
+   height added back or it floats above the inputs it sits beside. */
+.hz-pg-field--action { padding-top: 22px; }
 .hz-pg-field label {
   display: block; font-size: 12px; font-weight: 700; color: var(--ink);
   margin: 0 0 6px; letter-spacing: .01em;
@@ -3538,4 +3551,31 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 @media (max-width: 560px) {
   .hz-pg-li { grid-template-columns: minmax(0, 1fr); }
   .hz-pg-li-meta { text-align: left; }
+}
+
+/* ---- one panel, even sections ----
+   For pages that are a single column of related blocks rather than a grid of cards:
+   contact, and the account form. One border around the lot, hairlines between, the same
+   padding on every section, so the page reads as one object instead of a scatter of
+   boxes at different sizes. */
+.hz-pg-panel {
+  border: 1px solid var(--edge); border-radius: 8px; background: #fff;
+  max-width: 760px;
+}
+.hz-pg-sect { padding: 22px 24px; border-top: 1px solid var(--line); }
+.hz-pg-sect:first-child { border-top: 0; }
+.hz-pg-sect-t {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 14px;
+}
+.hz-pg-sect p { font-size: 14.5px; line-height: 1.6; color: var(--body); margin: 0; }
+.hz-pg-sect p + p { margin-top: 10px; }
+.hz-pg-sect p strong { color: var(--ink); }
+.hz-pg-sect .hz-pg-btn { margin-top: 14px; }
+/* Two addresses, or two short blocks, side by side inside one section. */
+.hz-pg-sect-two {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px;
+}
+.hz-pg-sect address {
+  font-size: 14px; line-height: 1.55; font-style: normal; color: var(--body); margin: 0;
 }
