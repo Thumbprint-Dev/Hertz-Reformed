@@ -3570,6 +3570,15 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   border: 1px solid var(--edge); border-radius: 8px; background: #fff;
   max-width: 760px;
 }
+/* A measured column for a page that is one record rather than a set of things.
+   The account page: its rows are a label on the left and a value on the right, and run
+   the full width of a wide screen the two ends stop being readable as a pair. Everything
+   in the column shares the measure, so the card and the note under it line up.
+
+   Not the same as `.hz-pg-cards` below, which spreads short blocks ACROSS the page. Both
+   exist because "short content on a wide screen" has two right answers and which one
+   applies depends on whether the content is one thing or several. */
+.hz-pg-stack { max-width: 760px; }
 /* Cards side by side, filling the page.
    This replaced a 760px column of stacked cards, which was the wrong answer to the right
    question. Short blocks DO look stranded run full width one under another, but putting
@@ -3623,17 +3632,11 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    #434244, not black and not white. 2px radius like every other control on the site,
    rather than the circle an avatar usually gets, because the brand's shapes are square. */
 .hz-pg-prof-head {
-  display: flex; align-items: center; gap: 16px;
-  padding: 20px; border-bottom: 1px solid var(--line);
+  padding: 22px 20px; border-bottom: 1px solid var(--line);
 }
-.hz-pg-prof-av {
-  flex: 0 0 auto; width: 52px; height: 52px; border-radius: 2px;
-  background: var(--yellow); color: #434244;
-  display: grid; place-items: center;
-  font-family: var(--display); font-size: 22px; font-weight: 700;
-  letter-spacing: .02em; text-transform: uppercase;
+.hz-pg-prof-logo {
+  display: block; height: 26px; width: auto; margin: 0 0 14px;
 }
-.hz-pg-prof-id { min-width: 0; }
 .hz-pg-prof-name {
   font-family: var(--display); font-size: 25px; font-weight: 600; line-height: 1.1;
   color: var(--ink); margin: 0;
@@ -3642,3 +3645,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 /* The value column can hold an email address, which has no spaces to break on and would
    otherwise push the row wider than the card. */
 .hz-pg-prof .hz-pg-dl-v { overflow-wrap: anywhere; }
+
+/* Stands in for a removed standfirst, so the gap between the title and the first card
+   is the same on a page that has one and a page that does not. */
+.hz-pg-spacer { height: 22px; }

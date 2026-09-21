@@ -32,10 +32,14 @@ four51.app.filter('hzDate', function() {
     var day = parseInt(parts[2], 10);
     if (!month || !day) return value;
 
-    // "1 October" reads better than "1 October 2026" for a date inside the next twelve
+    // Month day, year: "February 26, 2026". US order, because every reader of this
+    // storefront is a US employee. It was "26 February 2026" until 21 September 2026,
+    // which is the British order and read as a typo to the client.
+    //
+    // "October 1" rather than "October 1, 2026" for a date inside the next twelve
     // months, which every seasonal reopening is. The year is asked for explicitly where
-    // it genuinely matters, like the end of an allocation year.
-    return withYear === false ? day + ' ' + month : day + ' ' + month + ' ' + year;
+    // it genuinely matters, like a hire date or the end of an allocation year.
+    return withYear === false ? month + ' ' + day : month + ' ' + day + ', ' + year;
   };
 });
 

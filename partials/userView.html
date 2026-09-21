@@ -9,14 +9,18 @@
   Hertz HR feed is the authority for who someone is: a name edited in a storefront is
   overwritten on the next ingest, so the form accepted an edit and silently lost it. And
   the things an employee actually wants to check — their department, their job title,
-  which allocation group decides their kit, when the cycle turns over — were not on the
-  page at all, because Four51 does not hold them. We do, and `GET /me/profile` returns
-  them.
+  which allocation group decides their kit — were not on the page at all, because Four51
+  does not hold them. We do, and `GET /me/profile` returns them.
 
-  Every field is `readonly` rather than `disabled`. A disabled input is skipped by the
-  keyboard and by most screen readers, so the values would be unreachable to anyone not
-  using a mouse; readonly keeps them focusable and selectable, which matters when the
-  point of the page is to let someone read a value and quote it to their champion.
+  There are no form controls left. An intermediate version kept the name and email in
+  `readonly` inputs, which still look like a form and still invite the edit the page
+  refuses; a label and a value say the same thing and promise nothing. The registration
+  form further down is the exception and keeps real inputs, because creating an account
+  is the one case where the person really is the authority.
+
+  Dropped at the client's request, in order: the Save button, the phone number, the
+  employee id (on this storefront that field is the Four51 username, not anything an
+  employee would recognise), the cycle end date, and the standfirst.
 
   What this replaces: 498 lines, 140 of them an injected <style> block setting a #ededed
   grey ground, a purple 50px title and a 265px pill button, and four copies of the same
@@ -38,12 +42,11 @@
 
   <!-- ───────────────────────────────────────────── signed in: read your details -->
   <div ng-if="user.Type != 'TempCustomer'">
-    <div class="hz-pg-head">
+    <!-- No standfirst. The title and the card under it say what the page is, and a line
+         explaining that was one more thing to read before the record itself. -->
+    <div class="hz-pg-head" style="margin-bottom: 22px;">
       <h1 class="hz-pg-title">Your information</h1>
     </div>
-    <p class="hz-pg-sub">
-      What Hertz HR holds about you, and what it means for your uniform.
-    </p>
 
     <!--
       One card, entirely read-only. There are no inputs at all: the previous version put
@@ -64,17 +67,26 @@
       Four51 username rather than anything an employee would recognise; the phone number,
       which is Four51's field and not one we carry; and the cycle end date.
     -->
-    <div class="hz-pg-card hz-pg-prof" style="max-width: 760px;">
+    <!-- Card and note share one measured column, so their right edges line up. The
+         note used to run the full width of the page while the card stopped at 760,
+         and two different right edges on a page this short read as a mistake. -->
+    <div class="hz-pg-stack">
+    <div class="hz-pg-card hz-pg-prof">
 
-      <!-- The mini-profile header: initials on a yellow fill, the name, and the job
-           title under it. Yellow is a fill and never type, and type on yellow is the
-           brand's own dark grey. -->
+      <!--
+        The Hertz mark, then the name and the job title under it, so the card reads as an
+        official record rather than a social profile. It replaced a tile of the
+        employee's initials on a yellow fill, which looked like an avatar and implied an
+        account they own rather than a record Hertz keeps.
+
+        The same logo file the site header uses, so there is one Hertz mark on the page
+        and no second copy to go stale.
+      -->
       <div class="hz-pg-prof-head">
-        <span class="hz-pg-prof-av" aria-hidden="true">{{(profile.firstName || '?').charAt(0)}}{{(profile.lastName || '').charAt(0)}}</span>
-        <div class="hz-pg-prof-id">
-          <p class="hz-pg-prof-name">{{profile.firstName}} {{profile.lastName}}</p>
-          <p class="hz-pg-prof-role" ng-if="profile.jobTitle">{{profile.jobTitle}}</p>
-        </div>
+        <img class="hz-pg-prof-logo"
+             src="https://images.hertz.com/misc/overlay/hertz-logo-black.png" alt="Hertz" />
+        <p class="hz-pg-prof-name">{{profile.firstName}} {{profile.lastName}}</p>
+        <p class="hz-pg-prof-role" ng-if="profile.jobTitle">{{profile.jobTitle}}</p>
       </div>
 
       <div class="hz-pg-card-b">
@@ -130,11 +142,15 @@
       </div>
     </div>
 
-    <!-- The client asked for this explicitly: say what to do when something is wrong. -->
+    <!--
+      Say what to do, and nothing else. This used to explain that the details come from
+      Hertz HR and that editing them here would not reach anyone, which named a
+      department the reader cannot contact and described a mechanism they did not ask
+      about. Someone who spots a wrong department code needs one sentence and one person.
+    -->
     <div class="hz-pg-note">
-      <p><strong>Something here not right?</strong> These details come from Hertz HR and
-        cannot be changed on this site, so editing them here would not reach anyone.
-        Contact your Uniform Champion and they will get the record corrected.</p>
+      <p>If something here is incorrect, please contact your Uniform Champion.</p>
+    </div>
     </div>
   </div>
 
