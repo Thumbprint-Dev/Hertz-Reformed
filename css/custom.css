@@ -3326,6 +3326,14 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   color: var(--muted); margin: 0;
 }
 .hz-pg-card-b { padding: 20px; }
+/* Prose inside a card. Shared rather than per-page: the contact page set its own body
+   size twice and both times it came out a size off from every other page.
+   `p.hz-pg-quiet` is qualified with the element deliberately: `.hz-pg-card-b > p` is
+   (0,0,1,1) and a bare `.hz-pg-quiet` at (0,0,1,0) would lose to it. */
+.hz-pg-card-b > p { font-size: 15px; line-height: 1.6; color: var(--body); margin: 0; }
+.hz-pg-card-b > p + p { margin-top: 12px; }
+.hz-pg-card-b > p.hz-pg-quiet { font-size: 14px; color: var(--muted); }
+.hz-pg-card-b > .hz-pg-btn { margin-top: 16px; }
 
 /* ---- tables ----
    No vertical rules and no zebra. A row is separated from the next by one hairline,
@@ -3562,6 +3570,11 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   border: 1px solid var(--edge); border-radius: 8px; background: #fff;
   max-width: 760px;
 }
+/* A column of stacked cards at the same measure as the panel above. For a page that is
+   a few short blocks rather than a table: run those full width and a two-line card
+   stretches across a 1440px screen with the text stranded at one end. */
+.hz-pg-stack { max-width: 760px; }
+.hz-pg-stack > .hz-pg-card:last-child { margin-bottom: 0; }
 .hz-pg-sect { padding: 22px 24px; border-top: 1px solid var(--line); }
 .hz-pg-sect:first-child { border-top: 0; }
 .hz-pg-sect-t {
@@ -3578,73 +3591,4 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-pg-sect address {
   font-size: 14px; line-height: 1.55; font-style: normal; color: var(--body); margin: 0;
-}
-
-/* ---- contact page ----
-   Built to a layout the client drew: a hero-weight title over the yellow rule, two equal
-   panels, and a ruled strip of three facts along the bottom. It carries its own heading
-   and panel sizes rather than the shared .hz-pg-card, because the shared card is a list
-   container with an 11px uppercase header and this wants a spoken heading. */
-/*
-  The title and the standfirst are NOT set here. This page uses `.hz-pg-title` and
-  `.hz-pg-sub`, the same two classes as order history, addresses and your information,
-  because a page that sets its own heading type drifts from the rest of the site the
-  moment either is touched. The first cut of this page did exactly that: a 58px 700
-  title where every sibling page is 42px 600, and a 16px body-coloured standfirst where
-  every sibling is 15px muted. It read as a different site.
-
-  The only thing this page adds to that header is the yellow rule below it, which is the
-  landing hero's own `.hz-lp-bar` at the same 8px height. Yellow is a fill, never type.
-*/
-.hz-ct-bar {
-  display: block; width: 200px; height: 8px; background: var(--yellow); margin: 14px 0 20px;
-}
-
-.hz-ct-row {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 30px; margin: 38px 0 0;
-}
-.hz-ct-card {
-  border: 1px solid var(--edge); background: #fff; border-radius: 2px;
-  padding: clamp(24px, 3.4vw, 46px);
-}
-/* The second panel is a filled ground rather than an outlined box, which is what
-   separates the thing you do from the thing you read. */
-.hz-ct-card--fill { background: var(--sub); border-color: transparent; }
-/* 24px display 600: the size the site already uses for a spoken heading inside a card,
-   the one on the order-history empty state. Not a size invented for this page. */
-.hz-ct-h {
-  font-family: var(--display); font-weight: 600; font-size: 24px; line-height: 1.1;
-  color: var(--ink); margin: 0 0 12px;
-}
-.hz-ct-card p { font-size: 15px; line-height: 1.6; color: var(--body); margin: 0; }
-.hz-ct-card p strong { color: var(--ink); font-weight: 700; }
-/* Buttons take the shared size. They were a size up here, which made the same action
-   look like a different control depending on which page you reached it from. */
-.hz-ct-btns { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 0; }
-
-/* The aside under the live-chat copy: a rule, then a quieter line with an icon. */
-.hz-ct-aside {
-  display: flex; align-items: flex-start; gap: 12px;
-  margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--edge);
-}
-.hz-ct-aside svg { flex: 0 0 auto; margin-top: 2px; }
-/* 14px muted, the same as .hz-pg-field-hint and every other secondary line. */
-.hz-ct-aside p { font-size: 14px; line-height: 1.55; color: var(--muted); margin: 0; }
-
-/* ---- the three facts along the bottom ---- */
-.hz-ct-facts {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  margin: 46px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-}
-.hz-ct-fact { padding: 26px 0 26px 30px; border-left: 1px solid var(--line); }
-/* The first column sits against the page edge, so it takes no rule and no indent. */
-.hz-ct-fact:first-child { border-left: 0; padding-left: 0; }
-.hz-ct-fact-k {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--muted); margin: 0 0 8px;
-}
-/* 15px, matching the body size the rest of the site sets. */
-.hz-ct-fact address, .hz-ct-fact p {
-  font-size: 15px; line-height: 1.55; font-style: normal; color: var(--ink); margin: 0;
 }
