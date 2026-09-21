@@ -3570,11 +3570,25 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   border: 1px solid var(--edge); border-radius: 8px; background: #fff;
   max-width: 760px;
 }
-/* A column of stacked cards at the same measure as the panel above. For a page that is
-   a few short blocks rather than a table: run those full width and a two-line card
-   stretches across a 1440px screen with the text stranded at one end. */
-.hz-pg-stack { max-width: 760px; }
-.hz-pg-stack > .hz-pg-card:last-child { margin-bottom: 0; }
+/* Cards side by side, filling the page.
+   This replaced a 760px column of stacked cards, which was the wrong answer to the right
+   question. Short blocks DO look stranded run full width one under another, but putting
+   them in a narrow column left two thirds of a 1990px screen empty and stacked three
+   header strips over about four lines of content. Side by side they use the width and
+   the headers stop outnumbering the prose.
+   Cards stretch to a common height, so the row has one top edge and one bottom edge. */
+.hz-pg-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
+}
+.hz-pg-cards > .hz-pg-card { margin-bottom: 20px; }
+/* A label-and-block pair inside a card body, for things that read better stacked than
+   as a right-aligned dl row: an address, or an opening time. */
+.hz-pg-card-b address {
+  font-size: 15px; line-height: 1.55; font-style: normal; color: var(--ink); margin: 0;
+}
+/* The uppercase label takes a gap when it is used inside a body rather than as a card
+   header. Two-class selector so it beats the bare `.hz-pg-card-t` margin of 0. */
+.hz-pg-card-b .hz-pg-card-t { margin: 0 0 6px; }
 .hz-pg-sect { padding: 22px 24px; border-top: 1px solid var(--line); }
 .hz-pg-sect:first-child { border-top: 0; }
 .hz-pg-sect-t {
