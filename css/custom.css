@@ -3616,3 +3616,29 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   background-color: var(--sub); color: var(--ink); cursor: default;
 }
 .hz-pg-field input[readonly]:focus { border-color: var(--edge); }
+
+/* ---- mini profile header ----
+   The top of the account card: initials on a yellow fill, then the name and job title.
+   Yellow is a fill and never type, and type on yellow is the brand's own dark grey
+   #434244, not black and not white. 2px radius like every other control on the site,
+   rather than the circle an avatar usually gets, because the brand's shapes are square. */
+.hz-pg-prof-head {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px; border-bottom: 1px solid var(--line);
+}
+.hz-pg-prof-av {
+  flex: 0 0 auto; width: 52px; height: 52px; border-radius: 2px;
+  background: var(--yellow); color: #434244;
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 22px; font-weight: 700;
+  letter-spacing: .02em; text-transform: uppercase;
+}
+.hz-pg-prof-id { min-width: 0; }
+.hz-pg-prof-name {
+  font-family: var(--display); font-size: 25px; font-weight: 600; line-height: 1.1;
+  color: var(--ink); margin: 0;
+}
+.hz-pg-prof-role { font-size: 14px; color: var(--muted); margin: 3px 0 0; }
+/* The value column can hold an email address, which has no spaces to break on and would
+   otherwise push the row wider than the card. */
+.hz-pg-prof .hz-pg-dl-v { overflow-wrap: anywhere; }

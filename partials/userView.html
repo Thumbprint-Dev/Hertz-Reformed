@@ -45,140 +45,88 @@
       What Hertz HR holds about you, and what it means for your uniform.
     </p>
 
-    <div class="hz-pg-cards">
-
-      <!--
-        Bound to `profile`, our own record from the HR feed, not to `user`, which is
-        Four51's copy. The page tells the employee these details come from Hertz HR, so
-        they had better be the ones Hertz HR sent: the two can disagree, and showing
-        Four51's version under that sentence would send someone to their champion to
-        correct a value the champion cannot see.
-
-        Blank when we hold nothing, deliberately. `profile` is null until the call
-        returns and stays null if it fails, and an empty box is an honest answer to "what
-        do we have for you". There is nothing to fall back to, because the fallback would
-        be the number this page just said is not authoritative.
-
-        Phone is gone at the client's request. It was Four51's field, we do not carry one
-        in `employees`, and a box that is always empty invites the edit the page refuses.
-      -->
-      <div class="hz-pg-card">
-        <div class="hz-pg-card-h">
-          <p class="hz-pg-card-t">Contact details</p>
-        </div>
-        <div class="hz-pg-card-b">
-          <div class="hz-pg-fields">
-            <div class="hz-pg-field">
-              <label for="hzFirst">First name</label>
-              <input id="hzFirst" type="text" ng-model="profile.firstName" readonly />
-            </div>
-            <div class="hz-pg-field">
-              <label for="hzLast">Last name</label>
-              <input id="hzLast" type="text" ng-model="profile.lastName" readonly />
-            </div>
-            <div class="hz-pg-field">
-              <!-- `text`, not `email`: the field is display-only, and an email input
-                   hands a readonly value to Angular's validator, which can mark the
-                   field invalid over something nobody here can fix. -->
-              <label for="hzEmail">Email</label>
-              <input id="hzEmail" type="text" ng-model="profile.email" readonly />
-            </div>
-          </div>
-          <!-- Without this, a failed call leaves three empty boxes that read as "Hertz
-               holds nothing for you" rather than "we could not reach the record". -->
-          <p class="hz-pg-quiet" ng-if="profileError" style="margin-top: 14px;">
-            Your details could not be loaded just now. Refresh the page, or ask your
-            Uniform Champion.
-          </p>
-        </div>
-      </div>
-
-      <!--
-        From the HR feed, through GET /me/profile. Rows use ng-if rather than printing an
-        empty value: a blank beside a label reads as "we hold nothing for you", which is
-        different from a field this programme does not populate.
-      -->
-      <div class="hz-pg-card">
-        <div class="hz-pg-card-h">
-          <p class="hz-pg-card-t">Your role at Hertz</p>
-        </div>
-        <div class="hz-pg-card-b">
-          <div class="hz-pg-dl" ng-if="profile">
-            <div class="hz-pg-dl-row" ng-if="profile.employeeId">
-              <span class="hz-pg-dl-k">Employee ID</span>
-              <span class="hz-pg-dl-v">{{profile.employeeId}}</span>
-            </div>
-            <div class="hz-pg-dl-row" ng-if="profile.jobTitle">
-              <span class="hz-pg-dl-k">Job title</span>
-              <span class="hz-pg-dl-v">{{profile.jobTitle}}</span>
-            </div>
-            <div class="hz-pg-dl-row" ng-if="profile.deptCode">
-              <span class="hz-pg-dl-k">Department</span>
-              <span class="hz-pg-dl-v">{{profile.deptCode}}</span>
-            </div>
-            <div class="hz-pg-dl-row" ng-if="profile.brand">
-              <span class="hz-pg-dl-k">Brand</span>
-              <span class="hz-pg-dl-v">{{profile.brand}}</span>
-            </div>
-            <!-- FT and PT are how the feed spells it; they are expanded here because the
-                 employee did not write the feed. -->
-            <div class="hz-pg-dl-row" ng-if="profile.employmentType">
-              <span class="hz-pg-dl-k">Employment</span>
-              <span class="hz-pg-dl-v">{{profile.employmentType === 'FT' ? 'Full time' : (profile.employmentType === 'PT' ? 'Part time' : profile.employmentType)}}</span>
-            </div>
-            <!-- Only when Hertz has supplied a ship-to address for the department code.
-                 None are loaded yet, so this row is absent today and appears on its own
-                 the day they arrive. -->
-            <div class="hz-pg-dl-row" ng-if="profile.locationCity">
-              <span class="hz-pg-dl-k">Location</span>
-              <span class="hz-pg-dl-v">{{profile.locationCity}}<span ng-if="profile.locationState">, {{profile.locationState}}</span></span>
-            </div>
-            <div class="hz-pg-dl-row" ng-if="profile.hireDate">
-              <span class="hz-pg-dl-k">Hire date</span>
-              <span class="hz-pg-dl-v">{{profile.hireDate | hzDate}}</span>
-            </div>
-          </div>
-          <p class="hz-pg-quiet" ng-if="profileError">
-            Your role details could not be loaded just now. Refresh the page, or ask your
-            Uniform Champion.
-          </p>
-        </div>
-      </div>
-    </div>
-
     <!--
-      The allocation half. Separated from the role above because this is the part that
-      answers "why do I get what I get", which is the question the account page was never
-      able to answer before.
+      One card, entirely read-only. There are no inputs at all: the previous version put
+      name and email in locked text boxes, which still look like a form and still invite
+      the edit this page refuses. A label and a value say the same thing and promise
+      nothing.
+
+      Everything comes from `profile`, our own record from the HR feed, not from `user`,
+      which is Four51's copy. The page tells the employee these details come from Hertz
+      HR, so they had better be the ones Hertz HR sent: the two can disagree, and showing
+      Four51's version under that sentence would send someone to their champion to
+      correct a value the champion cannot see.
+
+      Rows use `ng-if` rather than printing an empty value, so a field we hold nothing
+      for is absent rather than showing a label with a blank beside it.
+
+      Not here, at the client's request: the employee id, which on this storefront is the
+      Four51 username rather than anything an employee would recognise; the phone number,
+      which is Four51's field and not one we carry; and the cycle end date.
     -->
-    <div class="hz-pg-card" ng-if="profile && (profile.groupName || profile.cycleEnd || profile.eligibilityDate)">
-      <div class="hz-pg-card-h">
-        <p class="hz-pg-card-t">Your uniform allocation</p>
+    <div class="hz-pg-card hz-pg-prof" style="max-width: 760px;">
+
+      <!-- The mini-profile header: initials on a yellow fill, the name, and the job
+           title under it. Yellow is a fill and never type, and type on yellow is the
+           brand's own dark grey. -->
+      <div class="hz-pg-prof-head">
+        <span class="hz-pg-prof-av" aria-hidden="true">{{(profile.firstName || '?').charAt(0)}}{{(profile.lastName || '').charAt(0)}}</span>
+        <div class="hz-pg-prof-id">
+          <p class="hz-pg-prof-name">{{profile.firstName}} {{profile.lastName}}</p>
+          <p class="hz-pg-prof-role" ng-if="profile.jobTitle">{{profile.jobTitle}}</p>
+        </div>
       </div>
+
       <div class="hz-pg-card-b">
-        <div class="hz-pg-sect-two">
-          <div ng-if="profile.groupName">
-            <p class="hz-pg-card-t">Allocation group</p>
-            <p>{{profile.groupName}}</p>
-            <p class="hz-pg-quiet">This is what decides which items and how many you are
-              allocated.</p>
+        <div class="hz-pg-dl" ng-if="profile">
+          <div class="hz-pg-dl-row" ng-if="profile.email">
+            <span class="hz-pg-dl-k">Email</span>
+            <span class="hz-pg-dl-v">{{profile.email}}</span>
           </div>
-          <div ng-if="profile.cycleEnd">
-            <p class="hz-pg-card-t">Current cycle ends</p>
-            <p>{{profile.cycleEnd | hzDate}}</p>
-            <p class="hz-pg-quiet">Anything you have not ordered by then does not carry
-              over. A new allocation opens the next day.</p>
+          <div class="hz-pg-dl-row" ng-if="profile.deptCode">
+            <span class="hz-pg-dl-k">Department</span>
+            <span class="hz-pg-dl-v">{{profile.deptCode}}</span>
           </div>
-          <div ng-if="!profile.cycleEnd && profile.eligibilityDate">
-            <p class="hz-pg-card-t">You can order from</p>
-            <p>{{profile.eligibilityDate | hzDate}}</p>
-            <p class="hz-pg-quiet">New hires become eligible 90 days after their hire
-              date.</p>
+          <div class="hz-pg-dl-row" ng-if="profile.brand">
+            <span class="hz-pg-dl-k">Brand</span>
+            <span class="hz-pg-dl-v">{{profile.brand}}</span>
+          </div>
+          <!-- FT and PT are how the feed spells it; expanded here because the employee
+               did not write the feed. -->
+          <div class="hz-pg-dl-row" ng-if="profile.employmentType">
+            <span class="hz-pg-dl-k">Employment</span>
+            <span class="hz-pg-dl-v">{{profile.employmentType === 'FT' ? 'Full time' : (profile.employmentType === 'PT' ? 'Part time' : profile.employmentType)}}</span>
+          </div>
+          <!-- Only once Hertz has supplied a ship-to address for the department code.
+               None are loaded yet, so this row is absent today and appears on its own
+               the day they arrive. -->
+          <div class="hz-pg-dl-row" ng-if="profile.locationCity">
+            <span class="hz-pg-dl-k">Location</span>
+            <span class="hz-pg-dl-v">{{profile.locationCity}}<span ng-if="profile.locationState">, {{profile.locationState}}</span></span>
+          </div>
+          <div class="hz-pg-dl-row" ng-if="profile.hireDate">
+            <span class="hz-pg-dl-k">Hire date</span>
+            <span class="hz-pg-dl-v">{{profile.hireDate | hzDate}}</span>
+          </div>
+          <!-- `groupLabel` is the group written out, `Full Time Cold Weather`, composed
+               server-side from the group's own columns rather than from its name. -->
+          <div class="hz-pg-dl-row" ng-if="profile.groupLabel">
+            <span class="hz-pg-dl-k">Allocation group</span>
+            <span class="hz-pg-dl-v">{{profile.groupLabel}}</span>
           </div>
         </div>
-        <p style="margin-top: 18px;">
-          <a class="hz-pg-btn hz-pg-btn--ghost" href="allocation">See what you can order</a>
+
+        <p class="hz-pg-quiet" ng-if="profile.groupLabel" style="margin-top: 12px;">
+          Your allocation group decides which items you get and how many.
         </p>
+
+        <p class="hz-pg-quiet" ng-if="profileError">
+          Your details could not be loaded just now. Refresh the page, or ask your
+          Uniform Champion.
+        </p>
+
+        <a class="hz-pg-btn hz-pg-btn--ghost" href="allocation"
+           style="margin-top: 18px;">See what you can order</a>
       </div>
     </div>
 
