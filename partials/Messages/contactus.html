@@ -1,102 +1,96 @@
 <!--
-  Contact us.
+  Contact us. Built to a layout the client drew: a hero-weight title over the yellow rule,
+  two equal panels, and a ruled strip of three facts along the bottom.
 
-  Two rewrites. The first got the content right and the layout wrong: a yellow-ruled
-  notice, two cards down the left and a third floating in a right-hand column, four boxes
-  at four different sizes with a field of white beside them. The client asked for simple
-  and uniform, which is the same note they gave on checkout.
+  Two things about the history of this file are worth keeping.
 
-  So it is one panel now. Same border around the lot, a hairline between each section,
-  the same padding on every one, in the order someone would ask: their Uniform Champion
-  first, because a champion can fix most of this in a minute and support cannot; then
-  what to do when something arrived wrong; then support hours; then the offices.
+  It used to be a browser "save page as" dump — 80KB of full HTML document with its own
+  <head>, <body> and an inlined New Relic agent, loaded as an Angular partial into a page
+  that already had all three, of which about 1KB was content.
 
-  Before that it was a browser "save page as" dump — 80KB of full HTML document with its
-  own <head>, <body> and an inlined New Relic agent, loaded as an Angular partial into a
-  page that already had all three, of which about 1KB was content.
-
-  The words were written for a Thumbprint client rather than a Hertz employee: it offered
-  to "make your branded shopping experience seamless" and asked for "feedback on how we
-  can better serve your team". The person who reaches this page is a rental agent whose
-  polo did not arrive.
+  And the words were written for a Thumbprint client rather than a Hertz employee: it
+  offered to "make your branded shopping experience seamless" and asked for "feedback on
+  how we can better serve your team". The person who reaches this page is a rental agent
+  whose polo did not arrive, so the page gives them the two things they can act on, then
+  the details.
 
   Nothing here is invented. The hours, the live chat and both office addresses are the
-  ones the old page carried. The email address and phone number that were already
-  commented out on the old page are still commented out below: they were taken down at
-  some point, and putting them back is a decision for Hertz and Thumbprint rather than
-  part of a rewrite.
+  ones the original page carried. The email address and phone number that were already
+  commented out on it are still commented out below: they were taken down at some point,
+  and putting them back is a decision for Hertz and Thumbprint rather than part of a
+  layout change.
+
+  The Uniform Champion paragraph that stood at the top of the previous version is not in
+  the client's layout and is not here. The footer on every page still names what a
+  champion can do.
 
   No em dashes in the copy, per the client.
 -->
 <section class="hz-pg">
 
-  <div class="hz-pg-head">
-    <h1 class="hz-pg-title">Contact us</h1>
-  </div>
-  <p class="hz-pg-sub">
-    Something wrong with an order, or not sure what you are entitled to? Start with the
-    person closest to it.
+  <h1 class="hz-ct-title">Contact us</h1>
+  <span class="hz-ct-bar" aria-hidden="true"></span>
+  <p class="hz-ct-sub">
+    Something wrong with an order, or not sure what you are entitled to? Start here.
   </p>
 
-  <div class="hz-pg-panel">
+  <div class="hz-ct-row">
 
-    <div class="hz-pg-sect">
-      <p class="hz-pg-sect-t">Start here</p>
-      <p><strong>Your Uniform Champion.</strong> They can adjust your quantities, place an
-        order on your behalf and start a return, usually the same day. For anything about
-        what you are allowed to order, they are the fastest route.</p>
-    </div>
-
-    <div class="hz-pg-sect">
-      <p class="hz-pg-sect-t">Something arrived wrong</p>
+    <div class="hz-ct-card">
+      <h2 class="hz-ct-h">Returns</h2>
       <p>Wrong size, wrong item, or damaged on the way? Start a return. The allocation
         goes back to you, so you can order the right one.</p>
-      <a class="hz-pg-btn" href="https://thumbprint.com/hertz/UniformReturn"
-         target="_blank" rel="noopener noreferrer">Start a return</a>
-    </div>
-
-    <div class="hz-pg-sect">
-      <p class="hz-pg-sect-t">Still need a hand</p>
-      <div class="hz-pg-dl">
-        <div class="hz-pg-dl-row">
-          <span class="hz-pg-dl-k">Support hours</span>
-          <span class="hz-pg-dl-v">Monday to Friday, 9:00am to 5:00pm ET</span>
-        </div>
-        <div class="hz-pg-dl-row">
-          <span class="hz-pg-dl-k">Live chat</span>
-          <span class="hz-pg-dl-v">The chat button, bottom right of any page</span>
-        </div>
-        <!--
-          Email and phone were on this page once and were commented out before the
-          rewrite. Left as found rather than restored, because whether employees get a
-          direct line is a client decision:
-            Email  hertzsupport@thumbprint.com
-            Phone  317.703.3449
-        -->
-      </div>
-      <p style="margin-top: 12px; color: #5f6778;">
-        Outside those hours, leave a message in chat and it is picked up the next working
-        morning.
-      </p>
-    </div>
-
-    <div class="hz-pg-sect">
-      <!-- Offices, not a returns address. Returns go through the link above, which is
-           what routes the garment and credits the allocation back. -->
-      <p class="hz-pg-sect-t">Thumbprint offices</p>
-      <div class="hz-pg-sect-two">
-        <address>
-          <strong>Headquarters</strong><br />
-          15255 Endeavor Drive<br />
-          Noblesville, IN 46060
-        </address>
-        <address>
-          <strong>Florida</strong><br />
-          2478 E Michigan St<br />
-          Orlando, FL 32806
-        </address>
+      <div class="hz-ct-btns">
+        <a class="hz-pg-btn" href="https://thumbprint.com/hertz/UniformReturn"
+           target="_blank" rel="noopener noreferrer">Start a return</a>
+        <!-- Two FAQs under one label, exactly as the landing page and the header do it:
+             a champion's FAQ is a different page from a shopper's. -->
+        <a class="hz-pg-btn hz-pg-btn--ghost" href="faq"
+           ng-show="hertzChampionUser || dollarChampionUser || thriftyChampionUser">Uniform FAQ</a>
+        <a class="hz-pg-btn hz-pg-btn--ghost" href="allofaq"
+           ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">Uniform FAQ</a>
       </div>
     </div>
 
+    <div class="hz-ct-card hz-ct-card--fill">
+      <h2 class="hz-ct-h">Live chat</h2>
+      <p><strong>Click the chat button in the bottom right</strong> of any page. Monday to
+        Friday, 9:00am to 5:00pm ET.</p>
+      <!--
+        Email and phone were on this page once and were commented out before the rewrite.
+        Left as found rather than restored, because whether employees get a direct line is
+        a client decision:
+          Email  hertzsupport@thumbprint.com
+          Phone  317.703.3449
+      -->
+      <div class="hz-ct-aside">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5f6778"
+             stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 11v5" stroke-linecap="round" />
+          <path d="M12 7.8v.4" stroke-linecap="round" />
+        </svg>
+        <p>Outside those hours, leave a message in chat and it is picked up the next
+          working morning.</p>
+      </div>
+    </div>
   </div>
+
+  <div class="hz-ct-facts">
+    <!-- Offices, not a returns address. Returns go through the button above, which is
+         what routes the garment and credits the allocation back. -->
+    <div class="hz-ct-fact">
+      <p class="hz-ct-fact-k">Headquarters</p>
+      <address>15255 Endeavor Drive<br />Noblesville, IN 46060</address>
+    </div>
+    <div class="hz-ct-fact">
+      <p class="hz-ct-fact-k">Florida</p>
+      <address>2478 E Michigan St<br />Orlando, FL 32806</address>
+    </div>
+    <div class="hz-ct-fact">
+      <p class="hz-ct-fact-k">Support hours</p>
+      <p>Monday to Friday<br />9:00am to 5:00pm ET</p>
+    </div>
+  </div>
+
 </section>
