@@ -47,6 +47,21 @@
 
     <div class="hz-pg-cards">
 
+      <!--
+        Bound to `profile`, our own record from the HR feed, not to `user`, which is
+        Four51's copy. The page tells the employee these details come from Hertz HR, so
+        they had better be the ones Hertz HR sent: the two can disagree, and showing
+        Four51's version under that sentence would send someone to their champion to
+        correct a value the champion cannot see.
+
+        Blank when we hold nothing, deliberately. `profile` is null until the call
+        returns and stays null if it fails, and an empty box is an honest answer to "what
+        do we have for you". There is nothing to fall back to, because the fallback would
+        be the number this page just said is not authoritative.
+
+        Phone is gone at the client's request. It was Four51's field, we do not carry one
+        in `employees`, and a box that is always empty invites the edit the page refuses.
+      -->
       <div class="hz-pg-card">
         <div class="hz-pg-card-h">
           <p class="hz-pg-card-t">Contact details</p>
@@ -55,21 +70,26 @@
           <div class="hz-pg-fields">
             <div class="hz-pg-field">
               <label for="hzFirst">First name</label>
-              <input id="hzFirst" type="text" ng-model="user.FirstName" readonly />
+              <input id="hzFirst" type="text" ng-model="profile.firstName" readonly />
             </div>
             <div class="hz-pg-field">
               <label for="hzLast">Last name</label>
-              <input id="hzLast" type="text" ng-model="user.LastName" readonly />
+              <input id="hzLast" type="text" ng-model="profile.lastName" readonly />
             </div>
             <div class="hz-pg-field">
+              <!-- `text`, not `email`: the field is display-only, and an email input
+                   hands a readonly value to Angular's validator, which can mark the
+                   field invalid over something nobody here can fix. -->
               <label for="hzEmail">Email</label>
-              <input id="hzEmail" type="email" ng-model="user.Email" readonly />
-            </div>
-            <div class="hz-pg-field">
-              <label for="hzPhone">Phone</label>
-              <input id="hzPhone" type="text" ng-model="user.Phone" readonly />
+              <input id="hzEmail" type="text" ng-model="profile.email" readonly />
             </div>
           </div>
+          <!-- Without this, a failed call leaves three empty boxes that read as "Hertz
+               holds nothing for you" rather than "we could not reach the record". -->
+          <p class="hz-pg-quiet" ng-if="profileError" style="margin-top: 14px;">
+            Your details could not be loaded just now. Refresh the page, or ask your
+            Uniform Champion.
+          </p>
         </div>
       </div>
 
