@@ -2609,20 +2609,45 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 
 /* ---- ordering on behalf: the banner on the picker ---- */
+/* A strip, not a line.
+   It carried a group and an employee id, which is not enough to be sure you have the
+   right person before spending their year. It is now a compact profile: name, id,
+   department, title, group and the date the allocation resets. Two rows so it stays one
+   strip at any width rather than a sentence that wraps into a paragraph.
+   Yellow is a fill and the type on it is the brand's dark ink, never white. */
 .hz-onbehalf {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
   background: #fc0; color: #11172b;
   border-radius: 8px; padding: 12px 16px; margin: 0 0 20px;
+}
+.hz-onbehalf-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .hz-onbehalf-tag {
   font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase;
 }
+/* The facts, as label-over-value pairs on one wrapping row. `column-gap` is wide enough
+   to read as separate fields without needing a divider glyph between them. */
+.hz-onbehalf-facts {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; margin: 8px 0 0;
+}
+.hz-onbehalf-name {
+  font-family: var(--display); font-size: 20px; font-weight: 700; line-height: 1.1;
+  margin-right: 4px;
+}
+.hz-onbehalf-f { font-size: 13.5px; font-variant-numeric: tabular-nums; }
+/* The label. Bold rather than a lighter tint, because a tint of ink on yellow goes muddy
+   long before it goes quiet. */
+.hz-onbehalf-f b {
+  display: block; font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; opacity: .68; margin-bottom: 1px;
+}
+/* Kept for anything still using the old single-line form. */
 .hz-onbehalf-who { font-size: 14px; }
 .hz-onbehalf-who b { font-variant-numeric: tabular-nums; }
 .hz-onbehalf-x {
-  margin-left: auto; background: #fff; border: 1px solid #11172b; border-radius: 4px;
+  flex: 0 0 auto; background: #fff; border: 1px solid #11172b; border-radius: 4px;
   font: inherit; font-size: 13px; font-weight: 700; color: #11172b;
-  padding: 8px 14px; cursor: pointer;
+  padding: 8px 14px; cursor: pointer; white-space: nowrap;
 }
 .hz-onbehalf-x:hover, .hz-onbehalf-x:focus { background: #11172b; color: #fff; }
 

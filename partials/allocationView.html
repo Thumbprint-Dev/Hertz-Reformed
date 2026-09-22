@@ -16,15 +16,51 @@
       silent and only discovered by them.
     -->
     <div class="hz-onbehalf" ng-if="alloc.onBehalf">
-      <span class="hz-onbehalf-tag">Ordering on behalf</span>
-      <!-- Same wording as the subheading and the account page. A Champion reading this is
-           checking they have the right person, and the group is part of that. -->
-      <span class="hz-onbehalf-who">
-        {{alloc.view.groupLabel || alloc.view.groupName}} &middot; employee <b>{{alloc.beneficiaryId}}</b>
-      </span>
-      <button class="hz-onbehalf-x" type="button" ng-click="alloc.leaveOnBehalf()">
-        Choose someone else
-      </button>
+      <div class="hz-onbehalf-top">
+        <span class="hz-onbehalf-tag">Ordering on behalf</span>
+        <button class="hz-onbehalf-x" type="button" ng-click="alloc.leaveOnBehalf()">
+          Choose someone else
+        </button>
+      </div>
+
+      <!--
+        The beneficiary in full, because the Champion is spending someone else's year and
+        the mistake this prevents is silent: it is only discovered by the person whose
+        allocation went. A group and an id were not enough to be sure you have the right
+        person; a name and a department are.
+
+        Laid out as pairs rather than a sentence so it stays one strip at any width, and
+        each value only appears when we hold it. `alloc.beneficiary` comes from
+        `GET /me/profile?for=`; if that call fails the strip falls back to the group and
+        the id already on the entitlement view, which is what it showed before.
+      -->
+      <div class="hz-onbehalf-facts">
+        <span class="hz-onbehalf-name" ng-if="alloc.beneficiary">
+          {{alloc.beneficiary.firstName}} {{alloc.beneficiary.lastName}}
+        </span>
+
+        <span class="hz-onbehalf-f">
+          <b>Employee</b>{{alloc.beneficiaryId}}
+        </span>
+        <span class="hz-onbehalf-f" ng-if="alloc.beneficiary.deptCode">
+          <b>Department</b>{{alloc.beneficiary.deptCode}}
+        </span>
+        <span class="hz-onbehalf-f" ng-if="alloc.beneficiary.jobTitle">
+          <b>Title</b>{{alloc.beneficiary.jobTitle}}
+        </span>
+        <span class="hz-onbehalf-f" ng-if="alloc.view.groupLabel || alloc.view.groupName">
+          <b>Group</b>{{alloc.view.groupLabel || alloc.view.groupName}}
+        </span>
+        <!--
+          The anniversary, in the words a Champion uses. `cycleEnd` is the last day of the
+          allocation year, so the reset is the day after it, and saying "ends" invites the
+          question "so when does the new one start". `hzResetDate` adds the day and formats
+          it, in America/New_York like every other date in this system.
+        -->
+        <span class="hz-onbehalf-f" ng-if="alloc.view.cycleEnd">
+          <b>Allocation resets</b>{{alloc.view.cycleEnd | hzResetDate}}
+        </span>
+      </div>
     </div>
 
     <header class="hz-pick-head">

@@ -59,3 +59,31 @@ four51.app.filter('hzPool', function() {
     return LABELS[value] || value;
   };
 });
+
+/**
+ * The day an allocation year rolls over, from the day it ends.
+ *
+ * `cycleEnd` is the LAST day of the cycle, so the reset is the day after it. Showing the
+ * end date under a label saying "resets" would be off by one, and a Uniform Champion
+ * planning around it would tell someone the wrong week.
+ *
+ * Arithmetic in UTC on the date parts, never `new Date(string)` plus local getters:
+ * `2027-05-27` parses as UTC midnight, and reading it back with local getters west of
+ * Greenwich returns the 26th. Same class of bug as the feed generator's, which put CI in
+ * the wrong day for four hours a night (CLAUDE.md invariant 7).
+ */
+four51.app.filter('hzResetDate', ['hzDateFilter', function(hzDateFilter) {
+  return function(value) {
+    if (!value || typeof value !== 'string') return value;
+    var parts = value.split('-');
+    if (parts.length < 3) return value;
+
+    var next = new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2] + 1));
+    if (isNaN(next.getTime())) return value;
+
+    var iso = next.getUTCFullYear() + '-' +
+              ('0' + (next.getUTCMonth() + 1)).slice(-2) + '-' +
+              ('0' + next.getUTCDate()).slice(-2);
+    return hzDateFilter(iso);
+  };
+}]);

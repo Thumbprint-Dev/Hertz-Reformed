@@ -62,7 +62,9 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       result: null,
       /** True when a Champion is ordering for someone else. */
       onBehalf: false,
-      beneficiaryId: null
+      beneficiaryId: null,
+      /** The beneficiary's record, loaded only when ordering on behalf. */
+      beneficiary: null
     };
 
     /** Back to the team picker, dropping the beneficiary. */
@@ -679,6 +681,22 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             $scope.alloc.view = view;
             $scope.alloc.onBehalf = !!view.onBehalf;
             $scope.alloc.beneficiaryId = view.employeeId;
+
+            // Who the Champion is ordering for, in full.
+            //
+            // Only when ordering on behalf: an employee buying for themselves does not
+            // need their own name and department read back to them, and this is a second
+            // round trip. `subjectOf` authorises `?for=` the same way the cart does, so a
+            // Champion asking for somebody out of scope gets a 403 rather than a record.
+            //
+            // A failure here is not fatal. The banner falls back to the group and the
+            // employee id it already has from the entitlement view, which is what it
+            // showed before this existed.
+            if ($scope.alloc.onBehalf) {
+              Allocation.profile(view.employeeId)
+                .then(function(p) { $scope.alloc.beneficiary = p; })
+                .catch(function() { $scope.alloc.beneficiary = null; });
+            }
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = Allocation.inDisplayOrder(view.pools);
