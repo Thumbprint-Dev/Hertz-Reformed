@@ -2373,10 +2373,49 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-lp-hero { min-height: 0; }
   .hz-lp-hero-media { min-height: 260px; border-left: 0; border-top: 1px solid var(--rule); }
 }
+/*
+  The allocation band, stacked.
+
+  The desktop row of pool cells was being wrapped into a grid of tall boxes: a small label,
+  a gap, then the number, three or two across with most of each box empty, and the closed
+  season as a grey tile that looked like a different kind of thing. Stacked, a pool is a
+  row: its name, and what is left of it, the way a receipt reads. The closed season is the
+  same row with the date where the number would be.
+*/
+@media (max-width: 860px) {
+  .hz-lp-count { gap: 10px; }
+  .hz-lp-count-n { align-items: baseline; gap: 10px; }
+  .hz-lp-count-n span { padding-bottom: 0; font-size: 15px; }
+  /* The partial carries a space after the <br>, so hiding it leaves "items available". */
+  .hz-lp-count-n br { display: none; }
+
+  /* One column at every stacked width. Two columns left a half-empty last row whenever
+     the number of pools was odd, which it usually is. */
+  .hz-lp-cats { display: grid; grid-template-columns: 1fr; }
+  .hz-lp-cat,
+  .hz-lp-cat--shut,
+  .hz-lp-cat.is-out {
+    flex-direction: row; align-items: baseline; gap: 10px;
+    padding: 15px var(--gutter); background: none;
+    border-right: 0; border-bottom: 1px solid var(--rule);
+  }
+  .hz-lp-cats { border-bottom: 0; }
+  .hz-lp-cat-l {
+    margin-right: auto; font-size: 15px; font-weight: 600; letter-spacing: 0;
+    text-transform: none; color: var(--ink);
+  }
+  .hz-lp-cat-n { font-size: 22px; }
+  .hz-lp-cat-sub { font-size: 13px; }
+  .hz-lp-cat-when { flex-direction: row; gap: 4px; }
+  .hz-lp-cat--shut .hz-lp-cat-l { color: var(--black-60); }
+}
 @media (max-width: 600px) {
   /* 44px minimum touch target. */
   .hz-lp-btn { padding: 16px 24px; }
-  .hz-lp-cat { flex-basis: 50%; min-width: 0; }
+  /* The one action in each band, the width of the band, under what it acts on. */
+  .hz-lp-alloc-go .hz-lp-btn,
+  .hz-lp-reset .hz-lp-btn { width: 100%; justify-content: center; }
+  .hz-lp-reset { flex-direction: column; align-items: stretch; }
 }
 
 /* =========================================================================
