@@ -42,10 +42,76 @@
       <div class="hz-pg-card-b">
         <p class="hz-pg-card-t">Your return is requested</p>
         <p class="hz-rt-rma">{{rt.done.rmaNumber}}</p>
-        <p class="hz-rt-rma-note">
+        <p class="hz-rt-rma-note" ng-if="rt.done.label.status !== 'issued' && rt.done.label.status !== 'sample'">
           Keep this number with your return. It is how the warehouse matches your box to
           this request.
         </p>
+
+        <!-- The prepaid label, on Hertz's shipping account. It carries the RMA, so the box
+             is matched to this return when it arrives. -->
+        <div class="hz-rt-label" ng-if="rt.done.label.status === 'issued'">
+          <p class="hz-rt-label-t">Your return label is ready</p>
+          <p class="hz-rt-label-d">
+            Print it and attach it to the outside of your box. Postage is already paid.
+          </p>
+          <a class="hz-pg-btn hz-rt-label-go" ng-href="{{rt.done.label.labelUrl}}"
+             target="_blank" rel="noopener noreferrer">Download return label</a>
+          <p class="hz-rt-label-track" ng-if="rt.done.label.trackingNumber">
+            Tracking number <b>{{rt.done.label.trackingNumber}}</b>
+          </p>
+        </div>
+
+        <!--
+          A preview, in the test environment only, while ShipStation is not connected. Drawn
+          here rather than fetched, because nothing was bought and there is no file to fetch.
+          It says SAMPLE in the one place a person would look before taping it to a box.
+        -->
+        <div class="hz-rt-label" ng-if="rt.done.label.status === 'sample'">
+          <p class="hz-rt-label-t">Your return label <span class="hz-rt-sample-tag">Sample</span></p>
+          <p class="hz-rt-label-d">
+            This is what the prepaid label will look like. Nothing was purchased: real labels
+            start once ShipStation is connected.
+          </p>
+
+          <div class="hz-rt-slip" role="img" aria-label="Sample shipping label for {{rt.done.rmaNumber}}">
+            <p class="hz-rt-slip-warn">Sample. Not a shipping label.</p>
+            <div class="hz-rt-slip-from">
+              <span class="hz-rt-slip-k">From</span>
+              <span ng-if="rt.done.label.shipFrom">
+                {{rt.done.label.shipFrom.name}}<br />
+                {{rt.done.label.shipFrom.address_line1}}<br />
+                <span ng-if="rt.done.label.shipFrom.address_line2">{{rt.done.label.shipFrom.address_line2}}<br /></span>
+                {{rt.done.label.shipFrom.city_locality}}, {{rt.done.label.shipFrom.state_province}}
+                {{rt.done.label.shipFrom.postal_code}}
+              </span>
+              <span ng-if="!rt.done.label.shipFrom">The address your order shipped to</span>
+            </div>
+            <div class="hz-rt-slip-to">
+              <span class="hz-rt-slip-k">Ship to</span>
+              <b>Hertz Returns</b>
+              <span>Returns address to be confirmed</span>
+            </div>
+            <div class="hz-rt-slip-bars" aria-hidden="true"></div>
+            <p class="hz-rt-slip-rma"><span class="hz-rt-slip-k">RMA</span>{{rt.done.rmaNumber}}</p>
+            <p class="hz-rt-slip-foot">Prepaid on the Hertz shipping account</p>
+          </div>
+
+          <button type="button" class="hz-pg-btn hz-rt-label-go" ng-click="rt.printSample()">
+            Print sample label
+          </button>
+        </div>
+
+        <!-- The return stands without a label; say so, and offer another try. -->
+        <div class="hz-pg-note hz-rt-label-fail" ng-if="rt.done.label.status === 'failed'">
+          <p><strong>Your return is requested, but the shipping label could not be created
+            yet.</strong> Try again in a moment. If it still does not work, contact your
+            Uniform Champion with your RMA number.</p>
+          <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="rt.retryLabel()"
+                  ng-disabled="rt.done.labelBusy">
+            <span ng-if="!rt.done.labelBusy">Try again</span>
+            <span ng-if="rt.done.labelBusy">Trying&hellip;</span>
+          </button>
+        </div>
 
         <div class="hz-pg-dl hz-rt-done-dl">
           <div class="hz-pg-dl-row">
@@ -71,7 +137,8 @@
         </div>
 
         <div class="hz-pg-actions">
-          <a class="hz-pg-btn" href="order">Back to my orders</a>
+          <a class="hz-pg-btn" href="order"
+             ng-class="{'hz-pg-btn--ghost': rt.done.label.status === 'issued' || rt.done.label.status === 'sample'}">Back to my orders</a>
           <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="rt.startAnother()">
             Start another return
           </button>

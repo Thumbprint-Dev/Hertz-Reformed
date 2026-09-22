@@ -69,6 +69,32 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
     var removeLine = Order.deletelineitem;
 
     /** The lines the gate meters, in the shape the API takes. */
+    /**
+     * Where the order shipped, straight off the order.
+     *
+     * Recorded at checkout so a return label can be printed from the same address later:
+     * the box goes back from wherever the uniform was sent. The order Four51 handed back wins
+     * over the one we sent, and a line's address stands in when the order carries none.
+     * Only the fields a label needs, and nothing when there is no street to send from.
+     */
+    function shipAddressOf(saved, sent) {
+      var firstLine = function(o) { return o && o.LineItems && o.LineItems[0] && o.LineItems[0].ShipAddress; };
+      var a = (saved && saved.ShipAddress) || (sent && sent.ShipAddress) || firstLine(saved) || firstLine(sent);
+      if (!a || !a.Street1 || !a.City) return null;
+      return {
+        firstName: a.FirstName || null,
+        lastName: a.LastName || null,
+        companyName: a.CompanyName || null,
+        street1: a.Street1,
+        street2: a.Street2 || null,
+        city: a.City,
+        state: a.State || null,
+        zip: a.Zip || null,
+        country: a.Country || null,
+        phone: a.Phone || null
+      };
+    }
+
     function linesOf(order) {
       var lines = [];
       angular.forEach((order && order.LineItems) || [], function(item, index) {
@@ -224,7 +250,8 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
 
       submit(order, function(saved) {
         if (Allocation.isEnabled() && orderId) {
-          Allocation.checkout(orderId, linesOf(order), Allocation.orderBeneficiary(orderId))
+          Allocation.checkout(orderId, linesOf(order), Allocation.orderBeneficiary(orderId),
+                              shipAddressOf(saved, order))
             .catch(function(err) {
               if (window.console && console.warn) {
                 console.warn('allocation checkout failed; reconciliation will correct', err);

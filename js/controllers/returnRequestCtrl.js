@@ -28,8 +28,8 @@
  * server-side by the same scope rule as ordering on behalf. `?order=<id>` preselects an
  * order, for arriving from an order's own page.
  */
-four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filter', 'Allocation',
-  function($scope, $location, $q, $filter, Allocation) {
+four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filter', '$window', 'Allocation',
+  function($scope, $location, $q, $filter, $window, Allocation) {
 
     var search = $location.search() || {};
     var FOR = search['for'] || null;
@@ -183,6 +183,10 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
             rmaNumber: created.rmaNumber,
             orderId: created.four51OrderId,
             email: created.submitterEmail,
+            // `issued`, `failed` or `not_configured`. Only the first two are ever mentioned
+            // on the page: with labels switched off the confirmation says nothing about one.
+            label: created.label || { status: 'not_configured' },
+            labelBusy: false,
             lines: (created.lines || []).map(function(l) {
               var line = byLine[l.four51LineId] || {};
               return {
@@ -212,6 +216,28 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
           }
         })
         .finally(function() { rt.submitting = false; });
+    };
+
+    /**
+     * Print the sample label and nothing else. The page's print styles show only the slip
+     * while this class is on the body, so the sample prints as a label rather than as a
+     * screenshot of the confirmation.
+     */
+    $scope.rt.printSample = function() {
+      var body = $window.document.body;
+      body.classList.add('hz-print-slip');
+      try { $window.print(); } finally { body.classList.remove('hz-print-slip'); }
+    };
+
+    /** One more attempt at the label. The return already exists either way. */
+    $scope.rt.retryLabel = function() {
+      var done = $scope.rt.done;
+      if (!done || done.labelBusy) return;
+      done.labelBusy = true;
+      Allocation.returnLabel(done.rmaNumber)
+        .then(function(res) { done.label = (res && res.label) || done.label; })
+        .catch(function() { done.label = { status: 'failed' }; })
+        .finally(function() { done.labelBusy = false; });
     };
 
     $scope.rt.startAnother = function() {

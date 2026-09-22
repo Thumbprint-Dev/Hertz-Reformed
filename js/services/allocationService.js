@@ -339,12 +339,22 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
       },
 
       /**
+       * The prepaid label for a return: the one it has, or another attempt when the first
+       * failed. The server buys at most one per return however often this is called.
+       */
+      returnLabel: function(rmaNumber) {
+        return authed('POST', '/returns/' + encodeURIComponent(rmaNumber) + '/label', null);
+      },
+
+      /**
        * Turn this order's reservations into consumption. Called after Four51 accepts a
        * submit — see the note in allocationGate.js on why after rather than before.
        */
-      checkout: function(four51OrderId, lines, forEmployeeId) {
+      checkout: function(four51OrderId, lines, forEmployeeId, shipAddress) {
         var body = { four51OrderId: four51OrderId, lines: lines };
         if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
+        // Where it shipped, so a return label can be printed from the same address.
+        if (shipAddress) body.shipAddress = shipAddress;
         return authed('POST', '/checkout', body);
       },
 

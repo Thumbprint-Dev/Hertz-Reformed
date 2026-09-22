@@ -4210,6 +4210,65 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-rt-done-qty { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-weight: 700; color: var(--ink); }
 .hz-rt-credit { margin: 0 0 18px; }
 
+/* The label: the one thing to do next, so it gets the yellow and the width. */
+.hz-rt-label {
+  margin: 0 0 18px; padding: 18px; border: 1px solid var(--edge); border-radius: 4px;
+  box-shadow: inset 3px 0 0 var(--yellow);
+}
+.hz-rt-label p { margin: 0; }
+.hz-rt-label .hz-rt-label-t { font-size: 16px; font-weight: 700; color: var(--ink); }
+.hz-rt-label .hz-rt-label-d { margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: var(--body); }
+.hz-rt-label-go {
+  display: block; width: 100%; margin-top: 14px; text-align: center; padding: 14px 22px; font-size: 15px;
+}
+.hz-rt-label .hz-rt-label-track { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.hz-rt-label-track b { color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.hz-rt-label-fail .hz-pg-btn { margin-top: 12px; }
+
+/* ---- the sample label: a 4x6 slip drawn in the page ---- */
+.hz-rt-sample-tag {
+  display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 2px; vertical-align: 2px;
+  background: var(--ink); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.hz-rt-slip {
+  margin: 14px auto 0; max-width: 320px; aspect-ratio: 4 / 6;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 14px 16px; background: #fff; border: 2px solid var(--ink); border-radius: 2px;
+  font-family: Arial, Helvetica, sans-serif; color: var(--ink);
+}
+.hz-rt-slip p { margin: 0; }
+/* The first thing anyone reads, so it cannot be mistaken for postage. */
+.hz-rt-slip .hz-rt-slip-warn {
+  padding: 6px; text-align: center; background: var(--yellow); color: #434244;
+  font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+.hz-rt-slip-k {
+  display: block; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 2px;
+}
+.hz-rt-slip-from { font-size: 12px; line-height: 1.4; }
+.hz-rt-slip-to {
+  display: flex; flex-direction: column; padding: 10px 0; font-size: 13px; line-height: 1.4;
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+}
+.hz-rt-slip-to b { font-size: 18px; }
+.hz-rt-slip-to span:last-child { color: var(--muted); }
+.hz-rt-slip-bars {
+  flex: 1 1 auto; min-height: 60px;
+  background: repeating-linear-gradient(90deg,
+    var(--ink) 0 2px, #fff 2px 4px, var(--ink) 4px 5px, #fff 5px 8px, var(--ink) 8px 11px, #fff 11px 12px);
+}
+.hz-rt-slip .hz-rt-slip-rma { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: .02em; }
+.hz-rt-slip .hz-rt-slip-foot { font-size: 11px; color: var(--muted); }
+
+/* Print only the slip when printing a sample. */
+@media print {
+  body.hz-print-slip * { visibility: hidden; }
+  body.hz-print-slip .hz-rt-slip, body.hz-print-slip .hz-rt-slip * { visibility: visible; }
+  body.hz-print-slip .hz-rt-slip { position: fixed; top: 0; left: 0; margin: 0; width: 4in; max-width: none; }
+}
+
 @media (max-width: 560px) {
   .hz-rt-order { grid-template-columns: auto minmax(0, 1fr); }
   .hz-rt-order-left { grid-column: 2; white-space: normal; }
