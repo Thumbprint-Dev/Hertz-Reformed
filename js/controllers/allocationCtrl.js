@@ -7,8 +7,8 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', '$timeout', 'Allocation', 'Order', 'Product',
-  function($scope, $rootScope, $location, $q, $timeout, Allocation, Order, Product) {
+four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', '$timeout', '$filter', 'Allocation', 'Order', 'Product',
+  function($scope, $rootScope, $location, $q, $timeout, $filter, Allocation, Order, Product) {
 
     /**
      * Whose allocation this page is spending.
@@ -158,21 +158,10 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       'Hat': 'head', 'Beanie': 'head', 'Belt': 'belt'
     };
 
-    /**
-     * A readable name for a product, derived from its InteropID.
-     *
-     * A STOPGAP. `catalog_map` stores the Four51 product id and SKU but no display name,
-     * so this reads the gender segment out of the id — `-M-` men's, `-W-` women's,
-     * `-US-`/`-UV` unisex — and pairs it with the category. When Four51 product names are
-     * available they should be used instead and this should go; deriving a label from an
-     * identifier is the kind of thing that quietly mislabels a garment after a SKU change.
-     */
+    /** A readable name for a product. The stopgap lives in `hzGarment`, shared with returns. */
+    var garment = $filter('hzGarment');
     function labelFor(productId, categoryName) {
-      var id = (productId || '').toUpperCase();
-      // "Men's Pants", not "Pants — men's": no em dashes in anything an employee reads.
-      if (/-M-/.test(id)) return "Men's " + categoryName;
-      if (/-W-/.test(id)) return "Women's " + categoryName;
-      return categoryName;
+      return garment(productId, categoryName);
     }
 
     function describe(err) {

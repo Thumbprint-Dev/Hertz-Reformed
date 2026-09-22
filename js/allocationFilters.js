@@ -51,6 +51,28 @@ four51.app.filter('hzDate', function() {
  * than renaming the pool keeps one name in the data and one in the interface, so a report
  * and a screen can never disagree about what was ordered.
  */
+/**
+ * A readable garment name from a product id and its category: "Men's Pants".
+ *
+ * A STOPGAP, and one copy of it. `catalog_map` stores the Four51 product id but no display
+ * name, so this reads the gender segment out of the id — `-M-` men's, `-W-` women's,
+ * anything else unisex — and pairs it with the category. The picker and the return form
+ * both use it, so a garment is called the same thing when it is chosen and when it is sent
+ * back. When Four51 product names are available they should replace this: deriving a label
+ * from an identifier is the kind of thing that quietly mislabels a garment after a SKU
+ * change.
+ */
+four51.app.filter('hzGarment', function() {
+  return function(productId, categoryName) {
+    var id = (productId || '').toUpperCase();
+    var name = categoryName || productId || '';
+    // "Men's Pants", not "Pants — men's": no em dashes in anything an employee reads.
+    if (/-M-/.test(id)) return "Men's " + name;
+    if (/-W-/.test(id)) return "Women's " + name;
+    return name;
+  };
+});
+
 four51.app.filter('hzPool', function() {
   // "Seasonal Outerwear" sits beside its own reopening date wherever it appears, so the
   // word "Seasonal" restates what the date already says and costs a narrow cell a line.

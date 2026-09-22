@@ -1,0 +1,259 @@
+<!--
+  Start a return.
+
+  Replaces the Cognito form, which asked for an employee id, a location number, an order
+  number in the right format, the item from a list of forty-one and a quantity, all typed and
+  all per item. Everything but the reason and the box count is something this system already
+  knows, so this asks for three decisions instead: which order, what is going back, and why.
+
+  Built from the shared page components (`hz-pg-*`), with `hz-rt-*` only for what the site
+  did not have: a choice between orders, a stepper for a quantity, and the confirmation.
+  The controller explains where the data comes from; see js/controllers/returnRequestCtrl.js.
+
+  No em dashes in the copy, per the client.
+-->
+<section class="hz-pg hz-rt">
+
+  <a class="hz-pg-back" href="returns/">&larr; Returns policy</a>
+  <div class="hz-pg-head">
+    <h1 class="hz-pg-title">Start a return</h1>
+  </div>
+  <p class="hz-pg-sub" ng-if="!rt.done">
+    Choose the order, what is going back and why. You will get an RMA number for your box.
+  </p>
+
+  <div class="hz-pg-note" ng-if="!rt.enabled">
+    <p>Returns are not switched on for this environment yet.</p>
+  </div>
+
+  <!-- Loading: the shape of what arrives, not a spinner. -->
+  <div class="hz-rt-skel" ng-if="rt.enabled && rt.loading" aria-busy="true">
+    <span class="hz-sr-only">Loading your orders</span>
+    <span class="hz-skel" style="height:72px"></span>
+    <span class="hz-skel" style="height:72px"></span>
+  </div>
+
+  <div class="hz-pg-note hz-pg-note--stop" ng-if="rt.error"><p>{{rt.error}}</p></div>
+
+  <!-- ─────────────────────────────────────────────────────────── confirmation -->
+  <div class="hz-rt-done" ng-if="rt.done">
+    <div class="hz-pg-card">
+      <div class="hz-pg-card-b">
+        <p class="hz-pg-card-t">Your return is requested</p>
+        <p class="hz-rt-rma">{{rt.done.rmaNumber}}</p>
+        <p class="hz-rt-rma-note">
+          Keep this number with your return. It is how the warehouse matches your box to
+          this request.
+        </p>
+
+        <div class="hz-pg-dl hz-rt-done-dl">
+          <div class="hz-pg-dl-row">
+            <span class="hz-pg-dl-k">Order</span><span class="hz-pg-dl-v">{{rt.done.orderId}}</span>
+          </div>
+          <div class="hz-pg-dl-row">
+            <span class="hz-pg-dl-k">Boxes</span><span class="hz-pg-dl-v">{{rt.done.boxCount}}</span>
+          </div>
+          <div class="hz-pg-dl-row">
+            <span class="hz-pg-dl-k">Questions to</span><span class="hz-pg-dl-v">{{rt.done.email}}</span>
+          </div>
+        </div>
+
+        <ul class="hz-rt-done-lines">
+          <li ng-repeat="l in rt.done.lines">
+            <span class="hz-rt-done-name">{{l.name}}<span ng-if="l.size">, size {{l.size}}</span></span>
+            <span class="hz-rt-done-why">{{l.reason}}</span>
+            <span class="hz-rt-done-qty">&times;{{l.quantity}}</span>
+          </li>
+        </ul>
+
+        <div class="hz-pg-note hz-rt-credit">
+          <p>These items go back into
+            <span ng-if="!rt.onBehalf">your</span><span ng-if="rt.onBehalf">their</span>
+            allocation when the warehouse receives them, so the right ones can be ordered.</p>
+        </div>
+
+        <div class="hz-pg-actions">
+          <a class="hz-pg-btn" href="order">Back to my orders</a>
+          <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="rt.startAnother()">
+            Start another return
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────────── form -->
+  <div ng-if="rt.enabled && !rt.loading && !rt.error && !rt.done">
+
+    <!-- Who this is for, from the HR record. The Cognito form asked for both numbers. -->
+    <div class="hz-rt-who" ng-if="rt.who">
+      <p class="hz-rt-who-l" ng-if="rt.onBehalf">Returning for</p>
+      <p class="hz-rt-who-name">{{rt.who.firstName}} {{rt.who.lastName}}</p>
+      <div class="hz-rt-who-facts">
+        <span><b>Employee ID</b>{{rt.who.employeeId}}</span>
+        <span ng-if="rt.who.deptCode"><b>Location</b>{{rt.who.deptCode}}</span>
+      </div>
+    </div>
+
+    <div class="hz-pg-grid">
+      <div>
+
+        <!-- 1. Which order -->
+        <div class="hz-pg-card">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t"><span class="hz-rt-n">1</span>Which order</p>
+          </div>
+          <div class="hz-pg-card-b">
+
+            <div class="hz-rt-orders" role="radiogroup" aria-label="Order" ng-if="rt.orders.length">
+              <button type="button" class="hz-rt-order" role="radio"
+                      ng-repeat="o in rt.orders"
+                      aria-checked="{{rt.order === o ? 'true' : 'false'}}"
+                      ng-class="{'is-on': rt.order === o, 'is-spent': o.returnable < 1}"
+                      ng-disabled="o.returnable < 1"
+                      ng-click="rt.choose(o)">
+                <span class="hz-rt-radio" aria-hidden="true"></span>
+                <span class="hz-rt-order-main">
+                  <span class="hz-rt-order-id">Order {{o.four51OrderId}}</span>
+                  <span class="hz-rt-order-meta">
+                    <span ng-if="o.placedOn">Placed {{o.placedOn | hzDate}}</span>
+                    <span>{{o.lines.length}} {{o.lines.length === 1 ? 'item' : 'items'}}</span>
+                  </span>
+                </span>
+                <span class="hz-rt-order-left" ng-if="o.returnable > 0">
+                  {{o.returnable}} can be returned
+                </span>
+                <span class="hz-rt-order-left" ng-if="o.returnable < 1">Nothing left to return</span>
+              </button>
+            </div>
+
+            <div class="hz-rt-none" ng-if="!rt.orders.length">
+              <p class="hz-rt-none-t">No orders to return</p>
+              <p>Orders placed on this site appear here once they are submitted.</p>
+            </div>
+
+            <!-- The list comes from checkout's record, which older orders predate. Saying
+                 so beats an empty list that reads as "you have nothing to return". -->
+            <p class="hz-rt-older">
+              Order not listed? Orders placed before this form existed are not shown here yet.
+              Use the <a href="https://thumbprint.com/hertz/UniformReturn" target="_blank"
+                 rel="noopener noreferrer">previous return form</a> for those.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. What is going back -->
+        <div class="hz-pg-card" ng-if="rt.order">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t"><span class="hz-rt-n">2</span>What is going back</p>
+            <span class="hz-rt-card-note">Order {{rt.order.four51OrderId}}</span>
+          </div>
+
+          <div class="hz-rt-line" ng-repeat="line in rt.order.lines"
+               ng-class="{'is-on': rt.qtyOf(line) > 0, 'is-spent': line.returnable < 1}">
+            <div class="hz-rt-line-top">
+              <div class="hz-rt-line-main">
+                <p class="hz-rt-line-name">{{rt.nameOf(line)}}</p>
+                <p class="hz-rt-line-sku">
+                  {{line.productId || line.sku}}<span ng-if="line.size"> &middot; Size {{line.size}}</span>
+                </p>
+                <p class="hz-rt-line-count">
+                  Ordered {{line.quantity}}<span ng-if="line.quantityReturned">,
+                  {{line.quantityReturned}} returned</span><span ng-if="line.quantityPending">,
+                  {{line.quantityPending}} on the way back</span>
+                </p>
+              </div>
+
+              <div class="hz-rt-step" ng-if="line.returnable > 0">
+                <button type="button" ng-click="rt.fewer(line)" ng-disabled="!rt.qtyOf(line)"
+                        aria-label="One fewer {{rt.nameOf(line)}}">&minus;</button>
+                <output aria-live="polite">{{rt.qtyOf(line)}}</output>
+                <button type="button" ng-click="rt.more(line)"
+                        ng-disabled="rt.qtyOf(line) >= line.returnable"
+                        aria-label="One more {{rt.nameOf(line)}}">+</button>
+              </div>
+              <p class="hz-rt-line-spent" ng-if="line.returnable < 1">
+                <span ng-if="line.quantityPending">Already on its way back</span>
+                <span ng-if="!line.quantityPending">Already returned</span>
+              </p>
+            </div>
+
+            <!-- The reason belongs to the item, so it appears with it and goes with it. -->
+            <div class="hz-pg-field hz-rt-reason" ng-if="rt.qtyOf(line) > 0">
+              <label for="hz-rt-why-{{$index}}">Reason for returning</label>
+              <select id="hz-rt-why-{{$index}}"
+                      ng-model="rt.picks[line.four51LineId].reason"
+                      ng-options="r.code as r.label for r in rt.reasons"
+                      ng-class="{'is-missing': rt.tried && rt.needsReason(line)}">
+                <option value="">Choose a reason</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Shipping it back -->
+        <div class="hz-pg-card" ng-if="rt.order">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t"><span class="hz-rt-n">3</span>Sending it back</p>
+          </div>
+          <div class="hz-pg-card-b hz-rt-ship">
+            <div class="hz-pg-field">
+              <label id="hz-rt-boxes-l">Boxes</label>
+              <div class="hz-rt-step hz-rt-step--boxes" role="group" aria-labelledby="hz-rt-boxes-l">
+                <button type="button" ng-click="rt.fewerBoxes()" ng-disabled="rt.boxCount <= 1"
+                        aria-label="One fewer box">&minus;</button>
+                <output aria-live="polite">{{rt.boxCount}}</output>
+                <button type="button" ng-click="rt.moreBoxes()" aria-label="One more box">+</button>
+              </div>
+              <p class="hz-pg-field-hint">How many boxes you are sending for this return.</p>
+            </div>
+            <div class="hz-pg-field">
+              <label for="hz-rt-email">Email</label>
+              <input id="hz-rt-email" type="email" autocomplete="email" ng-model="rt.email"
+                     ng-class="{'is-missing': rt.tried && !rt.email}" />
+              <p class="hz-pg-field-hint">For questions about this return.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary: what is going back, and the one button. -->
+      <div class="hz-pg-side">
+        <div class="hz-pg-card hz-rt-sum">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">Your return</p>
+          </div>
+          <div class="hz-pg-card-b">
+            <p class="hz-rt-sum-total">
+              <b>{{rt.units()}}</b>
+              <span>{{rt.units() === 1 ? 'item' : 'items'}} going back</span>
+            </p>
+
+            <ul class="hz-rt-sum-lines" ng-if="rt.chosen().length">
+              <li ng-repeat="line in rt.chosen()">
+                <span>{{rt.nameOf(line)}}<span ng-if="line.size">, {{line.size}}</span></span>
+                <span class="hz-rt-sum-qty">&times;{{rt.qtyOf(line)}}</span>
+              </li>
+            </ul>
+
+            <div class="hz-pg-note hz-pg-note--stop" ng-if="rt.refusal"><p>{{rt.refusal}}</p></div>
+
+            <button type="button" class="hz-pg-btn hz-rt-go" ng-click="rt.submit()"
+                    ng-disabled="rt.submitting"
+                    ng-class="{'is-waiting': !!rt.blocker()}">
+              <span ng-if="!rt.submitting">Request return</span>
+              <span ng-if="rt.submitting">Sending&hellip;</span>
+            </button>
+            <!-- The reason the button is not ready, next to it, in words. -->
+            <p class="hz-rt-blocker" ng-if="rt.blocker()" aria-live="polite">{{rt.blocker()}}</p>
+
+            <p class="hz-rt-sum-note">
+              Nothing is credited yet. Items go back into the allocation when the warehouse
+              receives them.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -4063,3 +4063,163 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 700;
 }
+
+/* =========================================================================
+   Start a return — partials/returnRequestView.html
+
+   In the `.hz-pg` scope with every other account page, so the cards, fields, notes and
+   buttons are the same objects. This layer is only what the site did not have: a choice
+   between orders, a quantity stepper per line, and the confirmation. Yellow is a fill
+   throughout; the only red is the brand's stop colour on a refusal.
+   ========================================================================= */
+.hz-rt-skel { display: flex; flex-direction: column; gap: 10px; max-width: 760px; }
+
+/* Who it is for, from the HR record: the two numbers the old form made people type. */
+.hz-rt-who {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px;
+  padding: 14px 18px; margin: 0 0 20px;
+  background: var(--sub); border-left: 3px solid var(--yellow); border-radius: 0 4px 4px 0;
+}
+.hz-rt-who-l {
+  flex-basis: 100%; margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.hz-rt-who-name { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
+.hz-rt-who-facts { display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 14px; color: var(--ink); }
+.hz-rt-who-facts b { font-weight: 400; color: var(--muted); margin-right: 6px; }
+
+/* The step number on each card header. A small yellow square, the brand's shape. */
+.hz-rt-n {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; margin-right: 10px; border-radius: 2px;
+  background: var(--yellow); color: #434244; font-size: 11px; letter-spacing: 0;
+}
+.hz-rt-card-note { font-size: 13px; color: var(--muted); }
+
+/* ---- 1. the orders, as a radio group of rows ---- */
+.hz-rt-orders { display: flex; flex-direction: column; gap: 8px; }
+.hz-rt-order {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
+  gap: 14px; width: 100%; min-height: 64px; padding: 12px 16px; text-align: left;
+  font: inherit; color: var(--body); background: #fff;
+  border: 1px solid var(--edge); border-radius: 4px; cursor: pointer;
+}
+.hz-rt-order:hover:not([disabled]) { border-color: var(--ink); }
+.hz-rt-order.is-on { border-color: var(--ink); box-shadow: inset 3px 0 0 var(--yellow); }
+.hz-rt-order.is-spent { background: var(--sub); cursor: default; }
+.hz-rt-radio {
+  width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--edge);
+  background: #fff; flex: 0 0 auto;
+}
+.hz-rt-order.is-on .hz-rt-radio { border: 5px solid var(--ink); }
+.hz-rt-order-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hz-rt-order-id { font-size: 15.5px; font-weight: 700; color: var(--ink); }
+.hz-rt-order-meta { display: flex; flex-wrap: wrap; gap: 0 14px; font-size: 13px; color: var(--muted); }
+.hz-rt-order-left { font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.hz-rt-order.is-spent .hz-rt-order-id,
+.hz-rt-order.is-spent .hz-rt-order-left { color: var(--muted); font-weight: 600; }
+
+.hz-rt-none { text-align: center; padding: 18px 0 6px; }
+.hz-rt-none p { margin: 0; font-size: 14.5px; color: var(--muted); }
+.hz-rt-none p.hz-rt-none-t {
+  font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--ink); margin: 0 0 4px;
+}
+.hz-pg-card-b > p.hz-rt-older { margin: 16px 0 0; font-size: 13px; line-height: 1.55; color: var(--muted); }
+.hz-rt-older a { color: var(--ink); font-weight: 600; text-decoration: underline; }
+
+/* ---- 2. the lines ---- */
+.hz-rt-line { padding: 16px 20px; border-top: 1px solid var(--line); }
+.hz-rt-card-h + .hz-rt-line, .hz-pg-card-h + .hz-rt-line { border-top: 0; }
+.hz-rt-line.is-on { box-shadow: inset 3px 0 0 var(--yellow); }
+.hz-rt-line-top {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center;
+}
+.hz-rt-line-main { min-width: 0; }
+.hz-rt-line-main p { margin: 0; }
+.hz-rt-line-name { font-size: 15.5px; font-weight: 700; color: var(--ink); }
+.hz-rt-line-sku {
+  font-family: var(--display); font-size: 13px; letter-spacing: .02em; color: var(--muted);
+}
+.hz-rt-line-count { font-size: 13px; color: var(--body); }
+/* Two classes, so they beat the `p { margin: 0 }` above without !important. */
+.hz-rt-line-main .hz-rt-line-sku { margin-top: 2px; }
+.hz-rt-line-main .hz-rt-line-count { margin-top: 4px; }
+.hz-rt-line-spent { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.hz-rt-line.is-spent .hz-rt-line-name { color: var(--muted); }
+.hz-rt-reason { margin-top: 12px; max-width: 420px; }
+
+/* The stepper: a 44px target on each side, the count between. */
+.hz-rt-step {
+  display: inline-flex; align-items: center; border: 1px solid var(--edge); border-radius: 2px;
+  background: #fff;
+}
+.hz-rt-step button {
+  width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; background: #fff;
+  font-size: 20px; line-height: 1; color: var(--ink); cursor: pointer;
+}
+.hz-rt-step button:hover:not([disabled]) { background: var(--sub); }
+.hz-rt-step button[disabled] { color: var(--edge); cursor: not-allowed; }
+.hz-rt-step output {
+  min-width: 36px; text-align: center; font-family: var(--display); font-size: 19px;
+  font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums;
+}
+
+/* A field left empty after pressing the button says so with the brand's stop colour. */
+.hz-pg-field select.is-missing, .hz-pg-field input.is-missing { border-color: var(--stop-ink); }
+
+/* ---- 3. sending it back ---- */
+.hz-rt-ship { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: start; }
+
+/* ---- summary ---- */
+.hz-pg-card-b > p.hz-rt-sum-total { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; }
+.hz-rt-sum-total b {
+  font-family: var(--display); font-size: 36px; font-weight: 600; line-height: 1; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.hz-rt-sum-total span { font-size: 14px; color: var(--muted); }
+.hz-rt-sum-lines { list-style: none; margin: 0 0 16px; padding: 0; border-top: 1px solid var(--line); }
+.hz-rt-sum-lines li {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--body);
+}
+.hz-rt-sum-qty { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.hz-rt-go { width: 100%; padding: 14px 22px; font-size: 15px; }
+/* Not disabled while incomplete: pressing it marks what is missing. It looks quieter until
+   the return is ready, and the sentence under it says what is left to do. */
+.hz-rt-go.is-waiting { background: var(--sub); border-color: var(--edge); color: var(--muted); }
+.hz-pg-card-b > p.hz-rt-blocker { margin: 8px 0 0; font-size: 13px; color: var(--muted); text-align: center; }
+.hz-pg-card-b > p.hz-rt-sum-note {
+  margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--line);
+  font-size: 12.5px; line-height: 1.5; color: var(--muted);
+}
+.hz-rt-sum .hz-pg-note { margin: 0 0 12px; }
+
+/* ---- confirmation ---- */
+/* The paragraph rules on this page carry `.hz-pg-card-b > p.` because the shared card rule
+   `.hz-pg-card-b > p` sets every direct paragraph to 15px, and a bare class loses to it:
+   the RMA number came out at body size. */
+.hz-rt-done { max-width: 640px; margin-top: 18px; }
+.hz-pg-card-b > p.hz-rt-rma {
+  margin: 4px 0 6px; font-family: var(--display); font-size: clamp(38px, 7vw, 52px);
+  font-weight: 700; line-height: 1; letter-spacing: .01em; color: var(--ink);
+}
+.hz-pg-card-b > p.hz-rt-rma-note { margin: 0 0 18px; font-size: 14.5px; color: var(--body); }
+.hz-rt-done-dl { margin: 0 0 14px; }
+.hz-rt-done-lines { list-style: none; margin: 0 0 18px; padding: 0; border-top: 1px solid var(--line); }
+.hz-rt-done-lines li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 14px;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+}
+.hz-rt-done-name { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.hz-rt-done-why { grid-column: 1; font-size: 13px; color: var(--muted); }
+.hz-rt-done-qty { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-weight: 700; color: var(--ink); }
+.hz-rt-credit { margin: 0 0 18px; }
+
+@media (max-width: 560px) {
+  .hz-rt-order { grid-template-columns: auto minmax(0, 1fr); }
+  .hz-rt-order-left { grid-column: 2; white-space: normal; }
+  .hz-rt-line { padding: 14px 16px; }
+  .hz-rt-reason { max-width: none; }
+  .hz-rt-ship { grid-template-columns: minmax(0, 1fr); }
+  .hz-rt .hz-pg-actions .hz-pg-btn { flex: 1 1 100%; text-align: center; }
+}

@@ -311,6 +311,34 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
       },
 
       /**
+       * What can be sent back, order by order, and the reasons to choose from.
+       *
+       * From our record of the order rather than Four51's, because a Champion's on-behalf
+       * order is the Champion's Four51 order and only we know whose uniform it was. Each
+       * line's `returnable` is what `requestReturn` will accept right now, already net of
+       * anything requested and still in the post.
+       *
+       * @param forEmployeeId optional — a Champion raising a return for someone on their
+       *   team, authorised server-side by the same scope rule the cart uses.
+       */
+      returnOrders: function(forEmployeeId) {
+        return authed('GET', '/returns/orders' + beneficiaryQuery(forEmployeeId), null);
+      },
+
+      /**
+       * Raise a return and get its RMA number back. Credits nothing: the allocation comes
+       * back when the warehouse receives the box, and only for what was in it.
+       *
+       * @param request `{ four51OrderId, lines: [{ four51LineId, quantity, reasonCode }],
+       *   boxCount, submitterEmail }`
+       */
+      requestReturn: function(request, forEmployeeId) {
+        var body = angular.extend({}, request);
+        if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
+        return authed('POST', '/returns', body);
+      },
+
+      /**
        * Turn this order's reservations into consumption. Called after Four51 accepts a
        * submit — see the note in allocationGate.js on why after rather than before.
        */

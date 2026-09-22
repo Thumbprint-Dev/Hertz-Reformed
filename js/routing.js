@@ -50,6 +50,9 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         // `reloadOnSearch` staying default means changing who you are ordering for
         // re-runs the controller rather than leaving the previous person's pools on screen.
         when('/champion', { templateUrl: 'partials/championView.html', controller: 'ChampionCtrl' }).
+        // Start a return. Beside /returns/, which is the policy; ?for= and ?order= as on
+        // /allocation, and for the same reason.
+        when('/returns/new', { templateUrl: 'partials/returnRequestView.html', controller: 'ReturnRequestCtrl' }).
         when('/cart', { templateUrl: 'partials/cartView.html', controller: 'CartViewCtrl'}).
         when('/checkout', { templateUrl: 'partials/checkOutView.html', controller: 'CheckOutViewCtrl' }).
         when('/checkout/:id', { templateUrl: 'partials/checkOutView.html', controller: 'CheckOutViewCtrl' }).
