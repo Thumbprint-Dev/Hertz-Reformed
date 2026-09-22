@@ -329,8 +329,8 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
        * Raise a return and get its RMA number back. Credits nothing: the allocation comes
        * back when the warehouse receives the box, and only for what was in it.
        *
-       * @param request `{ four51OrderId, lines: [{ four51LineId, quantity, reasonCode }],
-       *   boxCount, submitterEmail }`
+       * @param request `{ four51OrderId, lines: [{ four51LineId, quantity, reasonCode }] }`.
+       *   No email: the server records the submitter's own from the HR record.
        */
       requestReturn: function(request, forEmployeeId) {
         var body = angular.extend({}, request);

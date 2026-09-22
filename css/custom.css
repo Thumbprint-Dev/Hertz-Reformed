@@ -4124,8 +4124,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-rt-none p.hz-rt-none-t {
   font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--ink); margin: 0 0 4px;
 }
-.hz-pg-card-b > p.hz-rt-older { margin: 16px 0 0; font-size: 13px; line-height: 1.55; color: var(--muted); }
-.hz-rt-older a { color: var(--ink); font-weight: 600; text-decoration: underline; }
 
 /* ---- 2. the lines ---- */
 .hz-rt-line { padding: 16px 20px; border-top: 1px solid var(--line); }
@@ -4165,10 +4163,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 
 /* A field left empty after pressing the button says so with the brand's stop colour. */
-.hz-pg-field select.is-missing, .hz-pg-field input.is-missing { border-color: var(--stop-ink); }
-
-/* ---- 3. sending it back ---- */
-.hz-rt-ship { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: start; }
+.hz-pg-field select.is-missing { border-color: var(--stop-ink); }
 
 /* ---- summary ---- */
 .hz-pg-card-b > p.hz-rt-sum-total { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; }
@@ -4220,6 +4215,5 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-rt-order-left { grid-column: 2; white-space: normal; }
   .hz-rt-line { padding: 14px 16px; }
   .hz-rt-reason { max-width: none; }
-  .hz-rt-ship { grid-template-columns: minmax(0, 1fr); }
   .hz-rt .hz-pg-actions .hz-pg-btn { flex: 1 1 100%; text-align: center; }
 }

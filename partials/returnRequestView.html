@@ -3,8 +3,9 @@
 
   Replaces the Cognito form, which asked for an employee id, a location number, an order
   number in the right format, the item from a list of forty-one and a quantity, all typed and
-  all per item. Everything but the reason and the box count is something this system already
-  knows, so this asks for three decisions instead: which order, what is going back, and why.
+  all per item. Everything but the reason is something this system already knows, so this
+  asks for two decisions instead: which order, and what is going back and why. The email on
+  the return is the submitter's own from HR, recorded by the server, so it is not asked for.
 
   Built from the shared page components (`hz-pg-*`), with `hz-rt-*` only for what the site
   did not have: a choice between orders, a stepper for a quantity, and the confirmation.
@@ -50,11 +51,8 @@
           <div class="hz-pg-dl-row">
             <span class="hz-pg-dl-k">Order</span><span class="hz-pg-dl-v">{{rt.done.orderId}}</span>
           </div>
-          <div class="hz-pg-dl-row">
-            <span class="hz-pg-dl-k">Boxes</span><span class="hz-pg-dl-v">{{rt.done.boxCount}}</span>
-          </div>
-          <div class="hz-pg-dl-row">
-            <span class="hz-pg-dl-k">Questions to</span><span class="hz-pg-dl-v">{{rt.done.email}}</span>
+          <div class="hz-pg-dl-row" ng-if="rt.done.email">
+            <span class="hz-pg-dl-k">Email</span><span class="hz-pg-dl-v">{{rt.done.email}}</span>
           </div>
         </div>
 
@@ -117,13 +115,12 @@
                   <span class="hz-rt-order-id">Order {{o.four51OrderId}}</span>
                   <span class="hz-rt-order-meta">
                     <span ng-if="o.placedOn">Placed {{o.placedOn | hzDate}}</span>
-                    <span>{{o.lines.length}} {{o.lines.length === 1 ? 'item' : 'items'}}</span>
+                    <span ng-if="o.returnable < 1">Nothing left to return</span>
                   </span>
                 </span>
-                <span class="hz-rt-order-left" ng-if="o.returnable > 0">
-                  {{o.returnable}} can be returned
+                <span class="hz-rt-order-left">
+                  {{rt.itemsIn(o)}} {{rt.itemsIn(o) === 1 ? 'item' : 'items'}}
                 </span>
-                <span class="hz-rt-order-left" ng-if="o.returnable < 1">Nothing left to return</span>
               </button>
             </div>
 
@@ -132,13 +129,6 @@
               <p>Orders placed on this site appear here once they are submitted.</p>
             </div>
 
-            <!-- The list comes from checkout's record, which older orders predate. Saying
-                 so beats an empty list that reads as "you have nothing to return". -->
-            <p class="hz-rt-older">
-              Order not listed? Orders placed before this form existed are not shown here yet.
-              Use the <a href="https://thumbprint.com/hertz/UniformReturn" target="_blank"
-                 rel="noopener noreferrer">previous return form</a> for those.
-            </p>
           </div>
         </div>
 
@@ -191,30 +181,6 @@
           </div>
         </div>
 
-        <!-- 3. Shipping it back -->
-        <div class="hz-pg-card" ng-if="rt.order">
-          <div class="hz-pg-card-h">
-            <p class="hz-pg-card-t"><span class="hz-rt-n">3</span>Sending it back</p>
-          </div>
-          <div class="hz-pg-card-b hz-rt-ship">
-            <div class="hz-pg-field">
-              <label id="hz-rt-boxes-l">Boxes</label>
-              <div class="hz-rt-step hz-rt-step--boxes" role="group" aria-labelledby="hz-rt-boxes-l">
-                <button type="button" ng-click="rt.fewerBoxes()" ng-disabled="rt.boxCount <= 1"
-                        aria-label="One fewer box">&minus;</button>
-                <output aria-live="polite">{{rt.boxCount}}</output>
-                <button type="button" ng-click="rt.moreBoxes()" aria-label="One more box">+</button>
-              </div>
-              <p class="hz-pg-field-hint">How many boxes you are sending for this return.</p>
-            </div>
-            <div class="hz-pg-field">
-              <label for="hz-rt-email">Email</label>
-              <input id="hz-rt-email" type="email" autocomplete="email" ng-model="rt.email"
-                     ng-class="{'is-missing': rt.tried && !rt.email}" />
-              <p class="hz-pg-field-hint">For questions about this return.</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Summary: what is going back, and the one button. -->

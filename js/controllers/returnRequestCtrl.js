@@ -48,8 +48,6 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
       reasons: [],
       order: null,
       picks: {},
-      boxCount: 1,
-      email: '',
       submitting: false,
       refusal: null,
       done: null,
@@ -77,12 +75,6 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
           rt.onBehalf = !!data.onBehalf;
           rt.who = results[1] || null;
 
-          // The email is for questions about this return, so it is the address of whoever
-          // is filling the form in: the Champion when it is on behalf, the employee
-          // otherwise. Editable, because a work address is not always the one they read.
-          var mine = $scope.user && $scope.user.Email;
-          rt.email = mine || (!rt.onBehalf && rt.who && rt.who.email) || '';
-
           var wanted = search.order;
           var open = rt.orders.filter(function(o) { return o.returnable > 0; });
           var pre = null;
@@ -103,6 +95,11 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
       rt.picks = {};
       rt.refusal = null;
       rt.tried = false;
+    };
+
+    /** Units on the order, which is what "items" means to the person who ordered them. */
+    $scope.rt.itemsIn = function(order) {
+      return (order.lines || []).reduce(function(sum, l) { return sum + l.quantity; }, 0);
     };
 
     $scope.rt.nameOf = function(line) {
@@ -149,9 +146,6 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
       return !!p && p.qty > 0 && !p.reason;
     };
 
-    $scope.rt.moreBoxes = function() { if ($scope.rt.boxCount < 20) $scope.rt.boxCount += 1; };
-    $scope.rt.fewerBoxes = function() { if ($scope.rt.boxCount > 1) $scope.rt.boxCount -= 1; };
-
     /** Why the button is not ready, in words, or null when it is. */
     $scope.rt.blocker = function() {
       var rt = $scope.rt;
@@ -159,7 +153,6 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
       var chosen = rt.chosen();
       if (!chosen.length) return 'Choose at least one item to return.';
       if (chosen.some(rt.needsReason)) return 'Choose a reason for each item.';
-      if (!rt.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rt.email)) return 'Enter an email address.';
       return null;
     };
 
@@ -175,9 +168,9 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
         lines: rt.chosen().map(function(l) {
           var p = rt.picks[l.four51LineId];
           return { four51LineId: l.four51LineId, quantity: p.qty, reasonCode: p.reason };
-        }),
-        boxCount: rt.boxCount,
-        submitterEmail: rt.email
+        })
+        // No email and no box count: the server records the submitter's email from their
+        // HR record, so a reported return always joins back to a person.
       };
 
       Allocation.requestReturn(request, FOR)
@@ -189,8 +182,7 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
           rt.done = {
             rmaNumber: created.rmaNumber,
             orderId: created.four51OrderId,
-            boxCount: rt.boxCount,
-            email: rt.email,
+            email: created.submitterEmail,
             lines: (created.lines || []).map(function(l) {
               var line = byLine[l.four51LineId] || {};
               return {
@@ -227,7 +219,6 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
       rt.done = null;
       rt.order = null;
       rt.picks = {};
-      rt.boxCount = 1;
       rt.tried = false;
       load();
     };
