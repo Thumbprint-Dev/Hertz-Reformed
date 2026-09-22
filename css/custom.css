@@ -3690,19 +3690,40 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    is the right label for a table or a detail panel and the wrong one here: it made the
    contact page list its two routes without either ever looking like something to pick.
    24px 600 is the size this site already uses for a spoken heading inside a card. */
-.hz-pg-opt .hz-pg-card-b { padding: 24px; }
+.hz-pg-opt .hz-pg-card-b { padding: clamp(24px, 3vw, 34px); }
 .hz-pg-opt-h {
-  font-family: var(--display); font-size: 24px; font-weight: 600; line-height: 1.15;
-  color: var(--ink); margin: 0 0 8px;
+  font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1.12;
+  letter-spacing: -0.005em; color: var(--ink); margin: 0 0 12px;
 }
-/* The chat button, drawn at the size of the real one so the reader recognises it rather
-   than hunting for it. Its colour is the widget's own, not a brand colour: the point is
-   that it matches the thing in the corner. */
-.hz-pg-chatcue {
-  display: flex; align-items: center; gap: 10px; margin: 14px 0 0;
-  font-size: 13px; color: var(--muted);
+.hz-pg-opt p { font-size: 15.5px; line-height: 1.6; }
+.hz-pg-opt p strong { color: var(--ink); font-weight: 700; }
+.hz-pg-opt .hz-pg-btn { margin-top: 20px; }
+/* The second option is a filled ground rather than an outlined box. That is what
+   separates the thing you DO from the thing you read: one carries a button, the other
+   carries an instruction. */
+.hz-pg-opt--fill { background: var(--sub); border-color: transparent; }
+/* The quieter line under the instruction: a rule, then an icon and muted type. */
+.hz-pg-opt-aside {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--edge);
 }
-.hz-pg-chatbtn {
-  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
-  background: #0c5c57; display: grid; place-items: center;
+.hz-pg-opt-aside svg { flex: 0 0 auto; margin-top: 2px; }
+.hz-pg-opt-aside p { font-size: 14px; line-height: 1.55; color: var(--muted); margin: 0; }
+
+/* ---- a ruled strip of facts ----
+   Top and bottom rule with vertical dividers between columns, rather than a card. For
+   details that close a page: they are reference, not another thing to choose. */
+.hz-pg-facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 46px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.hz-pg-fact { padding: 26px 0 26px 30px; border-left: 1px solid var(--line); }
+/* The first column sits against the page edge, so it takes no rule and no indent. */
+.hz-pg-fact:first-child { border-left: 0; padding-left: 0; }
+.hz-pg-fact-k {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 8px;
+}
+.hz-pg-fact address {
+  font-size: 16px; line-height: 1.5; font-style: normal; color: var(--ink); margin: 0;
 }

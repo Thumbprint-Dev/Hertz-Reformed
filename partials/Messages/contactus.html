@@ -40,79 +40,72 @@
 
   <!-- The two things you can act on, side by side, as the client drew them. -->
   <!--
-    Two routes, framed as the question the reader arrived with rather than as a category.
-    The headings were `RETURNS` and `LIVE CHAT` in 11px grey uppercase, which is the same
-    treatment this site gives a table column label: the page listed its options without
-    ever looking like a choice. A spoken heading at the size the site already uses for one
-    inside a card, plus the first line answering "is this me?", makes the pair scannable.
+    The layout the client drew, twice: an outlined card carrying the action, a filled panel
+    carrying the instruction, and a ruled strip of reference below.
+
+    The two cards are deliberately not alike. One is a thing you DO and has a button; the
+    other is a thing you READ and has none, and the filled ground says so before the words
+    do.
   -->
   <div class="hz-pg-cards">
 
     <div class="hz-pg-card hz-pg-opt">
       <div class="hz-pg-card-b">
-        <h2 class="hz-pg-opt-h">Something arrived wrong</h2>
-        <p>Wrong size, wrong item, or damaged on the way. Start a return and the
-          allocation goes back to you, so you can order the right one.</p>
+        <h2 class="hz-pg-opt-h">Returns</h2>
+        <p>Wrong size, wrong item, or damaged on the way? Start a return. The allocation
+          goes back to you, so you can order the right one.</p>
         <a class="hz-pg-btn" href="https://thumbprint.com/hertz/UniformReturn"
            target="_blank" rel="noopener noreferrer">Start a return</a>
       </div>
     </div>
 
-    <div class="hz-pg-card hz-pg-opt">
+    <div class="hz-pg-card hz-pg-opt hz-pg-opt--fill">
       <div class="hz-pg-card-b">
-        <h2 class="hz-pg-opt-h">Anything else</h2>
-        <!--
-          The chat widget is injected by Four51, not by this theme, so there is no API here
-          to open it with and a guessed one would fail silently. The next best thing is to
-          make it recognisable: the button is drawn at the size and shape of the real one,
-          so "the button in the bottom right" is something the reader has now seen rather
-          than something they have to go and find.
-        -->
-        <p>Use the chat button in the bottom right of any page.</p>
-        <p class="hz-pg-chatcue">
-          <span class="hz-pg-chatbtn" aria-hidden="true">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff"
-                 stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.7 9.7 0 0 1-3-.5L3.5 21l1.3-4a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z" />
-            </svg>
-          </span>
-          <span>Looks like this</span>
-        </p>
-        <p class="hz-pg-quiet">Outside support hours, leave a message in chat and it is
-          picked up the next working morning.</p>
+        <h2 class="hz-pg-opt-h">Live chat</h2>
+        <!-- The instruction is bolded to the point where the eye needs to go, because the
+             widget is injected by Four51 and there is no API in this theme to open it
+             with. Naming the corner is the most we can do from here. -->
+        <p><strong>Click the chat button in the bottom right</strong> of any page. Monday to
+          Friday, 9:00am to 5:00pm ET.</p>
+        <div class="hz-pg-opt-aside">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5f6778"
+               stroke-width="1.7" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5" stroke-linecap="round" />
+            <path d="M12 7.8v.4" stroke-linecap="round" />
+          </svg>
+          <p>Outside those hours, leave a message in chat and it is picked up the next
+            working morning.</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- The details, full width, so the page finishes on a line rather than trailing off. -->
-  <div class="hz-pg-card">
-    <div class="hz-pg-card-h">
-      <!-- "Support", not "Where to find us": the card holds an address and a set of
-           opening times, and only one of those is a place. -->
-      <p class="hz-pg-card-t">Support</p>
+  <!--
+    Reference, not another choice, so it is a ruled strip rather than a third card.
+
+    Two columns: the Florida office came off at the client's request on 22 September, and
+    the Uniform FAQ button came off the Returns card the same day. It is on the header of
+    every page.
+  -->
+  <div class="hz-pg-facts">
+    <div class="hz-pg-fact">
+      <!-- An office, not a returns address. Returns go through the button above, which is
+           what routes the garment and credits the allocation back. -->
+      <p class="hz-pg-fact-k">Headquarters</p>
+      <address>15255 Endeavor Drive<br />Noblesville, IN 46060</address>
     </div>
-    <div class="hz-pg-card-b">
-      <div class="hz-pg-sect-two">
-        <!-- Hours first. They are the thing someone reads this card for; the address is
-             here for completeness. -->
-        <div>
-          <p class="hz-pg-card-t">Hours</p>
-          <address>Monday to Friday<br />9:00am to 5:00pm ET</address>
-        </div>
-        <div>
-          <!-- An office, not a returns address. Returns go through the button above,
-               which is what routes the garment and credits the allocation back. -->
-          <p class="hz-pg-card-t">Headquarters</p>
-          <address>15255 Endeavor Drive<br />Noblesville, IN 46060</address>
-        </div>
-      </div>
-      <!--
-        Email and phone were on this page once and were commented out before any of these
-        rewrites. Left as found rather than restored, because whether employees get a
-        direct line is a client decision:
-          Email  hertzsupport@thumbprint.com
-          Phone  317.703.3449
-      -->
+    <div class="hz-pg-fact">
+      <p class="hz-pg-fact-k">Support hours</p>
+      <address>Monday to Friday<br />9:00am to 5:00pm ET</address>
     </div>
+    <!--
+      Email and phone were on this page once and were commented out before any of these
+      rewrites. Left as found rather than restored, because whether employees get a direct
+      line is a client decision:
+        Email  hertzsupport@thumbprint.com
+        Phone  317.703.3449
+    -->
   </div>
+
 </section>
