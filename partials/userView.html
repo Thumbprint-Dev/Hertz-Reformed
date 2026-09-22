@@ -71,7 +71,37 @@
          note used to run the full width of the page while the card stopped at 760,
          and two different right edges on a page this short read as a mistake. -->
     <div class="hz-pg-stack">
-    <div class="hz-pg-card hz-pg-prof">
+
+    <!--
+      The shape that is about to arrive.
+      `/me/profile` is a round trip, and without this the card rendered its own frame with
+      an empty header and no rows, then jumped as the data landed. Sized to the real card
+      so nothing moves.
+      The Hertz mark is drawn for real rather than skeletoned: it is static, we are not
+      waiting for it, and a grey box over a logo we already have would be pretending.
+    -->
+    <div class="hz-pg-card hz-pg-prof" ng-if="!profile && !profileError">
+      <div class="hz-pg-prof-head">
+        <img class="hz-pg-prof-logo"
+             src="https://images.hertz.com/misc/overlay/hertz-logo-black.png" alt="Hertz" />
+        <span class="hz-skel hz-skel-name" aria-hidden="true"></span>
+        <span class="hz-skel hz-skel-mail" aria-hidden="true"></span>
+      </div>
+      <div class="hz-pg-card-b">
+        <div class="hz-pg-dl">
+          <div class="hz-pg-dl-row" ng-repeat="i in [1,2,3,4,5]">
+            <span class="hz-skel hz-skel-k" aria-hidden="true"></span>
+            <span class="hz-skel hz-skel-v" aria-hidden="true"></span>
+          </div>
+        </div>
+        <span class="hz-skel hz-skel-note" aria-hidden="true"></span>
+        <span class="hz-skel hz-skel-btn" aria-hidden="true"></span>
+      </div>
+      <!-- The bars are decoration; this is what a screen reader is told, once. -->
+      <p class="hz-sr-only" role="status">Loading your information.</p>
+    </div>
+
+    <div class="hz-pg-card hz-pg-prof" ng-if="profile">
 
       <!--
         The Hertz mark, then the name and the job title under it, so the card reads as an
@@ -145,13 +175,18 @@
           Your allocation group decides which items you get and how many.
         </p>
 
-        <p class="hz-pg-quiet" ng-if="profileError">
-          Your details could not be loaded just now. Refresh the page, or ask your
-          Uniform Champion.
-        </p>
 
         <a class="hz-pg-btn hz-pg-btn--ghost" href="allocation"
            style="margin-top: 18px;">See what you can order</a>
+      </div>
+    </div>
+
+    <!-- The real card is gated on `profile`, so a failed load needs somewhere of its own
+         to be said rather than disappearing with the card. -->
+    <div class="hz-pg-card" ng-if="profileError">
+      <div class="hz-pg-card-b">
+        <p class="hz-pg-quiet">Your details could not be loaded just now. Refresh the page,
+          or ask your Uniform Champion.</p>
       </div>
     </div>
 

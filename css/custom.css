@@ -3657,3 +3657,30 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 /* Stands in for a removed standfirst, so the gap between the title and the first card
    is the same on a page that has one and a page that does not. */
 .hz-pg-spacer { height: 22px; }
+
+/* ---- account page: the shape that arrives ----
+   Reuses `.hz-skel` from the allocation skeleton, so the sweep and its reduced-motion
+   guard are defined once. Sized to the real card, because the point of a skeleton is that
+   nothing moves when the data lands: a spinner says something is happening, this says
+   what is coming.
+
+   The Hertz mark is NOT skeletoned. It is static, it is already on the page, and drawing
+   a grey box over a logo we could simply show would be pretending to load something we
+   are not waiting for. */
+.hz-skel-name { display: block; height: 28px; width: 260px; margin: 0; }
+.hz-skel-mail { display: block; height: 14px; width: 190px; margin: 9px 0 0; }
+/* Label left, value right, matching `.hz-pg-dl-row`'s space-between. Widths vary so the
+   block reads as text rather than as five identical grey bars. */
+.hz-skel-k { display: block; height: 12px; width: 82px; }
+.hz-skel-v { display: block; height: 12px; width: 104px; }
+.hz-pg-dl-row:nth-child(2) .hz-skel-k { width: 100px; }
+.hz-pg-dl-row:nth-child(2) .hz-skel-v { width: 54px; }
+.hz-pg-dl-row:nth-child(3) .hz-skel-k { width: 92px; }
+.hz-pg-dl-row:nth-child(3) .hz-skel-v { width: 76px; }
+.hz-pg-dl-row:nth-child(4) .hz-skel-k { width: 118px; }
+.hz-pg-dl-row:nth-child(4) .hz-skel-v { width: 148px; }
+.hz-pg-dl-row:nth-child(5) .hz-skel-k { width: 74px; }
+.hz-pg-dl-row:nth-child(5) .hz-skel-v { width: 122px; }
+.hz-skel-note { display: block; height: 12px; width: 300px; margin: 18px 0 0; }
+/* Matches the ghost button's box so the card does not resize under the reader. */
+.hz-skel-btn { display: block; height: 40px; width: 176px; border-radius: 2px; margin: 18px 0 0; }
