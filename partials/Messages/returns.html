@@ -1,182 +1,29 @@
-<style>
-  #returns-page {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    line-height: 1.7;
-    color: #1a1a1a;
-    padding: 30px 20px;
-    margin: 0 auto;
-    max-width: 800px;
-  }
-  
-  #returns-page h1 {
-    font-size: 2.2em;
-    margin-bottom: 40px;
-    color: #000000;
-    font-weight: 600;
-    text-align: center;
-    border-bottom: 3px solid #FFD200;
-    padding-bottom: 15px;
-  }
-  
-  #returns-page .policy-section {
-    background: #FFFBF0;
-    border-left: 4px solid #FFD200;
-    border-radius: 6px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  
-  #returns-page .policy-section.warning {
-    background: #FFF5F0;
-    border-left-color: #FF6B35;
-  }
-  
-  #returns-page .policy-section.highlight {
-    background: #FFFBF0;
-    border-left-color: #FFD200;
-  }
-  
-  #returns-page h2 {
-    font-size: 1.5em;
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #000000;
-    font-weight: 600;
-  }
-  
-  #returns-page ul, #returns-page ol {
-    margin: 15px 0;
-    padding-left: 0;
-    list-style: none;
-  }
-  
-  #returns-page ul li {
-    margin: 12px 0;
-    line-height: 1.7;
-    padding-left: 28px;
-    position: relative;
-  }
-  
-  #returns-page ul li::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: #FFD200;
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-  
-  #returns-page .policy-section.warning ul li::before {
-    content: '✗';
-    color: #FF6B35;
-  }
-  
-  #returns-page ol {
-    counter-reset: step-counter;
-  }
-  
-  #returns-page ol li {
-    margin: 15px 0;
-    line-height: 1.7;
-    padding-left: 40px;
-    position: relative;
-    counter-increment: step-counter;
-  }
-  
-  #returns-page ol li::before {
-    content: counter(step-counter);
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: #FFD200;
-    color: #000000;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 0.9em;
-  }
-  
-  #returns-page p {
-    margin: 15px 0;
-    line-height: 1.7;
-    color: #1a1a1a;
-  }
-  
-  #returns-page p:first-of-type {
-    margin-top: 0;
-  }
-  
-  #returns-page strong {
-    color: #000000;
-    font-weight: 600;
-  }
-  
-  @media screen and (max-width: 768px) {
-    #returns-page {
-      padding: 20px 15px;
-    }
-    
-    #returns-page h1 {
-      font-size: 1.8em;
-      margin-bottom: 30px;
-      padding-bottom: 12px;
-    }
-    
-    #returns-page .policy-section {
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    
-    #returns-page h2 {
-      font-size: 1.3em;
-    }
-  }
-  
-  @media screen and (max-width: 480px) {
-    #returns-page {
-      padding: 15px 10px;
-    }
-    
-    #returns-page h1 {
-      font-size: 1.5em;
-    }
-    
-    #returns-page .policy-section {
-      padding: 15px;
-    }
-    
-    #returns-page h2 {
-      font-size: 1.2em;
-    }
-  }
-</style>
+<!--
+  Styled by `.hz-pg` and `.hz-doc` in css/custom.css. It carried its own stylesheet with an
+  orange warning panel and yellow type on white; the three blocks are now the house notice
+  shape, and what each one means is said by its heading and its marks.
+-->
+<section class="hz-pg hz-doc">
+  <h1 class="hz-pg-title">Returns & Exchanges Policy</h1>
 
-<section id="returns-page">
-  <h1>Returns & Exchanges Policy</h1>
-
-  <div class="policy-section">
-    <h2>Eligibility Window</h2>
+  <div class="hz-doc-box">
+    <h2 class="hz-doc-h">Eligibility Window</h2>
     <ul>
       <li>Returns and exchanges must be requested within 30 days of delivery.</li>
       <li>Items must be new, unworn, & unwashed.</li>
     </ul>
   </div>
 
-  <div class="policy-section warning">
-    <h2>Non-Returnable Items</h2>
+  <div class="hz-doc-box hz-doc-box--no">
+    <h2 class="hz-doc-h">Non-Returnable Items</h2>
     <ul>
       <li>Worn, washed, soiled, altered, or otherwise damaged garments (outside of shipping defects).</li>
       <li>Custom name badges are non-returnable.</li>
     </ul>
   </div>
 
-  <div class="policy-section highlight">
-    <h2>Return Process</h2>
+  <div class="hz-doc-box">
+    <h2 class="hz-doc-h">Return Process</h2>
     <p>Please reach out to your Uniform Champion and provide them with:</p>
     <ol>
       <li><strong>Your Order#</strong></li>

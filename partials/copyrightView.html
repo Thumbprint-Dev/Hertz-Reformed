@@ -20,20 +20,29 @@
     <nav class="hz-footer-nav" aria-label="Your uniform">
       <h2 class="hz-footer-h">Your uniform</h2>
       <ul>
-        <li><a href="catalog">Shop uniforms</a></li>
-        <li><a href="allocation">My allocation</a></li>
+        <!-- Each label is the name of the page it opens. "My allocation" used to open the
+             picker, whose title is Choose your uniform, and "Shop uniforms" opened the page
+             that shows the allocation. -->
+        <li><a href="catalog">My allocation</a></li>
+        <li><a href="allocation">Choose your uniform</a></li>
         <li><a href="order">Order history</a></li>
-        <li><a href="/shop/returns">Returns &amp; exchanges</a></li>
+        <!-- Relative, like every other link here. The `/shop/` prefix belonged to another
+             tenant and left the app for a 404. -->
+        <li><a href="returns">Returns &amp; exchanges</a></li>
       </ul>
     </nav>
 
     <nav class="hz-footer-nav" aria-label="Help">
       <h2 class="hz-footer-h">Help</h2>
       <ul>
+        <!-- Two FAQs, one label, gated exactly as the header gates them. -->
         <li ng-show="(hertzChampionUser || dollarChampionUser || thriftyChampionUser)">
-          <a href="/shop/faq">FAQ</a>
+          <a href="faq">FAQ</a>
         </li>
-        <li><a href="/shop/contactus">Contact us</a></li>
+        <li ng-show="(hertzUser || dollarUser || thriftyUser)">
+          <a href="allofaq">FAQ</a>
+        </li>
+        <li><a href="contactus">Contact us</a></li>
         <li>
           <a href="https://www.hertz.com/rentacar/privacypolicy/index.jsp?targetPage=privacyPolicyView.jsp"
              target="_blank" rel="noopener noreferrer">Privacy policy</a>

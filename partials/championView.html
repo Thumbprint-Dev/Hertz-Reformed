@@ -75,12 +75,12 @@
             </span>
 
             <span class="hz-team-meta">
-              <span class="hz-team-f"><b>Employee</b>{{b.employeeId}}</span>
+              <span class="hz-team-f"><b>Employee ID</b>{{b.employeeId}}</span>
               <span class="hz-team-f"><b>Dept</b>{{b.deptCode || '&ndash;'}}</span>
               <!-- Only once they have a cycle. Before day 90 there is nothing to reset,
                    and the row says that instead, further along. -->
               <span class="hz-team-f" ng-if="b.cycleEnd">
-                <b>Resets</b>{{b.cycleEnd | hzResetDate}}
+                <b>Allocation Resets</b>{{b.cycleEnd | hzResetDate}}
               </span>
             </span>
 

@@ -34,6 +34,10 @@ four51.app.controller('NavCtrl', ['$location', '$route', '$scope', '$451', 'User
             localStorage.clear();
         }
 
+        // The phone menu closes once a link has taken you somewhere, including Back.
+        $scope.hdMenuOpen = false;
+        $scope.$on('$routeChangeStart', function() { $scope.hdMenuOpen = false; });
+
         $scope.$on('event:orderUpdate', function(event, order) {
             $scope.cartCount = (order ? ((order.Status == 'Unsubmitted') ? order.LineItems.length : null) : null);
         });

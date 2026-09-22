@@ -169,8 +169,9 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
      */
     function labelFor(productId, categoryName) {
       var id = (productId || '').toUpperCase();
-      if (/-M-/.test(id)) return categoryName + " — men's";
-      if (/-W-/.test(id)) return categoryName + " — women's";
+      // "Men's Pants", not "Pants — men's": no em dashes in anything an employee reads.
+      if (/-M-/.test(id)) return "Men's " + categoryName;
+      if (/-W-/.test(id)) return "Women's " + categoryName;
       return categoryName;
     }
 

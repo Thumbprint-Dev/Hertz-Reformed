@@ -1,176 +1,20 @@
+<!--
+  Styled by `.hz-pg` and `.hz-doc` in css/custom.css, like the other reading pages. The one
+  rule kept here hides an "enlarged view" element that a global script injects; it is left
+  in the partial so it applies only while this page is open, as it always did.
+-->
 <style>
-    #hertz-allofaq-page {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      line-height: 1.6;
-      background-color: transparent;
-      color: #333;
-      padding: 20px;
-      margin: 0 !important;
-      margin-bottom: 60px !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box;
-    }
-    #hertz-allofaq-page section {
-      width: 100% !important;
-      max-width: 100% !important;
-      margin: 0 !important;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    #hertz-allofaq-page h1 {
-      text-align: center;
-      margin-bottom: 40px;
-      color: #2c3e50;
-      font-size: 2.2em;
-      font-weight: 600;
-    }
-    #hertz-allofaq-page details {
-      background: #fff;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border: 2px solid #e1e8ed;
-      transition: all 0.3s ease;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    #hertz-allofaq-page details[open] {
-      border-color: #fc0;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.15);
-    }
-    #hertz-allofaq-page summary {
-      font-weight: 600;
-      font-size: 1.15em;
-      outline: none;
-      padding: 20px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #2c3e50;
-      user-select: none;
-      position: relative;
-    }
-    #hertz-allofaq-page summary::-webkit-details-marker {
-      display: none;
-    }
-    #hertz-allofaq-page summary::after {
-      content: '+';
-      font-size: 1.8em;
-      font-weight: 300;
-      color: #666;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-      margin-left: 15px;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f5f5f5;
-      border-radius: 50%;
-      line-height: 1;
-    }
-    #hertz-allofaq-page details[open] summary::after {
-      content: '−';
-      transform: rotate(180deg);
-      background: #fc0;
-      color: #fff;
-    }
-    #hertz-allofaq-page summary:hover::after {
-      background: #fc0;
-      color: #fff;
-    }
-    #hertz-allofaq-page summary::before {
-      content: 'Click to expand';
-      font-size: 0.75em;
-      font-weight: 400;
-      color: #7f8c8d;
-      position: absolute;
-      right: 60px;
-      font-style: italic;
-      opacity: 0.7;
-    }
-    #hertz-allofaq-page details[open] summary::before {
-      content: 'Click to collapse';
-    }
-    #hertz-allofaq-page details p {
-      padding: 0 25px 25px 25px;
-      margin: 0;
-      color: #555;
-      line-height: 1.7;
-      animation: hertzAllofaqFadeIn 0.3s ease;
-    }
-    @keyframes hertzAllofaqFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    #hertz-allofaq-page summary:hover {
-      color: #2c3e50;
-    }
-    #hertz-allofaq-page h2 {
-      font-size: 1.5em;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-top: 40px;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid #fc0;
-    }
-    #hertz-allofaq-page h2:first-of-type {
-      margin-top: 20px;
-    }
-    #hertz-allofaq-page details p a {
-      color: #fc0;
-      text-decoration: none;
-      font-weight: 500;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s ease;
-    }
-    #hertz-allofaq-page details p a:hover {
-      color: #e6b800;
-      border-bottom-color: #e6b800;
-    }
-    
-    /* Hide "Click to expand" text on mobile */
-    @media screen and (max-width: 768px) {
-      #hertz-allofaq-page summary::before {
-        display: none;
-      }
-    }
-    
-    /* Hide "enlarged view" element that appears from global scripts */
-    #hertz-allofaq-page [class*="enlarged"], 
-    #hertz-allofaq-page [id*="enlarged"],
-    #hertz-allofaq-page [class*="Enlarged"],
-    #hertz-allofaq-page [id*="Enlarged"],
-    #hertz-allofaq-page [title*="enlarged"],
-    #hertz-allofaq-page [title*="Enlarged"],
-    [class*="enlarged"],
-    [id*="enlarged"],
-    [class*="Enlarged"],
-    [id*="Enlarged"],
-    [title*="enlarged"],
-    [title*="Enlarged"] {
-      display: none !important;
-    }
-  </style>
-<div id="hertz-allofaq-page">
-<section>
-  <h1>Frequently Asked Questions</h1>
+  [class*="enlarged"], [id*="enlarged"], [class*="Enlarged"], [id*="Enlarged"],
+  [title*="enlarged"], [title*="Enlarged"] { display: none !important; }
+</style>
+<section class="hz-pg hz-doc">
+  <h1 class="hz-pg-title">Frequently Asked Questions</h1>
 
-  <h2>Your Uniform Allocation Order</h2>
+  <h2 class="hz-doc-h">Your Uniform Allocation Order</h2>
 
   <details>
     <summary>How do I place my order?</summary>
-    <p>Click <a href="#" target="_blank">[HERE]</a> for step by step instructions on how to place your order online.</p>
+    <p>Open <a href="allocation">Choose your uniform</a> and pick every item your allocation includes, then add them to your cart and check out. Your allocation is meant to be taken in full, so choose everything in one go.</p>
   </details>
 
   <details>
@@ -230,7 +74,7 @@
     <p>If your size is out of stock, we recommend selecting a different size or style. If you need that specific size that is out of stock and you place your order it will go into backorder status.</p>
   </details>
 
-  <h2>Returns & Exchanges</h2>
+  <h2 class="hz-doc-h">Returns & Exchanges</h2>
 
   <details>
     <summary>How long do I have to request a return or exchange?</summary>
@@ -268,4 +112,3 @@
     • Any images you can share of the damage</p>
   </details>
 </section>
-</div>

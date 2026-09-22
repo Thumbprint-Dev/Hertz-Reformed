@@ -1,172 +1,21 @@
+<!--
+  Styled by `.hz-pg` and `.hz-doc` in css/custom.css, like the other reading pages. The one
+  rule kept here hides an "enlarged view" element that a global script injects; it is left
+  in the partial so it applies only while this page is open, as it always did.
+-->
 <style>
-    #hertz-faq-page {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      line-height: 1.6;
-      background-color: transparent;
-      color: #333;
-      padding: 20px;
-      margin: 0 !important;
-      margin-bottom: 60px !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box;
-    }
-    #hertz-faq-page section {
-      width: 100% !important;
-      max-width: 100% !important;
-      margin: 0 !important;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    #hertz-faq-page h1 {
-      text-align: center;
-      margin-bottom: 40px;
-      color: #2c3e50;
-      font-size: 2.2em;
-      font-weight: 600;
-    }
-    #hertz-faq-page details {
-      background: #fff;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border: 2px solid #e1e8ed;
-      transition: all 0.3s ease;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    #hertz-faq-page details[open] {
-      border-color: #fc0;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.15);
-    }
-    #hertz-faq-page summary {
-      font-weight: 600;
-      font-size: 1.15em;
-      outline: none;
-      padding: 20px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #2c3e50;
-      user-select: none;
-      position: relative;
-    }
-    #hertz-faq-page summary::-webkit-details-marker {
-      display: none;
-    }
-    #hertz-faq-page summary::after {
-      content: '+';
-      font-size: 1.8em;
-      font-weight: 300;
-      color: #666;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-      margin-left: 15px;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f5f5f5;
-      border-radius: 50%;
-      line-height: 1;
-    }
-    #hertz-faq-page details[open] summary::after {
-      content: '−';
-      transform: rotate(180deg);
-      background: #fc0;
-      color: #fff;
-    }
-    #hertz-faq-page summary:hover::after {
-      background: #fc0;
-      color: #fff;
-    }
-    #hertz-faq-page summary::before {
-      content: 'Click to expand';
-      font-size: 0.75em;
-      font-weight: 400;
-      color: #7f8c8d;
-      position: absolute;
-      right: 60px;
-      font-style: italic;
-      opacity: 0.7;
-    }
-    #hertz-faq-page details[open] summary::before {
-      content: 'Click to collapse';
-    }
-    #hertz-faq-page details p {
-      padding: 0 25px 25px 25px;
-      margin: 0;
-      color: #555;
-      line-height: 1.7;
-      animation: hertzFaqFadeIn 0.3s ease;
-    }
-    @keyframes hertzFaqFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    #hertz-faq-page summary:hover {
-      color: #2c3e50;
-    }
-    #hertz-faq-page h2 {
-      font-size: 1.5em;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-top: 40px;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid #fc0;
-    }
-    #hertz-faq-page h2:first-of-type {
-      margin-top: 20px;
-    }
-    #hertz-faq-page details p a {
-      color: #fc0;
-      text-decoration: none;
-      font-weight: 500;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s ease;
-    }
-    #hertz-faq-page details p a:hover {
-      color: #e6b800;
-      border-bottom-color: #e6b800;
-    }
-    
-    /* Hide "Click to expand" text on mobile */
-    @media screen and (max-width: 768px) {
-      #hertz-faq-page summary::before {
-        display: none;
-      }
-    }
-    
-    /* Hide "enlarged view" element that appears from global scripts */
-    #hertz-faq-page [class*="enlarged"], 
-    #hertz-faq-page [id*="enlarged"],
-    #hertz-faq-page [class*="Enlarged"],
-    #hertz-faq-page [id*="Enlarged"],
-    #hertz-faq-page [title*="enlarged"],
-    #hertz-faq-page [title*="Enlarged"] {
-      display: none !important;
-    }
-  </style>
-<div id="hertz-faq-page">
-<section>
-  <h1>Frequently Asked Questions</h1>
+  [class*="enlarged"], [id*="enlarged"], [class*="Enlarged"], [id*="Enlarged"],
+  [title*="enlarged"], [title*="Enlarged"] { display: none !important; }
+</style>
+<section class="hz-pg hz-doc">
+  <h1 class="hz-pg-title">Frequently Asked Questions</h1>
 
-  <h2>Ordering on Behalf of Employees</h2>
+  <h2 class="hz-doc-h">Ordering on Behalf of Employees</h2>
 
   <details>
     <summary>How to place orders on behalf of an employee?</summary>
     <p>Each order must be placed separately for each employee to ensure that their employee ID is being referenced at checkout for reporting purposes.<br>
-    You can then add the items that are needed into the cart and checkout as normal.<br>
-    Please click <a href="#" target="_blank">[HERE]</a> for step by step instructions.</p>
+    Start from <a href="champion">Order for someone on your team</a>, find the employee and choose Order for them. You then add the items they need to the cart and check out as normal.</p>
   </details>
 
   <details>
@@ -220,7 +69,7 @@
     <p>Log into your account and click on "orders" at the top and you'll be able to click into your order to get the status - if shipped you'll find tracking there.</p>
   </details>
 
-  <h2>Returns & Exchanges</h2>
+  <h2 class="hz-doc-h">Returns & Exchanges</h2>
 
   <details>
     <summary>How long do I have to request a return or exchange?</summary>
@@ -264,4 +113,3 @@
     • Any images you can share of the damage</p>
   </details>
 </section>
-</div>
