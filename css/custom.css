@@ -3684,3 +3684,25 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-skel-note { display: block; height: 12px; width: 300px; margin: 18px 0 0; }
 /* Matches the ghost button's box so the card does not resize under the reader. */
 .hz-skel-btn { display: block; height: 40px; width: 176px; border-radius: 2px; margin: 18px 0 0; }
+
+/* ---- a page of options ----
+   For a card that is a choice rather than a container. The 11px uppercase `.hz-pg-card-t`
+   is the right label for a table or a detail panel and the wrong one here: it made the
+   contact page list its two routes without either ever looking like something to pick.
+   24px 600 is the size this site already uses for a spoken heading inside a card. */
+.hz-pg-opt .hz-pg-card-b { padding: 24px; }
+.hz-pg-opt-h {
+  font-family: var(--display); font-size: 24px; font-weight: 600; line-height: 1.15;
+  color: var(--ink); margin: 0 0 8px;
+}
+/* The chat button, drawn at the size of the real one so the reader recognises it rather
+   than hunting for it. Its colour is the widget's own, not a brand colour: the point is
+   that it matches the thing in the corner. */
+.hz-pg-chatcue {
+  display: flex; align-items: center; gap: 10px; margin: 14px 0 0;
+  font-size: 13px; color: var(--muted);
+}
+.hz-pg-chatbtn {
+  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+  background: #0c5c57; display: grid; place-items: center;
+}

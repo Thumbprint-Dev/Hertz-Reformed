@@ -39,29 +39,45 @@
   <div class="hz-pg-spacer" aria-hidden="true"></div>
 
   <!-- The two things you can act on, side by side, as the client drew them. -->
+  <!--
+    Two routes, framed as the question the reader arrived with rather than as a category.
+    The headings were `RETURNS` and `LIVE CHAT` in 11px grey uppercase, which is the same
+    treatment this site gives a table column label: the page listed its options without
+    ever looking like a choice. A spoken heading at the size the site already uses for one
+    inside a card, plus the first line answering "is this me?", makes the pair scannable.
+  -->
   <div class="hz-pg-cards">
 
-    <div class="hz-pg-card">
-      <div class="hz-pg-card-h">
-        <p class="hz-pg-card-t">Returns</p>
-      </div>
+    <div class="hz-pg-card hz-pg-opt">
       <div class="hz-pg-card-b">
-        <p>Wrong size, wrong item, or damaged on the way? Start a return. The allocation
-          goes back to you, so you can order the right one.</p>
+        <h2 class="hz-pg-opt-h">Something arrived wrong</h2>
+        <p>Wrong size, wrong item, or damaged on the way. Start a return and the
+          allocation goes back to you, so you can order the right one.</p>
         <a class="hz-pg-btn" href="https://thumbprint.com/hertz/UniformReturn"
            target="_blank" rel="noopener noreferrer">Start a return</a>
       </div>
     </div>
 
-    <div class="hz-pg-card">
-      <div class="hz-pg-card-h">
-        <p class="hz-pg-card-t">Live chat</p>
-      </div>
-      <!-- The hours live in the Support card below and are not repeated here. They were
-           in both, which on a page this short reads as two different facts that happen
-           to agree. -->
+    <div class="hz-pg-card hz-pg-opt">
       <div class="hz-pg-card-b">
-        <p>Click the chat button in the bottom right of any page.</p>
+        <h2 class="hz-pg-opt-h">Anything else</h2>
+        <!--
+          The chat widget is injected by Four51, not by this theme, so there is no API here
+          to open it with and a guessed one would fail silently. The next best thing is to
+          make it recognisable: the button is drawn at the size and shape of the real one,
+          so "the button in the bottom right" is something the reader has now seen rather
+          than something they have to go and find.
+        -->
+        <p>Use the chat button in the bottom right of any page.</p>
+        <p class="hz-pg-chatcue">
+          <span class="hz-pg-chatbtn" aria-hidden="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff"
+                 stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.7 9.7 0 0 1-3-.5L3.5 21l1.3-4a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z" />
+            </svg>
+          </span>
+          <span>Looks like this</span>
+        </p>
         <p class="hz-pg-quiet">Outside support hours, leave a message in chat and it is
           picked up the next working morning.</p>
       </div>
