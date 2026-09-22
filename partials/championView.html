@@ -59,10 +59,30 @@
         </p>
 
         <div class="hz-team-list" ng-if="champ.shown.length">
+          <!--
+            Each row is a short profile, not a line: a Champion picking from a list of
+            similar names is choosing whose year to spend, and an id and a department were
+            not enough to be sure. Name and email identify the person; the department and
+            the reset date are what they need before deciding.
+
+            Deliberately fewer fields than the on-behalf banner. This is a list to scan,
+            and the full record is on the next screen once they have chosen.
+          -->
           <div class="hz-team-row" ng-repeat="b in champ.shown">
-            <span class="hz-team-id">{{b.employeeId}}</span>
-            <span class="hz-team-name">{{b.name}}</span>
-            <span class="hz-team-dept">Dept {{b.deptCode || '&ndash;'}}</span>
+            <span class="hz-team-who">
+              <span class="hz-team-name">{{b.name}}</span>
+              <span class="hz-team-mail" ng-if="b.email">{{b.email}}</span>
+            </span>
+
+            <span class="hz-team-meta">
+              <span class="hz-team-f"><b>Employee</b>{{b.employeeId}}</span>
+              <span class="hz-team-f"><b>Dept</b>{{b.deptCode || '&ndash;'}}</span>
+              <!-- Only once they have a cycle. Before day 90 there is nothing to reset,
+                   and the row says that instead, further along. -->
+              <span class="hz-team-f" ng-if="b.cycleEnd">
+                <b>Resets</b>{{b.cycleEnd | hzResetDate}}
+              </span>
+            </span>
 
             <!-- Before day 90 there is nothing to order, and saying why beats a button
                  that refuses when pressed. -->
