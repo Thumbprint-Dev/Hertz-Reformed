@@ -17,8 +17,10 @@
     -->
     <div class="hz-onbehalf" ng-if="alloc.onBehalf">
       <span class="hz-onbehalf-tag">Ordering on behalf</span>
+      <!-- Same wording as the subheading and the account page. A Champion reading this is
+           checking they have the right person, and the group is part of that. -->
       <span class="hz-onbehalf-who">
-        {{alloc.view.groupName}} &middot; employee <b>{{alloc.beneficiaryId}}</b>
+        {{alloc.view.groupLabel || alloc.view.groupName}} &middot; employee <b>{{alloc.beneficiaryId}}</b>
       </span>
       <button class="hz-onbehalf-x" type="button" ng-click="alloc.leaveOnBehalf()">
         Choose someone else
@@ -27,8 +29,21 @@
 
     <header class="hz-pick-head">
       <h1 class="hz-pick-title">Choose your uniform</h1>
+      <!--
+        The allocation group and nothing else, worded as the account page words it:
+        `Full Time Cold Weather`, not `Hertz FT — cold`. The raw name is an operator's
+        label and the person reading it is not the operator.
+
+        `groupLabel` is composed server-side from the group's own columns and shared with
+        `GET /me/profile`, so the two pages cannot word the same group differently.
+        `groupName` is the fallback for a group the columns cannot describe.
+
+        The cycle end date came off at the client's request, 21 September. It was true and
+        it was noise: nothing on this page is about the date, and a deadline in the
+        subheading of a page whose job is choosing items reads as pressure.
+      -->
       <p class="hz-pick-sub" ng-if="alloc.view">
-        {{alloc.view.groupName}} &middot; allocation year ends {{alloc.view.cycleEnd | hzDate}}
+        {{alloc.view.groupLabel || alloc.view.groupName}}
       </p>
     </header>
 
