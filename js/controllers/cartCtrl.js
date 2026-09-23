@@ -25,7 +25,18 @@ function ($scope, $routeParams, $location, $451, Order, OrderConfig, User, Punch
 		}, true);
 	};
     
-	$scope.isEditforApproval = $routeParams.id != null && $scope.user.Permissions.contains('EditApprovalOrder');
+	// `$scope.user &&` guards a dereference that runs at construction.
+	//
+	// `$scope.user` is loaded asynchronously by Four51Ctrl, inside the User.get callback, so
+	// it is there when you click through from another page and absent when you reload this
+	// one. The `$routeParams` test short-circuits on routes with no order id, which is why
+	// this never showed up on the common path; on the routes that DO carry one it threw,
+	// killed the controller, and rendered a header and a footer with nothing between them.
+	//
+	// Failing to `false` is the safe direction: without knowing who the user is, do not
+	// grant them approval-editing powers. Restored 23 Sep: this went back with the 17 Sep
+	// rollback, which chose a tree rather than rejecting the fix.
+	$scope.isEditforApproval = $routeParams.id != null && $scope.user && $scope.user.Permissions.contains('EditApprovalOrder');
 	if ($scope.isEditforApproval) {
 		Order.get($routeParams.id, function(order) {
 			$scope.currentOrder = order;

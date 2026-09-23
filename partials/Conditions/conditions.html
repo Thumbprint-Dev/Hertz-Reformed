@@ -1,2 +1,49 @@
-<div ng-init="path = 'partials/Conditions/conditions-' + user.Culture.Name + '.html'" ng-include="path"></div>
+<!--
+  Terms of use.
 
+  ## Why this is not just an ng-include any more
+
+  It was one line: an `ng-include` of `partials/Conditions/conditions-{{user.Culture.Name}}.html`.
+  No such file exists, for any locale, so the page rendered empty. That matters more than an
+  empty page usually would, because `Four51Ctrl` sends every user whose terms are not accepted
+  here on load: they found nothing, had no way to accept, and could not leave.
+
+  The locale include is kept, so a tenant that supplies `conditions-en-US.html` still gets its
+  own wording. The Continue button lives OUTSIDE the include, so the page works whether or not
+  that file exists. When it does not, the page says so rather than inventing terms: the wording
+  of a site's terms is the client's, not ours (CLAUDE.md invariant 9). Continuing records the
+  terms as accepted in Four51, so publishing terms later will not by itself ask again.
+
+  Restored 23 September. An earlier version of this fix went back with the 17 September
+  rollback; that one showed its fallback only when there was no locale name at all, which is
+  not the failing case, and its fallback text was written by us.
+
+  ## One thing to watch
+
+  `ConditionsCtrl.accept()` sets `user.AcceptConditions`, while `Four51Ctrl` tests
+  `user.TermsAccepted`. If Four51's `PUT user` does not map one to the other, the user is let
+  through for this session but sent back here on the next visit. It cannot be checked without
+  a tenant login whose terms are unaccepted; if this page keeps reappearing after Continue,
+  that mismatch is the first place to look.
+-->
+<section class="hz-pg hz-doc" ng-init="terms = { loaded: false }">
+  <h1 class="hz-pg-title">Terms of use</h1>
+
+  <!-- The tenant's own wording, when it has supplied a file for this locale. `onload` fires
+       only when the file arrived, which is what decides whether the note below shows. -->
+  <div class="hz-doc-box"
+       ng-include="'partials/Conditions/conditions-' + ((user.Culture && user.Culture.Name) || 'en-US') + '.html'"
+       onload="terms.loaded = true"
+       ng-show="terms.loaded"></div>
+
+  <div class="hz-pg-note" ng-if="!terms.loaded">
+    <p>The terms of use for this site have not been published yet.</p>
+  </div>
+
+  <div class="hz-pg-actions" style="margin-top: 24px;">
+    <button type="button" class="hz-pg-btn" ng-click="accept()">
+      <span ng-if="terms.loaded">Accept and continue</span>
+      <span ng-if="!terms.loaded">Continue</span>
+    </button>
+  </div>
+</section>

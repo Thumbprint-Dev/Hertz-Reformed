@@ -104,9 +104,15 @@
           </div>
         </div>
 
-        <!-- Save as a favourite, for a repeat order. -->
+        <!--
+          Save as a favourite, for a repeat order. Not for allocation employees
+          (`HidePricing`): a favourite is reordered through Four51's `PUT order/repeat`, which
+          clones an order server-side without passing the allocation gate, so offering it to
+          them invites the one reorder the gate cannot see. Champions buying a la carte spend
+          no allocation and keep it, and the Favorites link in the Account menu is theirs.
+        -->
         <div class="hz-pg-card"
-             ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer'">
+             ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer' && !user.Permissions.contains('HidePricing')">
           <div class="hz-pg-card-b">
             <loadingindicator ng-show="displayLoadingIndicator" />
             <div class="hz-pg-field">

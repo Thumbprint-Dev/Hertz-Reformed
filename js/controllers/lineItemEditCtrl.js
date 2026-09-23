@@ -1,6 +1,7 @@
 four51.app.controller('LineItemEditCtrl', ['$scope', '$routeParams', '$location', 'Product', 'ProductDisplayService', 'Order',
     function ($scope, $routeParams, $location, Product, ProductDisplayService, Order) {
-        $scope.isEditforApproval = $routeParams.orderID && $scope.user.Permissions.contains('EditApprovalOrder');
+        // Same guard, same reason as cartCtrl.js. See the note there.
+        $scope.isEditforApproval = $routeParams.orderID && $scope.user && $scope.user.Permissions.contains('EditApprovalOrder');
         $scope.EditingLineItem = (typeof($routeParams.lineItemIndex) != 'undefined');
         if ($scope.EditingLineItem) $scope.LineItemIndex = $routeParams.lineItemIndex;
         if ($scope.isEditforApproval) {

@@ -9,13 +9,23 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         return 'specform.hcf?id=' + routeParams.productInteropID;
     }
 
-    /* The champion-only guard on /address* is a run block at the bottom of this file,
-       not a route `resolve`. See the note there for why the obvious version does not
-       work, and why `/insights` below is quietly broken in the same way. */
+    /* The champion-only guard on /address* and the Insights guard on /insights/ are a run
+       block at the bottom of this file, not route `resolve`s. See the note there for why
+       the obvious version does not work. */
 
     $routeProvider.
-        when('/listOrders', { templateUrl: 'partials/listOrders.html', controller: 'ListOrdersCtrl' }).
-        when('/orderdetails/:orderid', {templateUrl: 'partials/orderDetails.html', controller: 'OrderDetailsCtrl'}).
+        // `/listOrders` and `/orderdetails/:orderid` removed (restored 23 Sep; the original
+        // removal went back with the 17 Sep rollback). Neither controller, `ListOrdersCtrl`
+        // nor `OrderDetailsCtrl`, is defined anywhere in the theme, so both routes could only
+        // throw `ng:areq` and render "Server Error". Nothing links to either; order history
+        // is `/order` and a placed order is `/order/new/:id`, and `otherwise` now sends an
+        // old bookmark to the catalogue. The two partials are left in place, inert.
+        //
+        // NOT removed, and known broken: `KitSpecFormCtrl` and `KitVariantCtrl`, on the
+        // deeper `/kit/...` routes below, are also undefined. They belong to Four51's kit
+        // feature (`KitCtrl` itself exists and `/kit/:id` is reachable from productCtrl), and
+        // Hertz's allocation is pool-based and configures no kits, so nobody reaches them.
+        // If a kit is ever configured, those two controllers have to be written first.
         // `/catalog` is where sign-in lands and where `otherwise` sends everything, so it
         // is the front door and carries the landing page. A specific category still goes
         // to the product listing; only the bare path changed. The old bare-`/catalog`
@@ -72,26 +82,10 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         when('/returns/', { templateUrl: 'partials/Messages/returns.html' }).
         when('/allofaq/', { templateUrl: 'partials/Messages/allofaq.html' }).
         when('/uniforminsights/', { templateUrl: 'partials/uniforminsights.html' }).
-        when('/insights/', {
-            templateUrl: 'partials/insights.html',
-            resolve: {
-                auth: ['User', '$q', '$location', function(User, $q, $location) {
-                    var deferred = $q.defer();
-                    User.get(function(user) {
-                        var insights = user.Groups && user.Groups.some(function(g) {
-                            return g.Name === 'Insights';
-                        });
-                        if (insights) {
-                            deferred.resolve(user);
-                        } else {
-                            $location.path('/catalog');
-                            deferred.reject('unauthorized');
-                        }
-                    });
-                    return deferred.promise;
-                }]
-            }
-        }).
+        // Insights group only. Guarded by the run block at the bottom of this file, not by a
+        // `resolve`: a resolve that rejects and redirects renders a blank page (see the note
+        // there), which is exactly what anyone outside the group used to get here.
+        when('/insights/', { templateUrl: 'partials/insights.html' }).
         
         otherwise({redirectTo: '/catalog'});
 }]);
@@ -108,8 +102,8 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
  * ## Why this is a run block and not a route `resolve`
  *
  * The obvious version is a `resolve` that rejects and calls `$location.path()`, which is
- * what the `/insights` route above does. It does not work, and `/insights` has the bug
- * today: the address bar changes and the page renders nothing at all. Rejecting a resolve
+ * what the `/insights` route used to do. It does not work: `/insights` had the bug until 23
+ * September, when it moved here: the address bar changed and the page rendered nothing. Rejecting a resolve
  * makes ngRoute unwind the transition without setting `$route.current`, and a location
  * change made inside that same turn is swallowed rather than starting the next
  * navigation. Rejecting first and deferring the redirect with `$timeout` does not fix it
@@ -133,6 +127,31 @@ four51.app.run(['$rootScope', '$location', 'User', 'Allocation',
     function($rootScope, $location, User, Allocation) {
         $rootScope.$on('$routeChangeStart', function(event, next) {
             var path = next && next.$$route && next.$$route.originalPath;
+
+            // The Insights dashboards, for the Insights group. Same shape as the address
+            // guard below, and the same reason it is not a resolve.
+            if (path === '/insights/') {
+                User.get(function(user) {
+                    var insights = user && user.Groups && user.Groups.some(function(g) {
+                        return g.Name === 'Insights';
+                    });
+                    if (!insights) $location.path('/catalog').replace();
+                });
+                return;
+            }
+
+            // Saved orders are reordered through Four51's `PUT order/repeat`, which clones an
+            // order without passing the allocation gate. Allocation employees (`HidePricing`)
+            // go to their order history instead; a la carte shoppers keep the page.
+            if (path === '/favoriteorders') {
+                User.get(function(user) {
+                    var allocation = user && user.Permissions && user.Permissions.contains &&
+                        user.Permissions.contains('HidePricing');
+                    if (allocation) $location.path('/order').replace();
+                });
+                return;
+            }
+
             if (!path || path.indexOf('/address') !== 0) return;
 
             User.get(function(user) {
