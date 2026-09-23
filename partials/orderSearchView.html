@@ -1,115 +1,84 @@
 <!--
   Order history — the page behind the header's Orders link.
 
-  Rebuilt from the stock theme, which was a Bootstrap search console: three panels of
-  radio-style criteria, a five-field search form opened by default, an injected <style>
-  block and a table with a border on every cell. The employee it is actually for has
-  placed two or three orders in their life and wants to know where they are.
+  Rebuilt a second time, 23 September 2026. The first pass kept the stock theme's pieces:
+  a yellow chip for the only filter there was ("Open 1"), a card titled "Find an order"
+  whose only visible content was a button labelled "Open" (the same word as the status
+  beside it, doing something else), and a four-column table stretched across the page with
+  the date a screen's width from the order it belonged to.
 
-  So the shape is: the orders, immediately. Filters are chips above them, and the
-  search form is there for the rare case, closed until asked for.
+  Now: a row per order that opens it, reading left to right as number and date, who
+  ordered it, and status. The order-number search is always there, because it is the
+  question people actually have; the rarer filters are one click away. Filter chips only
+  appear when there is more than one to choose between.
 
-  Every binding the stock template used is kept, because OrderSearchCtrl is unchanged
-  apart from opening a default search: `criteria.*` for the form, `OrderSearch($event,
-  criteria)` to run one, `orders` / `settings` / `showNoResults` for the results.
-
-  One trap worth naming: the stock template repeated over `criteria in
-  OrderSearchCriteria`, which SHADOWED the search form's own `criteria` model, and it
-  worked around that by interpolating the object into the click expression
-  (`OrderSearch($event,{{criteria}})`). The repeat variable here is `c`, so there is no
-  shadow and no interpolation.
+  Every binding OrderSearchCtrl provides is unchanged: `criteria.*` for the search,
+  `OrderSearch($event, criteria)` to run one, `orders` / `settings` / `showNoResults`.
+  The repeat variable for the criteria is `c`, not `criteria`, so it does not shadow the
+  search form's model.
 -->
-<section class="hz-pg order-search-view">
+<section class="hz-pg hz-ord order-search-view">
 
   <div class="hz-pg-head">
     <h1 class="hz-pg-title">Order history</h1>
     <div class="hz-pg-actions">
-      <!-- Named for the page each opens, as in the footer. -->
       <a class="hz-pg-btn hz-pg-btn--ghost" href="catalog">My allocation</a>
       <a class="hz-pg-btn hz-pg-btn--ghost" href="allocation">Choose your uniform</a>
     </div>
   </div>
-  <!-- No standfirst. A list of orders under a heading reading "Order history" does not
-       need a sentence saying it is a list of orders, and the empty state still explains
-       itself when there are none. -->
   <div class="hz-pg-spacer" aria-hidden="true"></div>
 
   <loadingindicator ng-show="pagedIndicator" />
 
-  <!--
-    Filters. The stock page had these as three separate panels headed Standard,
-    Replenishment and Price Request, each a bulleted list of links. They are one row of
-    chips: the same criteria, with their counts, and the running one marked.
-  -->
-  <div class="hz-pg-chips" ng-show="hasStandardTypes || hasReplenishmentTypes || hasPriceRequestTypes">
-    <button type="button" class="hz-pg-chip"
-            ng-repeat="c in OrderSearchCriteria"
-            ng-show="c.Count"
-            ng-class="{'is-on': orderSearchStat.DisplayName === c.DisplayName}"
-            ng-click="OrderSearch($event, c)">
-      {{c.DisplayName | r | xlat}}<span class="hz-pg-chip-n">{{c.Count}}</span>
-    </button>
-  </div>
-
-  <!--
-    Find a specific order. Closed by default: it is five fields for a question most
-    people never ask, and open it crowded out the orders themselves.
-  -->
-  <div class="hz-pg-card" ng-show="hasStandardTypes || hasReplenishmentTypes || hasPriceRequestTypes">
-    <div class="hz-pg-card-h">
-      <p class="hz-pg-card-t">Find an order</p>
-      <button type="button" class="hz-pg-btn hz-pg-btn--ghost"
-              ng-click="showFind = !showFind">
-        {{showFind ? 'Close' : 'Open'}}
+  <form class="hz-ord-tools" ng-show="hasStandardTypes || hasReplenishmentTypes || hasPriceRequestTypes"
+        ng-submit="OrderSearch($event, criteria)">
+    <div class="hz-pg-chips" ng-show="criteriaShown.length > 1">
+      <button type="button" class="hz-pg-chip"
+              ng-repeat="c in criteriaShown"
+              ng-class="{'is-on': orderSearchStat.DisplayName === c.DisplayName}"
+              ng-click="OrderSearch($event, c)">
+        {{c.DisplayName | r | xlat}}<span class="hz-pg-chip-n">{{c.Count}}</span>
       </button>
     </div>
-    <div class="hz-pg-card-b" ng-show="showFind">
-      <div class="hz-pg-fields">
-        <div class="hz-pg-field">
-          <label for="hzOrderId">Order number</label>
-          <input id="hzOrderId" type="text" ng-model="criteria.OrderID" autocomplete="off" />
-        </div>
-        <div class="hz-pg-field">
-          <label for="hzShipTo">Ships to</label>
-          <input id="hzShipTo" type="text" ng-model="criteria.ShippingAddress" autocomplete="off" />
-        </div>
-        <div class="hz-pg-field">
-          <label for="hzFrom">Ordered after</label>
-          <input id="hzFrom" name="daterangefrom" type="text" ng-model="criteria.DateRangeFrom"
-                 datepicker-popup="{{user.Culture.DateFormat.short}}" is-open="startopened"
-                 ng-click="startopened = true" autocomplete="off" />
-        </div>
-        <div class="hz-pg-field">
-          <label for="hzTo">Ordered before</label>
-          <input id="hzTo" name="daterangeto" type="text" ng-model="criteria.DateRangeTo"
-                 datepicker-popup="{{user.Culture.DateFormat.short}}" is-open="endopened"
-                 ng-click="endopened = true" min="criteria.DateRangeFrom" autocomplete="off" />
-        </div>
-        <div class="hz-pg-field">
-          <label for="hzLastN">Show at most</label>
-          <input id="hzLastN" type="text" ng-model="criteria.LastN" placeholder="25" autocomplete="off" />
-        </div>
-        <div class="hz-pg-field hz-pg-field--action">
-          <button type="submit" class="hz-pg-btn" ng-click="OrderSearch($event, criteria)">Search</button>
-        </div>
+
+    <div class="hz-ord-find">
+      <label class="hz-sr-only" for="hzOrderId">Order number</label>
+      <input id="hzOrderId" type="search" ng-model="criteria.OrderID" autocomplete="off"
+             placeholder="Order number" />
+      <button type="submit" class="hz-pg-btn">Search</button>
+      <button type="button" class="hz-ord-more" ng-click="showFind = !showFind"
+              aria-expanded="{{!!showFind}}">{{showFind ? 'Fewer filters' : 'More filters'}}</button>
+    </div>
+
+    <div class="hz-pg-fields hz-ord-filters" ng-show="showFind">
+      <div class="hz-pg-field">
+        <label for="hzShipTo">Ships to</label>
+        <input id="hzShipTo" type="text" ng-model="criteria.ShippingAddress" autocomplete="off" />
+      </div>
+      <div class="hz-pg-field">
+        <label for="hzFrom">Ordered after</label>
+        <input id="hzFrom" name="daterangefrom" type="text" ng-model="criteria.DateRangeFrom"
+               datepicker-popup="{{user.Culture.DateFormat.short}}" is-open="startopened"
+               ng-click="startopened = true" autocomplete="off" />
+      </div>
+      <div class="hz-pg-field">
+        <label for="hzTo">Ordered before</label>
+        <input id="hzTo" name="daterangeto" type="text" ng-model="criteria.DateRangeTo"
+               datepicker-popup="{{user.Culture.DateFormat.short}}" is-open="endopened"
+               ng-click="endopened = true" min="criteria.DateRangeFrom" autocomplete="off" />
       </div>
     </div>
-  </div>
+  </form>
 
   <!-- Nothing matched a search the employee ran. -->
   <div class="hz-pg-note" ng-show="showNoResults">
-    <p><strong>No orders matched.</strong> Widen the dates, or clear the fields and choose
-      a filter above to see everything.</p>
+    <p><strong>No orders matched.</strong> Check the order number, or clear the search to see
+      every order.</p>
   </div>
 
   <!--
-    Nothing at all. Distinct from the case above, and it needs to say what to do next
-    rather than report a failed search.
-
-    The three type flags rather than `OrderSearchCriteria.length`: the criteria list can
-    come back populated with every count at zero, which is still "no orders" but would
-    read as a non-empty list and leave the page showing a title and nothing under it.
-    This is the same test the stock template used to decide the same thing.
+    Nothing at all. The three type flags rather than `OrderSearchCriteria.length`: the
+    criteria can come back populated with every count at zero, which is still "no orders".
   -->
   <div class="hz-pg-empty"
        ng-show="!pagedIndicator && !orders.length && !hasStandardTypes && !hasReplenishmentTypes && !hasPriceRequestTypes">
@@ -124,36 +93,27 @@
         <p class="hz-pg-card-t">
           {{orderSearchStat.DisplayName ? (orderSearchStat.DisplayName | r | xlat) : 'Results'}}
         </p>
-        <p class="hz-pg-card-t">{{settings.listCount}} total</p>
+        <p class="hz-pg-card-t">{{settings.listCount}} {{settings.listCount === 1 ? 'order' : 'orders'}}</p>
       </div>
-      <div class="hz-pg-scroll">
-        <table class="hz-pg-table">
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Status</th>
-              <th>Ordered by</th>
-              <th>Date</th>
-              <th ng-if="!(user.Permissions.contains('HidePricing'))">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="order in orders | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize">
-              <td class="hz-pg-num">
-                <!-- An order that is still the working cart opens as the cart, not as
-                     history: it has not been placed yet. -->
-                <a ng-href="{{currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID}}">
-                  {{order.ExternalID || ('(unspecified)' | xlat)}}
-                </a>
-              </td>
-              <td><span class="hz-pg-pill">{{order.StatusText}}</span></td>
-              <td>{{order.FromUserFirstName + ' ' + order.FromUserLastName}}</td>
-              <td class="hz-pg-num">{{order.DateSubmitted || order.DateCreated | date:user.Culture.DateFormat.long}}</td>
-              <td class="hz-pg-num" ng-if="!(user.Permissions.contains('HidePricing'))">{{order.Total | culturecurrency}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+
+      <!-- An order that is still the working cart opens as the cart: it has not been placed. -->
+      <a class="hz-ord-row"
+         ng-repeat="order in orders | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize"
+         ng-href="{{currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID}}">
+        <span class="hz-ord-row-id">
+          <span class="hz-ord-row-num">Order {{order.ExternalID || ('(unspecified)' | xlat)}}</span>
+          <span class="hz-ord-row-date">{{(order.DateSubmitted || order.DateCreated) | date:'MMM d, y'}}</span>
+        </span>
+        <span class="hz-ord-row-who">
+          <span class="hz-ord-row-k">Ordered by</span>
+          {{order.FromUserFirstName}} {{order.FromUserLastName}}
+        </span>
+        <span class="hz-ord-row-total" ng-if="!(user.Permissions.contains('HidePricing'))">{{order.Total | culturecurrency}}</span>
+        <span class="hz-ord-row-end">
+          <span class="hz-pg-pill">{{order.StatusText}}</span>
+          <span class="hz-ord-row-go" aria-hidden="true">&rarr;</span>
+        </span>
+      </a>
     </div>
 
     <div ng-show="settings.listCount > settings.pageSize">

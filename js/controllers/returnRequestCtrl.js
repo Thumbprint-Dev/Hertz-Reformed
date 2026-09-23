@@ -28,8 +28,8 @@
  * server-side by the same scope rule as ordering on behalf. `?order=<id>` preselects an
  * order, for arriving from an order's own page.
  */
-four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filter', '$window', 'Allocation',
-  function($scope, $location, $q, $filter, $window, Allocation) {
+four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filter', '$window', 'Allocation', 'Order',
+  function($scope, $location, $q, $filter, $window, Allocation, Order) {
 
     var search = $location.search() || {};
     var FOR = search['for'] || null;
@@ -72,6 +72,7 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
           var data = results[0] || {};
           rt.orders = data.orders || [];
           rt.reasons = data.reasons || [];
+          numberOrders(rt.orders);
           rt.onBehalf = !!data.onBehalf;
           rt.who = results[1] || null;
 
@@ -86,6 +87,24 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
         })
         .catch(function(err) { rt.error = describe(err); })
         .finally(function() { rt.loading = false; });
+    }
+
+    /**
+     * The number the employee knows each order by.
+     *
+     * "1000" is Four51's ExternalID; we record the order by its internal id, which reads as
+     * noise ("Z0-sJfSN...") beside an order page headed "Order 1000". One lookup per order,
+     * and an employee has one to three. A lookup that fails leaves the internal id showing,
+     * which still names the right order.
+     */
+    function numberOrders(orders) {
+      angular.forEach(orders, function(o) {
+        try {
+          Order.get(o.four51OrderId, function(order) {
+            if (order && order.ExternalID) o.orderNumber = order.ExternalID;
+          });
+        } catch (e) { /* the internal id stays */ }
+      });
     }
 
     $scope.rt.choose = function(order) {
@@ -209,6 +228,7 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
             var keep = rt.order && rt.order.four51OrderId;
             Allocation.returnOrders(FOR).then(function(data) {
               rt.orders = data.orders || [];
+              numberOrders(rt.orders);
               angular.forEach(rt.orders, function(o) {
                 if (o.four51OrderId === keep) { rt.order = o; }
               });

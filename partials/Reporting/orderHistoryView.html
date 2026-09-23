@@ -1,21 +1,22 @@
 <!--
   One order, after it was placed. Reached by choosing an order on /order.
 
-  Rebuilt from the stock theme. What was there: an injected <style> block carrying three
-  width-only media queries, Bootstrap `col-md-push-7` / `col-md-pull-4` column reordering
-  that put the summary before the contents in source and after it on screen, and
-  `padding-bottom: 800px` on the wrapper — an 800px void under every order, which is what
-  the media queries were really fighting.
+  Rebuilt a second time, 23 September 2026, for what an employee opens it to check: what
+  came, in which size, where it is going, and how to send something back. The stock grid
+  printed each line as a product name over a raw InteropID, counted lines as "items" (four
+  "items" in an order of thirteen garments), printed a "Bills to" heading over an empty
+  address and a lone comma for orders that are never billed, and showed the status twice.
+  It also led nowhere: the return form, which is built on these orders, had no way in.
 
-  The directives are unchanged and still do the work: `orderhistorydetails`,
-  `orderhistorysummary`, `lineitemhistorygrid`, `approval`, `approvalrulelist` and
-  `orderprint`. Their own templates are restyled in place beside this file.
+  Photos and sizes come from the shared `hzPhoto` and `hzSize` filters, so a garment looks
+  and reads the same here as in the picker. The approvals and saved-order blocks are kept,
+  unchanged, for the rare cases that reach them.
 -->
-<section class="hz-pg">
+<section class="hz-pg hz-ord">
 
   <loadingindicator ng-show="loadingIndicator" title="{{'Please wait while we fetch your order' | r | xlat}}"></loadingindicator>
 
-  <div class="hidden-print">
+  <div class="hidden-print" ng-show="order">
 
     <!-- Shown when the order was just placed: this is the confirmation. -->
     <orderacknowledgemessage ng-show="order.recent" />
@@ -23,38 +24,61 @@
     <a class="hz-pg-back" href="order">&larr; All orders</a>
 
     <div class="hz-pg-head">
-      <h1 class="hz-pg-title">
-        Order {{order.ExternalID}}
-      </h1>
+      <div>
+        <h1 class="hz-pg-title">Order {{order.ExternalID}}</h1>
+        <p class="hz-ord-meta">
+          <span class="hz-pg-pill" ng-show="order.StatusText">{{order.StatusText | r | xlat}}</span>
+          <span ng-show="order.DateSubmitted">Placed {{order.DateSubmitted | date:'MMMM d, y'}}</span>
+          <span>{{units()}} {{units() === 1 ? 'item' : 'items'}}</span>
+        </p>
+      </div>
       <div class="hz-pg-actions">
-        <span class="hz-pg-pill" ng-show="order.StatusText">{{order.StatusText | r | xlat}}</span>
+        <a class="hz-pg-btn" ng-if="canReturn()" ng-href="returns/new?order={{order.ID}}">Start a return</a>
         <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="onPrint()">Print</button>
       </div>
     </div>
-    <p class="hz-pg-sub">
-      {{order.LineItems.length}} {{order.LineItems.length === 1 ? 'item' : 'items'}} in this order.
-    </p>
 
     <div class="hz-pg-grid">
 
-      <!-- Contents first in source order as well as on screen, so the reading order and
-           the tab order agree with what the page looks like. -->
       <div>
         <div class="hz-pg-card">
           <div class="hz-pg-card-h">
             <p class="hz-pg-card-t">What was ordered</p>
+            <p class="hz-pg-card-t">{{order.LineItems.length}} {{order.LineItems.length === 1 ? 'line' : 'lines'}}</p>
           </div>
-          <lineitemhistorygrid />
+
+          <div class="hz-ord-li" ng-repeat="item in order.LineItems">
+            <span class="hz-ord-thumb" aria-hidden="true">
+              <img ng-if="item.Product.InteropID | hzPhoto" ng-src="{{item.Product.InteropID | hzPhoto}}" alt="" />
+            </span>
+            <div class="hz-ord-li-main">
+              <p class="hz-ord-li-name">{{item.Product.Name}}</p>
+              <p class="hz-ord-li-facts">
+                <span class="hz-ord-size" ng-if="item.Product.InteropID | hzSize">Size {{item.Product.InteropID | hzSize}}</span>
+                <span class="hz-ord-size" ng-if="!(item.Product.InteropID | hzSize)">One size</span>
+                <span class="hz-ord-sku">{{item.Product.InteropID}}</span>
+              </p>
+              <!-- Only when the order ships to more than one place; otherwise the side panel
+                   says where it went. -->
+              <p class="hz-ord-li-addr" ng-show="item.ShipAddress && order.IsMultipleShip()">
+                Ships to {{item.ShipAddress.Street1}}, {{item.ShipAddress.City}}, {{item.ShipAddress.State}}
+              </p>
+            </div>
+            <div class="hz-ord-li-qty">
+              <span class="hz-ord-li-qty-l">Qty</span>
+              <span class="hz-ord-li-qty-n">{{item.Quantity}}</span>
+              <span class="hz-ord-li-price" ng-if="!(user.Permissions.contains('HidePricing'))">{{item.LineTotal | culturecurrency}}</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Tracking. Previously a run of bold labels and <br> tags with the raw URL
-             printed in full as its own link text. -->
+        <!-- Tracking, one block per shipment. -->
         <div class="hz-pg-card" ng-show="shipments.length">
           <div class="hz-pg-card-h">
             <p class="hz-pg-card-t">Shipping</p>
           </div>
           <div class="hz-pg-card-b">
-            <div ng-repeat="s in shipments" style="margin-bottom: 18px;">
+            <div class="hz-ord-ship" ng-repeat="s in shipments">
               <div class="hz-pg-dl">
                 <div class="hz-pg-dl-row" ng-show="s.Shipper">
                   <span class="hz-pg-dl-k">Carrier</span>
@@ -96,20 +120,74 @@
             <p class="hz-pg-card-t">Order details</p>
           </div>
           <div class="hz-pg-card-b">
-            <orderhistorydetails></orderhistorydetails>
-            <!-- Kit orders carry no price the employee pays, so the money panel is
-                 hidden for them exactly as it was before. -->
-            <orderhistorysummary ng-if="!(user.Permissions.contains('HidePricing'))"
-                                 ng-hide="order.LineItems[0].Product.InteropID === 'CDC-APP-KIT-001' || order.LineItems[0].Product.Name === 'New Hire Kit'"></orderhistorysummary>
+            <div class="hz-pg-dl">
+              <div class="hz-pg-dl-row" ng-show="order.DateSubmitted">
+                <span class="hz-pg-dl-k">Placed</span>
+                <span class="hz-pg-dl-v">{{order.DateSubmitted | date:'MMM d, y'}}</span>
+              </div>
+              <div class="hz-pg-dl-row" ng-show="order.DateCompleted">
+                <span class="hz-pg-dl-k">Completed</span>
+                <span class="hz-pg-dl-v">{{order.DateCompleted | date:'MMM d, y'}}</span>
+              </div>
+              <div class="hz-pg-dl-row" ng-show="order.FromUserFirstName || order.FromUserLastName">
+                <span class="hz-pg-dl-k">Ordered by</span>
+                <span class="hz-pg-dl-v">{{order.FromUserFirstName}} {{order.FromUserLastName}}</span>
+              </div>
+              <div class="hz-pg-dl-row" ng-show="order.LineItems[0].ShipperName && !order.IsMultipleShip()">
+                <span class="hz-pg-dl-k">Shipping</span>
+                <span class="hz-pg-dl-v">{{order.LineItems[0].ShipperName}}</span>
+              </div>
+              <!-- Payment means nothing to an allocation employee, who pays nothing. -->
+              <div class="hz-pg-dl-row" ng-show="order.PaymentMethod != 'Undetermined' && !user.Permissions.contains('HidePricing')">
+                <span class="hz-pg-dl-k">Payment</span>
+                <span class="hz-pg-dl-v">{{order.PaymentMethodText | r | xlat}}</span>
+              </div>
+              <div class="hz-pg-dl-row" ng-show="order.Comments">
+                <span class="hz-pg-dl-k">Comments</span>
+                <span class="hz-pg-dl-v">{{order.Comments}}</span>
+              </div>
+            </div>
+
+            <!-- Shown only with a street to show. Four51 answers an empty address object for an
+                 order with no bill-to, which printed a heading, blank lines and a comma. -->
+            <div class="hz-ord-addr" ng-if="!order.IsMultipleShip() && order.ShipAddress.Street1">
+              <p class="hz-pg-card-t">Ships to</p>
+              <address>
+                <span ng-if="shipName()">{{shipName()}}<br /></span>
+                <span ng-if="order.ShipAddress.CompanyName">{{order.ShipAddress.CompanyName}}<br /></span>
+                {{order.ShipAddress.Street1}}<br />
+                <span ng-if="order.ShipAddress.Street2">{{order.ShipAddress.Street2}}<br /></span>
+                {{order.ShipAddress.City}}, {{order.ShipAddress.State}} {{order.ShipAddress.Zip}}
+                <span ng-if="order.ShipAddress.Country && order.ShipAddress.Country != 'US'"><br />{{order.ShipAddress.Country}}</span>
+              </address>
+            </div>
+
+            <div class="hz-ord-addr" ng-if="order.BillingEnabled && order.BillAddress.Street1">
+              <p class="hz-pg-card-t">Bills to</p>
+              <address>
+                {{order.BillAddress.Street1}}<br />
+                <span ng-if="order.BillAddress.Street2">{{order.BillAddress.Street2}}<br /></span>
+                {{order.BillAddress.City}}, {{order.BillAddress.State}} {{order.BillAddress.Zip}}
+              </address>
+            </div>
+
+            <orderhistorysummary ng-if="!(user.Permissions.contains('HidePricing'))"></orderhistorysummary>
+          </div>
+        </div>
+
+        <!-- The way into the return form, for the order it came from. -->
+        <div class="hz-pg-card hz-ord-return" ng-if="canReturn()">
+          <div class="hz-pg-card-b">
+            <p class="hz-ord-return-t">Something not right?</p>
+            <p>Wrong size, wrong item or damaged on the way: send it back within 30 days of delivery and the allocation comes back to you.</p>
+            <a class="hz-pg-btn" ng-href="returns/new?order={{order.ID}}">Start a return</a>
           </div>
         </div>
 
         <!--
           Save as a favourite, for a repeat order. Not for allocation employees
           (`HidePricing`): a favourite is reordered through Four51's `PUT order/repeat`, which
-          clones an order server-side without passing the allocation gate, so offering it to
-          them invites the one reorder the gate cannot see. Champions buying a la carte spend
-          no allocation and keep it, and the Favorites link in the Account menu is theirs.
+          clones an order server-side without passing the allocation gate.
         -->
         <div class="hz-pg-card"
              ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer' && !user.Permissions.contains('HidePricing')">

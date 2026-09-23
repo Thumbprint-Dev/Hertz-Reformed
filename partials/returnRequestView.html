@@ -179,7 +179,7 @@
                       ng-click="rt.choose(o)">
                 <span class="hz-rt-radio" aria-hidden="true"></span>
                 <span class="hz-rt-order-main">
-                  <span class="hz-rt-order-id">Order {{o.four51OrderId}}</span>
+                  <span class="hz-rt-order-id">Order {{o.orderNumber || o.four51OrderId}}</span>
                   <span class="hz-rt-order-meta">
                     <span ng-if="o.placedOn">Placed {{o.placedOn | hzDate}}</span>
                     <span ng-if="o.returnable < 1">Nothing left to return</span>
@@ -203,7 +203,7 @@
         <div class="hz-pg-card" ng-if="rt.order">
           <div class="hz-pg-card-h">
             <p class="hz-pg-card-t"><span class="hz-rt-n">2</span>What is going back</p>
-            <span class="hz-rt-card-note">Order {{rt.order.four51OrderId}}</span>
+            <span class="hz-rt-card-note">Order {{rt.order.orderNumber || rt.order.four51OrderId}}</span>
           </div>
 
           <div class="hz-rt-line" ng-repeat="line in rt.order.lines"

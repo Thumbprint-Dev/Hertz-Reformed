@@ -7,6 +7,10 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 
 		OrderSearchCriteria.query(function(data) {
 			$scope.OrderSearchCriteria = data;
+			// The filters worth offering: those with any orders in them. Kept as a property,
+			// not a function the template calls, so ng-repeat is not handed a new array on
+			// every digest.
+			$scope.criteriaShown = (data || []).filter(function(c) { return c.Count > 0; });
 			$scope.hasStandardTypes = _hasType(data, 'Standard');
 			$scope.hasReplenishmentTypes = _hasType(data, 'Replenishment');
 			$scope.hasPriceRequestTypes = _hasType(data, 'PriceRequest');
@@ -42,7 +46,7 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 		});
 
 		$scope.OrderSearch = function($event, criteria) {
-			$event.preventDefault();
+			if ($event && $event.preventDefault) $event.preventDefault();
 			$scope.currentCriteria = criteria;
 			Query(criteria);
 		};

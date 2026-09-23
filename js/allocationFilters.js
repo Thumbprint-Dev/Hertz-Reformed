@@ -109,3 +109,56 @@ four51.app.filter('hzResetDate', ['hzDateFilter', function(hzDateFilter) {
     return hzDateFilter(iso);
   };
 }]);
+
+/**
+ * Reading a Four51 InteropID back into its parts: garment, brand, size.
+ *
+ * `HTZ-POLOLS-M-HZ-L`, `HTZ-CARGOPANT-M-UV-28x34`, `HTZ-RFHAT-HZ`,
+ * `HTZ-PERFPANT-M-UV-32x30-CIN`. The brand segment (HZ, DT, UV, THFT) is the pivot: what
+ * comes before it is the garment, what comes after it is the size, and a trailing `-CIN`
+ * marks Cintas stock sold ahead of the Thumbprint item (decision 54), which is the same
+ * garment. A base id with nothing after the brand is one size.
+ */
+four51.app.factory('hzSkuParts', function() {
+  var BRANDS = ['HZ', 'DT', 'UV', 'THFT'];
+  return function(id) {
+    var parts = String(id || '').toUpperCase().replace(/-CIN$/, '').split('-');
+    if (parts[0] === 'HTZ') parts.shift();
+    var at = -1;
+    for (var i = parts.length - 1; i >= 0; i--) {
+      if (BRANDS.indexOf(parts[i]) > -1) { at = i; break; }
+    }
+    if (at < 0) return { stem: parts.join('-').toLowerCase(), size: null };
+    var size = parts.slice(at + 1).join('-');
+    return {
+      stem: parts.slice(0, at).join('-').toLowerCase(),
+      // Sizes are written as Four51 has them: 28x34, not 28X34.
+      size: size ? size.replace(/(\d)X(\d)/, '$1x$2') : null
+    };
+  };
+});
+
+/**
+ * The product photo for an InteropID, sized or not, or null for the outline.
+ *
+ * DEMO ASSETS: the vendor renderings Hertz supplied, until Four51 serves its own imagery.
+ * Listed rather than probed, because a browser cannot ask whether a file exists without
+ * requesting it, and an unlisted stem would show a broken image. `rfblt` (belt) has none.
+ */
+four51.app.filter('hzPhoto', ['hzSkuParts', function(hzSkuParts) {
+  var PHOTOS = [
+    'beanie', 'cargopant-m', 'cargopant-w', 'cargoshort-m', 'cargoshort-w',
+    'flzip-w', 'lskirt-w', 'matpant-w', 'mattop', 'parka-us', 'perfpant-m',
+    'perfpant-w', 'polols-m', 'polols-w', 'poloss-m', 'poloss-w', 'qtzip-m',
+    'rfhat', 'sshell-us'
+  ];
+  return function(id) {
+    var stem = hzSkuParts(id).stem;
+    return PHOTOS.indexOf(stem) === -1 ? null : 'css/img/products/' + stem + '.png';
+  };
+}]);
+
+/** The size in an InteropID ("L", "28x34"), or null for a one-size item. */
+four51.app.filter('hzSize', ['hzSkuParts', function(hzSkuParts) {
+  return function(id) { return hzSkuParts(id).size; };
+}]);

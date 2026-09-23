@@ -20,8 +20,37 @@ four51.app.controller('CheckOutViewCtrl', ['$scope', '$routeParams', '$location'
      * belongs at the catalogue; treating the first that way bounces someone out of
      * checkout for the crime of refreshing the page.
      */
+    /**
+     * Give a line with no address the address the rest of the cart ships to.
+     *
+     * The allocation picker used to add lines with no address or shipper. In a cart whose
+     * other lines had both, the order read as shipping to several places, so choosing the
+     * address at checkout no longer reached those lines and Four51 refused the submit. Carts
+     * saved before that was fixed still hold such lines, so they are repaired here. Only
+     * lines with no address are touched: an order really going to several places keeps
+     * every address it has.
+     */
+    function fillMissingShipping(order) {
+      var from = null;
+      angular.forEach(order.LineItems || [], function(li) {
+        if (!from && li.ShipAddressID) from = li;
+      });
+      if (!from) return;
+      angular.forEach(order.LineItems, function(li) {
+        if (li.ShipAddressID) return;
+        li.ShipAddressID = from.ShipAddressID;
+        li.ShipFirstName = from.ShipFirstName;
+        li.ShipLastName = from.ShipLastName;
+        li.ShipAccount = from.ShipAccount;
+        li.Shipper = from.Shipper;
+        li.ShipperID = from.ShipperID;
+        li.ShipperName = from.ShipperName;
+      });
+    }
+
     function startCheckout(order) {
       order.PaymentMethod = 'PurchaseOrder';
+      fillMissingShipping(order);
 
       $scope.isEditforApproval =
         $routeParams.id != null &&

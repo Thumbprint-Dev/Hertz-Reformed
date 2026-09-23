@@ -154,39 +154,12 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     };
 
     /**
-     * Product photography, by garment stem.
-     *
-     * DEMO ASSETS, and the only reason they are in the repo. These are the vendor
-     * renderings Hertz supplied; Four51 is where product imagery belongs, and `catalog_map`
-     * still has no URL column to read it from. When the catalogue serves its own images
-     * these files and this list go, and `photoFor` reads the product instead.
-     *
-     * Listed rather than probed because there is no way to ask the browser whether a file
-     * exists without requesting it: an unlisted stem would render a broken-image icon in
-     * the row. A miss here falls back to the outline art, which is a deliberate state
-     * rather than a failure — `RFBLT` (belt) has no rendering and shows its outline.
-     */
-    var PHOTOS = [
-      'beanie', 'cargopant-m', 'cargopant-w', 'cargoshort-m', 'cargoshort-w',
-      'flzip-w', 'lskirt-w', 'matpant-w', 'mattop', 'parka-us', 'perfpant-m',
-      'perfpant-w', 'polols-m', 'polols-w', 'poloss-m', 'poloss-w', 'qtzip-m',
-      'rfhat', 'sshell-us'
-    ];
-
-    /**
-     * The photo for a product, or null to fall back to the outline.
-     *
-     * Keyed on the garment, not the whole InteropID: `-HZ` and `-DT` are the brand the
-     * garment is embroidered for and `-UV` the unbranded variant, and the three share one
-     * rendering. Matching the full id would need three copies of every file and would still
-     * miss the next brand.
+     * The photo for a product, or null to fall back to the outline. The list of renderings
+     * and the reading of the id are shared with the order page: `hzPhoto` in
+     * allocationFilters.js.
      */
     function photoFor(productId) {
-      var stem = String(productId || '').toUpperCase()
-        .replace(/^HTZ-/, '')
-        .replace(/-(HZ|DT|UV)$/, '')
-        .toLowerCase();
-      return PHOTOS.indexOf(stem) === -1 ? null : 'css/img/products/' + stem + '.png';
+      return $filter('hzPhoto')(productId);
     }
 
     /** Which measurements a size chart shows, by category. */
@@ -568,6 +541,35 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     }
 
     /**
+     * The shipping a new line should carry: the cart's own, when it ships to one place.
+     *
+     * New lines used to go in with no address and no shipper. Added to a cart whose lines
+     * already had both, that made `IsMultipleShip()` true, so checkout stopped applying the
+     * order's address to every line, re-choosing the same address changed nothing, and
+     * Four51 refused the submit for want of an address the employee could see was chosen.
+     * An empty cart, or one genuinely going to several places, still gets blanks for
+     * checkout to fill.
+     */
+    function shippingOf(order) {
+      var blank = {
+        ShipAccount: null, ShipAddressID: null, ShipFirstName: null, ShipLastName: null,
+        Shipper: null, ShipperID: null, ShipperName: null
+      };
+      var first = order.LineItems && order.LineItems[0];
+      if (!first || !first.ShipAddressID) return blank;
+      if (angular.isFunction(order.IsMultipleShip) && order.IsMultipleShip()) return blank;
+      return {
+        ShipAccount: first.ShipAccount || null,
+        ShipAddressID: first.ShipAddressID,
+        ShipFirstName: first.ShipFirstName || null,
+        ShipLastName: first.ShipLastName || null,
+        Shipper: first.Shipper || null,
+        ShipperID: first.ShipperID || null,
+        ShipperName: first.ShipperName || null
+      };
+    }
+
+    /**
      * Does Four51 have at least `qty` of this Cintas product in stock?
      *
      * SkuVault syncs stock into Four51 (Trevor, 23 Sep), so QuantityAvailable is the count
@@ -688,18 +690,19 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         .then(function(current) {
           var order = current || {};
           if (!order.LineItems) order.LineItems = [];
+          var ship = shippingOf(order);
 
           angular.forEach(rows, function(row) {
             order.LineItems.push({
               Product: products[sizedId(row.productId, row.size)],
               Quantity: row.qty,
-              ShipAccount: null,
-              ShipAddressID: null,
-              ShipFirstName: null,
-              ShipLastName: null,
-              Shipper: null,
-              ShipperID: null,
-              ShipperName: null,
+              ShipAccount: ship.ShipAccount,
+              ShipAddressID: ship.ShipAddressID,
+              ShipFirstName: ship.ShipFirstName,
+              ShipLastName: ship.ShipLastName,
+              Shipper: ship.Shipper,
+              ShipperID: ship.ShipperID,
+              ShipperName: ship.ShipperName,
               // Sizes are separate products here, so there is no variant to choose.
               Variant: null
             });
