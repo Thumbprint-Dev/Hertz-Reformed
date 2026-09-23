@@ -1,117 +1,143 @@
 <!--
-  Styled by `.hz-pg` and `.hz-doc` in css/custom.css, like the other reading pages. The one
-  rule kept here hides an "enlarged view" element that a global script injects; it is left
-  in the partial so it applies only while this page is open, as it always did.
+  The Uniform Champion FAQ. Styled by `.hz-pg`, `.hz-doc` and `.hz-faq` in css/custom.css,
+  and built the same way as allofaq.html: ordering and returns side by side, a switch
+  between them on a phone, and one open question per column. The one rule kept here hides an
+  "enlarged view" element that a global script injects, as it always did.
 -->
 <style>
   [class*="enlarged"], [id*="enlarged"], [class*="Enlarged"], [id*="Enlarged"],
   [title*="enlarged"], [title*="Enlarged"] { display: none !important; }
 </style>
-<section class="hz-pg hz-doc">
-  <h1 class="hz-pg-title">Frequently Asked Questions</h1>
+<section class="hz-pg hz-doc hz-faq" ng-init="faqTab = 'order'"
+         ng-class="{'hz-faq--returns': faqTab === 'returns'}">
+  <h1 class="hz-pg-title">Uniform Champion FAQ</h1>
+  <p class="hz-faq-lede">Choose a question to see the answer. Still need help? <a href="contactus">Contact us</a>.</p>
 
-  <h2 class="hz-doc-h">Ordering on Behalf of Employees</h2>
+  <div class="hz-faq-switch" role="group" aria-label="FAQ topic">
+    <button type="button" ng-click="faqTab = 'order'" ng-class="{'is-on': faqTab === 'order'}"
+            aria-pressed="{{faqTab === 'order'}}">Ordering</button>
+    <button type="button" ng-click="faqTab = 'returns'" ng-class="{'is-on': faqTab === 'returns'}"
+            aria-pressed="{{faqTab === 'returns'}}">Returns &amp; exchanges</button>
+  </div>
 
-  <details>
-    <summary>How to place orders on behalf of an employee?</summary>
-    <p>Each order must be placed separately for each employee to ensure that their employee ID is being referenced at checkout for reporting purposes.<br>
-    Start from <a href="champion">Order for someone on your team</a>, find the employee and choose Order for them. You then add the items they need to the cart and check out as normal.</p>
-  </details>
+  <div class="hz-faq-grid">
+    <div class="hz-faq-col hz-faq-col--order">
+      <h2 class="hz-doc-h">Ordering for Your Team</h2>
 
-  <details>
-    <summary>What should I do if an employee reaches out to place their uniform order on their behalf because their size is out of stock?</summary>
-    <p>If the size is out of stock we recommend selecting a different size or style. If they need that specific size that is out of stock and you place their order it will go into backorder status.</p>
-  </details>
+      <h3 class="hz-faq-sub">Placing orders</h3>
 
-  <details>
-    <summary>What is the location# and where do I find it?</summary>
-    <p>The Location# is your 4 digit area number. You will need to use the Location# at checkout to find the location you want to ship to.<br>
-    <strong>NOTE:</strong> some Dollar and Thrifty locations are 3 digits but they start with a zero - you will need to reference that zero (EX: 0567).</p>
-  </details>
+      <details name="faq-order">
+        <summary>How to place orders on behalf of an employee?</summary>
+        <p>Each order must be placed separately for each employee to ensure that their employee ID is being referenced at checkout for reporting purposes.<br>
+        Start from <a href="champion">Order for someone on your team</a>, find the employee and choose Order for them. You then add the items they need to the cart and check out as normal.</p>
+      </details>
 
-  <details>
-    <summary>What happens if an employee should be getting uniforms but they are not a part of the current allocation?</summary>
-    <p>Please reach out to <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a> with the title of the employee that you believe should be getting uniforms.</p>
-  </details>
+      <details name="faq-order">
+        <summary>What happens if an employee should be getting uniforms but they are not a part of the current allocation?</summary>
+        <p>Please reach out to <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a> with the title of the employee that you believe should be getting uniforms.</p>
+      </details>
 
-  <details>
-    <summary>How do I order name tags?</summary>
-    <!-- The link here went to `#`: the step by step guide was never supplied. Until it is,
-         the support address used at checkout is the real way to get the instructions. -->
-    <p>Email <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a> for step by step instructions on ordering name tags.</p>
-  </details>
+      <details name="faq-order">
+        <summary>What should I do if an employee reaches out to place their uniform order on their behalf because their size is out of stock?</summary>
+        <p>If the size is out of stock we recommend selecting a different size or style. If they need that specific size that is out of stock and you place their order it will go into backorder status.</p>
+      </details>
 
-  <details>
-    <summary>What happens if a title is not listed for the Leadership Name Tags?</summary>
-    <p>Please reach out to <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a></p>
-  </details>
+      <details name="faq-order">
+        <summary>Not sure which size to choose?</summary>
+        <p>Please be sure you are referencing the correct size charts - measurements are listed in both inches and centimeters.<br>
+        All measurements are taken flat, not around the body. For example, when measuring hips, measure from side to side rather than around the full circumference.<br>
+        Reference <a href="https://drive.google.com/file/d/156chi4sZtTDjn-x-LTvrwvi6RBhUGUFB/view" target="_blank">[THIS]</a> "how to measure" guide for instructions on how to measure yourself.<br>
+        If you're between sizes, we recommend selecting the larger size for a more comfortable fit.</p>
+      </details>
 
-  <details>
-    <summary>Not sure which size to choose?</summary>
-    <p>Please be sure you are referencing the correct size charts - measurements are listed in both inches and centimeters.<br>
-    All measurements are taken flat, not around the body. For example, when measuring hips, measure from side to side rather than around the full circumference.<br>
-    Reference <a href="https://drive.google.com/file/d/156chi4sZtTDjn-x-LTvrwvi6RBhUGUFB/view" target="_blank">[THIS]</a> "how to measure" guide for instructions on how to measure yourself.<br>
-    If you're between sizes, we recommend selecting the larger size for a more comfortable fit.</p>
-  </details>
+      <h3 class="hz-faq-sub">Name tags</h3>
 
-  <details>
-    <summary>Where is my order shipping to?</summary>
-    <p>Your orders are being shipped to the location that you select at checkout.</p>
-  </details>
+      <details name="faq-order">
+        <summary>How do I order name tags?</summary>
+        <!-- The link here went to `#`: the step by step guide was never supplied. Until it is,
+             the support address used at checkout is the real way to get the instructions. -->
+        <p>Email <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a> for step by step instructions on ordering name tags.</p>
+      </details>
 
-  <details>
-    <summary>Where is the order shipping to for employees who order via their allocation?</summary>
-    <p>Orders placed during the initial launch will ship in bulk to Uniform Champions for distribution, per the included packing slips.<br>
-    Orders placed after the initial launch will ship directly to the employees location, addressed to them.<br>
-    To update a shipping address for a location contact <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a></p>
-  </details>
+      <details name="faq-order">
+        <summary>What happens if a title is not listed for the Leadership Name Tags?</summary>
+        <p>Please reach out to <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a></p>
+      </details>
 
-  <details>
-    <summary>How can I find my tracking for my order?</summary>
-    <p>Log into your account and click on "orders" at the top and you'll be able to click into your order to get the status - if shipped you'll find tracking there.</p>
-  </details>
+      <h3 class="hz-faq-sub">Shipping and tracking</h3>
 
-  <h2 class="hz-doc-h">Returns & Exchanges</h2>
+      <details name="faq-order">
+        <summary>What is the location# and where do I find it?</summary>
+        <p>The Location# is your 4 digit area number. You will need to use the Location# at checkout to find the location you want to ship to.<br>
+        <strong>NOTE:</strong> some Dollar and Thrifty locations are 3 digits but they start with a zero - you will need to reference that zero (EX: 0567).</p>
+      </details>
 
-  <details>
-    <summary>How long do I have to request a return or exchange?</summary>
-    <p>You must submit your request within 30 days of receiving your uniform.</p>
-  </details>
+      <details name="faq-order">
+        <summary>Where is my order shipping to?</summary>
+        <p>Your orders are being shipped to the location that you select at checkout.</p>
+      </details>
 
-  <details>
-    <summary>Are all items eligible for return?</summary>
-    <p>No. Worn, washed, altered, or damaged items (outside of shipping defects) are not eligible. Also name badges cannot be returned.</p>
-  </details>
+      <details name="faq-order">
+        <summary>Where is the order shipping to for employees who order via their allocation?</summary>
+        <p>Orders placed during the initial launch will ship in bulk to Uniform Champions for distribution, per the included packing slips.<br>
+        Orders placed after the initial launch will ship directly to the employees location, addressed to them.<br>
+        To update a shipping address for a location contact <a href="mailto:Askoperations@hertz.com">Askoperations@hertz.com</a></p>
+      </details>
 
-  <details>
-    <summary>What condition must returned items be in?</summary>
-    <p>Items must be new, unworn, & unwashed.</p>
-  </details>
+      <details name="faq-order">
+        <summary>How can I find my tracking for my order?</summary>
+        <p>Log into your account and click on "orders" at the top and you'll be able to click into your order to get the status - if shipped you'll find tracking there.</p>
+      </details>
+    </div>
 
-  <details>
-    <summary>How do I start a return or exchange?</summary>
-    <p>Uniform Champions will submit on behalf of the employee via the online return & exchange request form and provide:<br>
-    • The Order#<br>
-    • What item was damaged<br>
-    • Any images you can share of the damage</p>
-  </details>
+    <div class="hz-faq-col hz-faq-col--returns">
+      <h2 class="hz-doc-h">Returns &amp; Exchanges</h2>
 
-  <details>
-    <summary>Who provides the return shipping label?</summary>
-    <p>When you submit your return/exchange form - Thumbprint Customer Service team will send a return label that can be used for the return.<br>
-    These returns will be charged to Hertz.</p>
-  </details>
+      <h3 class="hz-faq-sub">What can be returned</h3>
 
-  <details>
-    <summary>How do I get a replacement item?</summary>
-    <p>Uniform Champions will place replacement item orders on behalf of the employees.</p>
-  </details>
+      <details name="faq-returns">
+        <summary>How long do I have to request a return or exchange?</summary>
+        <p>You must submit your request within 30 days of receiving your uniform.</p>
+      </details>
 
-  <details>
-    <summary>What if my item arrives damaged?</summary>
-    <p>Uniform Champions will submit the damage via the online return & exchange request form and provide:<br>
-    • Your Order#<br>
-    • What item was damaged<br>
-    • Any images you can share of the damage</p>
-  </details>
+      <details name="faq-returns">
+        <summary>Are all items eligible for return?</summary>
+        <p>No. Worn, washed, altered, or damaged items (outside of shipping defects) are not eligible. Also name badges cannot be returned.</p>
+      </details>
+
+      <details name="faq-returns">
+        <summary>What condition must returned items be in?</summary>
+        <p>Items must be new, unworn, &amp; unwashed.</p>
+      </details>
+
+      <h3 class="hz-faq-sub">Starting a return</h3>
+
+      <details name="faq-returns">
+        <summary>How do I start a return or exchange?</summary>
+        <p>Uniform Champions will submit on behalf of the employee via the online return &amp; exchange request form and provide:<br>
+        • The Order#<br>
+        • What item was damaged<br>
+        • Any images you can share of the damage</p>
+      </details>
+
+      <details name="faq-returns">
+        <summary>Who provides the return shipping label?</summary>
+        <p>When you submit your return/exchange form - Thumbprint Customer Service team will send a return label that can be used for the return.<br>
+        These returns will be charged to Hertz.</p>
+      </details>
+
+      <details name="faq-returns">
+        <summary>How do I get a replacement item?</summary>
+        <p>Uniform Champions will place replacement item orders on behalf of the employees.</p>
+      </details>
+
+      <details name="faq-returns">
+        <summary>What if my item arrives damaged?</summary>
+        <p>Uniform Champions will submit the damage via the online return &amp; exchange request form and provide:<br>
+        • Your Order#<br>
+        • What item was damaged<br>
+        • Any images you can share of the damage</p>
+      </details>
+    </div>
+  </div>
 </section>

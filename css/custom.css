@@ -4065,6 +4065,59 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 
 /* =========================================================================
+   The two FAQs — partials/Messages/allofaq.html and faq.html
+
+   One long list made Returns a long scroll away from the questions above it. Ordering and
+   returns now sit side by side, each on its own ground, with small subheads so a column
+   can be scanned. Below 900px there is not room for two, so a switch shows one column at
+   a time instead of stacking them back into the long list.
+   ========================================================================= */
+.hz-doc.hz-faq { max-width: 1180px; }
+.hz-faq .hz-pg-title { margin-bottom: 8px; }
+.hz-faq-lede { font-size: 15px; line-height: 1.55; color: var(--muted); margin: 0 0 26px; }
+
+.hz-faq-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px; align-items: start;
+}
+.hz-faq-col {
+  background: var(--sub); border: 1px solid var(--line); border-radius: 4px;
+  padding: 22px 22px 14px;
+}
+.hz-faq-col .hz-doc-h { font-size: 22px; margin: 0; }
+.hz-faq-sub {
+  font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin: 22px 0 8px;
+}
+.hz-faq-col .hz-doc-h + .hz-faq-sub { margin-top: 14px; }
+.hz-faq summary { font-size: 15px; }
+
+/* Only a phone sees it. Yellow is the fill of the chosen topic; type on it is dark grey. */
+.hz-faq-switch { display: none; }
+
+@media (max-width: 900px) {
+  .hz-faq-grid { grid-template-columns: minmax(0, 1fr); }
+  .hz-faq-switch {
+    display: flex; border: 1px solid var(--edge); border-radius: 2px; margin: 0 0 18px;
+  }
+  .hz-faq-switch button {
+    flex: 1 1 0; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 0;
+    background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer;
+  }
+  .hz-faq-switch button + button { border-left: 1px solid var(--edge); }
+  .hz-faq-switch button.is-on { background: var(--yellow); color: #434244; font-weight: 700; }
+  .hz-faq:not(.hz-faq--returns) .hz-faq-col--returns,
+  .hz-faq--returns .hz-faq-col--order { display: none; }
+}
+
+/* On a phone the column's ground and frame only narrow the questions. */
+@media (max-width: 560px) {
+  .hz-faq-col { background: none; border: 0; padding: 0; }
+  .hz-faq-lede { margin-bottom: 18px; }
+}
+
+/* =========================================================================
    Start a return — partials/returnRequestView.html
 
    In the `.hz-pg` scope with every other account page, so the cards, fields, notes and
