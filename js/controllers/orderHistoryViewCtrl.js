@@ -27,7 +27,19 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 		var NOT_RETURNABLE = ['Unsubmitted', 'AwaitingApproval', 'Declined', 'Canceled', 'Cancelled'];
 		$scope.canReturn = function() {
 			var o = $scope.order;
-			return !!(o && o.ID && Allocation.isEnabled() && NOT_RETURNABLE.indexOf(o.Status) === -1);
+			return !!(o && o.ID && Allocation.isEnabled() && !$scope.isCanceled() &&
+			          NOT_RETURNABLE.indexOf(o.Status) === -1);
+		};
+
+		/** Four51 spells it Canceled; the status text is checked too in case only it says so. */
+		$scope.isCanceled = function() {
+			var o = $scope.order;
+			return !!(o && (/^cancel+ed$/i.test(o.Status || '') || /^cancel+ed$/i.test(o.StatusText || '')));
+		};
+		/** When it was canceled, as Four51 records it. Null when Four51 sends no date. */
+		$scope.canceledOn = function() {
+			var o = $scope.order;
+			return (o && (o.DateCanceled || o.DateCancelled)) || null;
 		};
 
 		$scope.isInPath = function(path) {
@@ -47,6 +59,13 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 			$scope.loadingIndicator = false;
 			$scope.order = data;
 			$scope.order.recent = $scope.isInPath("new");
+
+			// A canceled order gives its allocation back (decision 57). The landing page and the
+			// picker ask Four51 about cancellations once a session; asked here too, because this
+			// is the page an employee opens to see that it was canceled.
+			if ($scope.isCanceled() && Allocation.isEnabled()) {
+				Allocation.checkCancellations().catch(function() { /* asked again next session */ });
+			}
 			$scope.hasSpecsOnAnyLineItem = false;
 			for(var i = 0; i < data.LineItems.length ; i++) {
 				if (data.LineItems[i].Specs) {

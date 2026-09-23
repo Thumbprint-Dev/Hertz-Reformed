@@ -63,7 +63,6 @@ html {
       height: 500px;
 }*/
 
-
 .marginTop {
  
 }
@@ -329,7 +328,6 @@ html {
 
 /*search*/
 
-
 .product-search .form-control:focus {
     border-color:black;
 }
@@ -373,7 +371,6 @@ html {
    color: #fc0 !important
 }
 /*--------*/
-
 
 .btn-info {
     border-color: #fc0;
@@ -553,7 +550,6 @@ body {
     float: none;
 }
 
-
 .videoUL {
     display: flex;
     flex-wrap: wrap;
@@ -615,7 +611,6 @@ contentmodal2 a:hover{
 /*.modal-dialog {
     width: auto;
 }*/
-
 
 .PDT-modals a {
     background: black;
@@ -704,7 +699,6 @@ contentmodal2 a:hover{
 
     }
 }
-
 
 @media screen and (max-width: 1500px) {
   .productListImage {
@@ -839,7 +833,6 @@ contentmodal2 a:hover{
       padding-bottom: 5px !important;
     }
 }
-
 
    @media screen and (max-width: 425px) {
     .mainContainer {
@@ -1181,7 +1174,6 @@ contentmodal2 a:hover{
   margin-top: 22px;
   margin-bottom: 18px;
 }
-
 
 /* ------------------- Uniform Program ------------------- */
 /*
@@ -3380,7 +3372,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
 /* ---- summary ---- */
 
-
 /* The step cards, styled from outside. */
 .hz-co .panel-order, .hz-co .panel {
   background: #fff; border: 1px solid var(--edge) !important; border-radius: 8px;
@@ -3880,20 +3871,13 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-ord-return .hz-pg-card-b > p { font-size: 14px; }
 
 /* ---- the list: search ---- */
-.hz-ord-tools { margin: 0 0 20px; }
-.hz-ord-find { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.hz-ord-find { display: flex; margin: 0 0 16px; }
 .hz-ord-find input {
   flex: 1 1 240px; max-width: 360px; height: 42px; padding: 0 12px;
   border: 1px solid var(--edge); border-radius: 2px; background-color: #fff;
   font: inherit; font-size: 14px; color: var(--body);
 }
 .hz-ord-find input:focus { border-color: var(--ink); outline: 0; }
-.hz-ord-more {
-  background: none; border: 0; padding: 0 4px; font: inherit; font-size: 13px;
-  font-weight: 600; color: var(--ink); text-decoration: underline; text-underline-offset: 2px;
-  cursor: pointer;
-}
-.hz-ord-filters { margin-top: 14px; max-width: 820px; }
 
 /* ---- the list: one order per row, the whole row the link ---- */
 .hz-ord-row {
@@ -3917,8 +3901,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-ord-row-total { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 .hz-ord-row-end { display: flex; align-items: center; gap: 14px; justify-self: end; }
-.hz-ord-row-go { font-size: 18px; color: var(--muted); }
-.hz-ord-row:hover .hz-ord-row-go { color: var(--ink); }
 
 @media (max-width: 560px) {
   /* A phone: the photo shrinks and the quantity sits under the name rather than beside it. */

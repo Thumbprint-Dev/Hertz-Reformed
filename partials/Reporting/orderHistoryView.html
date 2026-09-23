@@ -29,11 +29,11 @@
         <p class="hz-ord-meta">
           <span class="hz-pg-pill" ng-show="order.StatusText">{{order.StatusText | r | xlat}}</span>
           <span ng-show="order.DateSubmitted">Placed {{order.DateSubmitted | date:'MMMM d, y'}}</span>
+          <span ng-show="isCanceled() && canceledOn()">Canceled {{canceledOn() | date:'MMMM d, y'}}</span>
           <span>{{units()}} {{units() === 1 ? 'item' : 'items'}}</span>
         </p>
       </div>
       <div class="hz-pg-actions">
-        <a class="hz-pg-btn" ng-if="canReturn()" ng-href="returns/new?order={{order.ID}}">Start a return</a>
         <button type="button" class="hz-pg-btn hz-pg-btn--ghost" ng-click="onPrint()">Print</button>
       </div>
     </div>
@@ -44,7 +44,7 @@
         <div class="hz-pg-card">
           <div class="hz-pg-card-h">
             <p class="hz-pg-card-t">What was ordered</p>
-            <p class="hz-pg-card-t">{{order.LineItems.length}} {{order.LineItems.length === 1 ? 'line' : 'lines'}}</p>
+            <p class="hz-pg-card-t">{{units()}} {{units() === 1 ? 'item' : 'items'}}</p>
           </div>
 
           <div class="hz-ord-li" ng-repeat="item in order.LineItems">
@@ -125,6 +125,10 @@
                 <span class="hz-pg-dl-k">Placed</span>
                 <span class="hz-pg-dl-v">{{order.DateSubmitted | date:'MMM d, y'}}</span>
               </div>
+              <div class="hz-pg-dl-row" ng-show="isCanceled() && canceledOn()">
+                <span class="hz-pg-dl-k">Canceled</span>
+                <span class="hz-pg-dl-v">{{canceledOn() | date:'MMM d, y'}}</span>
+              </div>
               <div class="hz-pg-dl-row" ng-show="order.DateCompleted">
                 <span class="hz-pg-dl-k">Completed</span>
                 <span class="hz-pg-dl-v">{{order.DateCompleted | date:'MMM d, y'}}</span>
@@ -172,6 +176,15 @@
             </div>
 
             <orderhistorysummary ng-if="!(user.Permissions.contains('HidePricing'))"></orderhistorysummary>
+          </div>
+        </div>
+
+        <!-- Canceled: nothing to send back, and the allocation has come back on its own. -->
+        <div class="hz-pg-card hz-ord-return" ng-if="isCanceled()">
+          <div class="hz-pg-card-b">
+            <p class="hz-ord-return-t">This order was canceled</p>
+            <p ng-if="canceledOn()">Canceled on {{canceledOn() | date:'MMMM d, y'}}. Nothing was shipped, and the items go back on the allocation to order again.</p>
+            <p ng-if="!canceledOn()">Nothing was shipped, and the items go back on the allocation to order again.</p>
           </div>
         </div>
 

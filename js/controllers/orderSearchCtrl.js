@@ -4,72 +4,67 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 			currentPage: 1,
 			pageSize: 10
 		};
+		$scope.pagedIndicator = true;
+		$scope.orders = [];
+		$scope.find = { text: '' };
 
+		/**
+		 * Every order, newest first, on arrival.
+		 *
+		 * Four51 files orders in buckets by status (Open, Completed, ...), each with a count,
+		 * and searches one bucket at a time. The page used to open on the biggest bucket and
+		 * offer the rest as chips, so a completed order was a click away from an employee
+		 * asking where their uniform was. Now every bucket with anything in it is fetched
+		 * and the lists are merged.
+		 *
+		 * One after another, not in parallel: `OrderSearch` keeps a single shared cache and
+		 * clears it at the start of each search, so two in flight overwrite each other.
+		 * Each result is copied out before the next begins. An employee has a handful of
+		 * orders, so the whole of each bucket comes back in one page.
+		 *
+		 * The working cart is not an order yet, so an unsubmitted order is left out.
+		 */
 		OrderSearchCriteria.query(function(data) {
-			$scope.OrderSearchCriteria = data;
-			// The filters worth offering: those with any orders in them. Kept as a property,
-			// not a function the template calls, so ng-repeat is not handed a new array on
-			// every digest.
-			$scope.criteriaShown = (data || []).filter(function(c) { return c.Count > 0; });
-			$scope.hasStandardTypes = _hasType(data, 'Standard');
-			$scope.hasReplenishmentTypes = _hasType(data, 'Replenishment');
-			$scope.hasPriceRequestTypes = _hasType(data, 'PriceRequest');
+			var buckets = (data || []).filter(function(c) { return c.Type == 'Standard' && c.Count > 0; });
+			var byId = {};
+			var all = [];
 
-			// Show the orders on arrival.
-			//
-			// Nothing was queried until the employee clicked a criteria link, so the page
-			// opened on a search console with no results under it — the one thing it exists
-			// to show, absent until you asked twice. Query starts the broadest criteria
-			// that has anything in it, which is what someone opening "Order history"
-			// means by opening it.
-			var opening = _broadest(data);
-			if (opening) {
-				$scope.currentCriteria = opening;
-				Query(opening);
+			function next(i) {
+				if (i >= buckets.length) return done();
+				var c = angular.copy(buckets[i]);
+				OrderSearch.search(c, function(list) {
+					angular.forEach(list || [], function(o) {
+						if (!o || typeof o !== 'object' || byId[o.ID]) return;
+						if (o.Status === 'Unsubmitted') return;
+						byId[o.ID] = true;
+						all.push(o);
+					});
+					next(i + 1);
+				}, 1, Math.max(c.Count, 10));
 			}
-		});
 
-		// The criteria come back as buckets — all orders, open orders, last 30 days — with
-		// a count on each. The broadest is simply the one holding the most; picking by
-		// DisplayName would tie this to whatever Four51 happens to call them.
-		function _broadest(data) {
-			var best = null;
-			angular.forEach(data, function(o) {
-				if (o.Type == 'Standard' && o.Count > 0 && (!best || o.Count > best.Count))
-					best = o;
-			});
-			return best;
-		}
-
-		$scope.$watch('settings.currentPage', function() {
-			Query($scope.currentCriteria);
-		});
-
-		$scope.OrderSearch = function($event, criteria) {
-			if ($event && $event.preventDefault) $event.preventDefault();
-			$scope.currentCriteria = criteria;
-			Query(criteria);
-		};
-
-		function _hasType(data, type) {
-			var hasType = false;
-			angular.forEach(data, function(o) {
-				if (hasType || o.Type == type && o.Count > 0)
-					hasType = true;
-			});
-			return hasType;
-		}
-
-		function Query(criteria) {
-			if (!criteria) return;
-			$scope.showNoResults = false;
-			$scope.pagedIndicator = true;
-			OrderSearch.search(criteria, function (list, count) {
-				$scope.orders = list;
-				$scope.settings.listCount = count;
-				$scope.showNoResults = list.length == 0;
+			function done() {
+				all.sort(function(a, b) {
+					return new Date(b.DateSubmitted || b.DateCreated) - new Date(a.DateSubmitted || a.DateCreated);
+				});
+				$scope.allOrders = all;
+				applyFind();
 				$scope.pagedIndicator = false;
-			}, $scope.settings.currentPage, $scope.settings.pageSize);
-			$scope.orderSearchStat = criteria;
+			}
+
+			next(0);
+		});
+
+		/** The order-number box narrows the list as it is typed; nothing to submit. */
+		function applyFind() {
+			var q = String($scope.find.text || '').trim().toLowerCase();
+			$scope.orders = !q ? ($scope.allOrders || []) : ($scope.allOrders || []).filter(function(o) {
+				return String(o.ExternalID || '').toLowerCase().indexOf(q) > -1;
+			});
+			$scope.settings.listCount = $scope.orders.length;
+			$scope.settings.currentPage = 1;
 		}
+		$scope.$watch('find.text', function(now, before) {
+			if (now !== before) applyFind();
+		});
 	}]);
