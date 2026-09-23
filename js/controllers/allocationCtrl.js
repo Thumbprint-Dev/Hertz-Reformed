@@ -720,4 +720,18 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     };
 
     $scope.alloc.load();
+
+    // An order cancelled in Four51 gives its items back (see homeCtrl.js). Asked here too,
+    // because employees often come straight to this page rather than the landing page. Once
+    // per page session, and the pools are reloaded only when something came back and
+    // nothing has been chosen yet, so a reload never throws away someone's picks.
+    if ($scope.alloc.enabled) {
+      Allocation.checkCancellations()
+        .then(function(res) {
+          if (res && res.cancelled && res.cancelled.length && !$scope.alloc.totalPicked) {
+            $scope.alloc.load();
+          }
+        })
+        .catch(function() { /* retried next session; the pools shown are still right */ });
+    }
   }]);

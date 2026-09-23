@@ -41,6 +41,8 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
     // The session response already carries roles and the employee id. Holding them avoids
     // a second call for something we were just told.
     var _identity = { employeeId: null, roles: [] };
+    // One cancellation check per page session. See `checkCancellations`.
+    var _cancelCheck = null;
 
     function url(path) {
       return AllocationConfig.baseUrl.replace(/\/$/, '') + path;
@@ -336,6 +338,26 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
         var body = angular.extend({}, request);
         if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
         return authed('POST', '/returns', body);
+      },
+
+      /**
+       * Settle any of this user's orders Four51 has cancelled, giving their items back.
+       *
+       * Sends the user's own Four51 token, once, to a server that reads each open order back
+       * from Four51 with it and credits only what Four51 reports as Canceled — the browser
+       * never claims a cancellation, so there is nothing here to trust. Once per page session:
+       * a cancellation is rare, and the landing page is where this is called from.
+       */
+      checkCancellations: function() {
+        if (_cancelCheck) return _cancelCheck;
+        var four51Token = Security.auth();
+        if (!four51Token) return $q.when({ checked: 0, cancelled: [] });
+        _cancelCheck = authed('POST', '/orders/check-cancellations', { four51Token: four51Token })
+          .catch(function(err) {
+            _cancelCheck = null;
+            return $q.reject(err);
+          });
+        return _cancelCheck;
       },
 
       /**
