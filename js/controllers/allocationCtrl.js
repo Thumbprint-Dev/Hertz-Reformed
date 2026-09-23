@@ -7,8 +7,8 @@
  * hardcoded, which is the whole point — `categoryCtrl.js` still decides allocations in
  * JavaScript (`ssQuantity = 2`, `3` if full-time, `4` if LAX), and this is what replaces it.
  */
-four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', '$timeout', '$filter', 'Allocation', 'Order', 'Product',
-  function($scope, $rootScope, $location, $q, $timeout, $filter, Allocation, Order, Product) {
+four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$q', '$timeout', '$filter', '$http', '$451', 'Allocation', 'Order', 'Product',
+  function($scope, $rootScope, $location, $q, $timeout, $filter, $http, $451, Allocation, Order, Product) {
 
     /**
      * Whose allocation this page is spending.
@@ -96,8 +96,48 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       return 'picker-draft:' + (who || 'anon');
     }
 
+    // The columns of the size charts. Not what a product is offered in: that is its own
+    // run, below.
     var SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
     $scope.alloc.sizes = SIZES;
+
+    /**
+     * The sizes to offer for a product, from the API (`catalog_sizes`, migration 0019).
+     *
+     * Every product used to be offered XS to 3XL. That built `HTZ-PERFPANT-M-UV-L` for a
+     * pant and `HTZ-RFHAT-HZ-L` for a one-size hat, neither of which exists, and cut the
+     * tops off at 3XL when Four51 carries them to 6XL. An empty run means one size, ordered
+     * as the product id itself. An API from before the run existed sends none at all, and
+     * gets the old list rather than a picker with no sizes.
+     */
+    function sizesFor(product) {
+      if (!product || !angular.isArray(product.sizes)) return SIZES;
+      return product.sizes;
+    }
+    $scope.alloc.sizesFor = sizesFor;
+
+    /**
+     * L where the run has one, which is what the picker always started on. Nothing where it
+     * does not: a pant preselected at 28x30 is a size nobody chose, and would be ordered.
+     */
+    function defaultSize(product) {
+      var run = sizesFor(product);
+      if (!run.length) return null;
+      return run.indexOf('L') > -1 ? 'L' : null;
+    }
+
+    /** A sized product with no size chosen yet cannot be added. */
+    $scope.alloc.needsSize = function(product) {
+      if (!sizesFor(product).length) return false;
+      var row = $scope.alloc.picked[product.productId];
+      return !(row && row.size);
+    };
+
+    /**
+     * Sized Thumbprint id (upper case) to the Cintas id to sell first (decision 54,
+     * `catalog_sell_first`). Filled from the entitlement on load.
+     */
+    var SELL_FIRST = {};
 
     /**
      * Schematic garment outlines, keyed by category.
@@ -235,6 +275,13 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       else $scope.alloc.picked[productId] = { qty: 0, size: size };
     };
 
+    /** The size control's starting value: kept if already chosen, else the default. */
+    $scope.alloc.initSize = function(product) {
+      var row = $scope.alloc.picked[product.productId];
+      if (row && row.size) return;
+      $scope.alloc.setSize(product.productId, defaultSize(product));
+    };
+
     function retotal() {
       var n = 0;
       angular.forEach($scope.alloc.picked, function(row) { n += row.qty; });
@@ -293,9 +340,10 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
 
     $scope.alloc.add = function(pool, product) {
       if (!$scope.alloc.canAdd(pool)) return;
+      if ($scope.alloc.needsSize(product)) return;
       var row = $scope.alloc.picked[product.productId];
       if (row) row.qty += 1;
-      else $scope.alloc.picked[product.productId] = { qty: 1, size: 'L' };
+      else $scope.alloc.picked[product.productId] = { qty: 1, size: defaultSize(product) };
       retotal();
     };
 
@@ -449,15 +497,37 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       var silent = [];
 
       var work = rows.map(function(row) {
-        var d = $q.defer();
         var id = sizedId(row.productId, row.size);
+        var first = SELL_FIRST[id.toUpperCase()];
+        if (!first) return lookup(id);
+
+        // Cintas first (decision 54): the Cintas product while Four51 has enough of it for
+        // this line, the Thumbprint one otherwise. Either way the product is filed under
+        // `id`, the size the employee chose, so the rest of the chain does not change. A
+        // Cintas product that turns out to be missing falls back too, rather than blocking
+        // the order on stock nobody meant them to wait for.
+        return cintasCovers(first, row.qty).then(function(covers) {
+          if (!covers) return lookup(id);
+          return lookup(id, first, true).then(function(got) {
+            return got ? null : lookup(id);
+          });
+        });
+      });
+
+      /**
+       * Fetch `fetchId` (default `id`) and file it under `id`. With `quiet`, a miss is
+       * reported to the caller, false, instead of being counted as missing.
+       */
+      function lookup(id, fetchId, quiet) {
+        var d = $q.defer();
+        fetchId = fetchId || id;
         var settled = false;
 
-        function settle(bucket) {
+        function settle(bucket, ok) {
           if (settled) return;
           settled = true;
-          if (bucket) bucket.push(id);
-          d.resolve();
+          if (bucket && !quiet) bucket.push(fetchId);
+          d.resolve(!!ok);
           $rootScope.$evalAsync();
         }
 
@@ -477,24 +547,44 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
         var giveUp = $timeout(function() { settle(silent); }, 10000);
 
         try {
-          Product.get(id, function(product) {
+          Product.get(fetchId, function(product) {
             $timeout.cancel(giveUp);
             var ok = !!(product && product.InteropID);
             // Recorded before the deferred resolves, so the collected result is complete
             // by the time `$q.all` hands it on.
             if (ok) found[id] = product;
-            settle(ok ? null : missing);
+            settle(ok ? null : missing, ok);
           });
         } catch (e) {
           $timeout.cancel(giveUp);
           settle(missing);
         }
         return d.promise;
-      });
+      }
 
       return $q.all(work).then(function() {
         return { found: found, missing: missing, silent: silent };
       });
+    }
+
+    /**
+     * Does Four51 have at least `qty` of this Cintas product in stock?
+     *
+     * SkuVault syncs stock into Four51 (Trevor, 23 Sep), so QuantityAvailable is the count
+     * to trust. Asked with `$http` rather than `Product.get`, because this lookup must be
+     * able to fail quickly: the Cintas products are being set up in Four51 now, and one
+     * that does not exist yet has to mean "use the Thumbprint item", not ten seconds of
+     * waiting. A product with no count at all is treated as out of stock, so an item set up
+     * without inventory tracking is never sold on an unknown quantity.
+     */
+    function cintasCovers(productId, qty) {
+      return $http.get($451.api('Products/' + encodeURIComponent(productId)), { timeout: 8000 })
+        .then(function(res) {
+          var n = res && res.data ? res.data.QuantityAvailable : null;
+          return typeof n === 'number' && n >= qty;
+        }, function() {
+          return false;
+        });
     }
 
     /**
@@ -690,6 +780,17 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = Allocation.inDisplayOrder(view.pools);
+
+            SELL_FIRST = {};
+            angular.forEach($scope.alloc.pools, function(p) {
+              angular.forEach(p.categories || [], function(c) {
+                angular.forEach(c.products || [], function(product) {
+                  angular.forEach(product.sellFirst || {}, function(first, then) {
+                    SELL_FIRST[then.toUpperCase()] = first;
+                  });
+                });
+              });
+            });
 
             // Units sitting in the cart, unordered. `remaining` already has these taken
             // off it, so without saying so the page simply shows a smaller number than the

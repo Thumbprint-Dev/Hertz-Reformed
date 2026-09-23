@@ -231,10 +231,16 @@
                   </div>
 
                   <div class="hz-item-ctrl">
-                    <select ng-model="alloc.picked[product.productId].size"
-                            ng-init="alloc.setSize(product.productId, 'L')"
-                            ng-options="s for s in alloc.sizes"
-                            aria-label="Size"></select>
+                    <!-- The product's own run: waist x inseam for a pant, to 6XL for a top.
+                         A one-size item has no run, so no control; it says so instead. -->
+                    <select ng-if="alloc.sizesFor(product).length"
+                            ng-model="alloc.picked[product.productId].size"
+                            ng-init="alloc.initSize(product)"
+                            ng-options="s for s in alloc.sizesFor(product)"
+                            aria-label="Size">
+                      <option value="">Size</option>
+                    </select>
+                    <span class="hz-item-onesize" ng-if="!alloc.sizesFor(product).length">One size</span>
 
                     <span class="hz-step">
                       <button type="button" ng-click="alloc.remove(product)"
@@ -242,7 +248,8 @@
                               aria-label="One fewer">&minus;</button>
                       <output>{{alloc.qtyOf(product.productId)}}</output>
                       <button type="button" ng-click="alloc.add(pool, product)"
-                              ng-disabled="!alloc.canAdd(pool)"
+                              ng-disabled="!alloc.canAdd(pool) || alloc.needsSize(product)"
+                              title="{{alloc.needsSize(product) ? 'Choose a size first' : ''}}"
                               aria-label="One more">+</button>
                     </span>
                   </div>

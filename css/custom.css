@@ -1908,6 +1908,12 @@ contentmodal2 a:hover{
 .hz-item-ctrl select {
   font: inherit; font-size: 13.5px; padding: 7px 8px; border: 1px solid var(--firm);
   border-radius: 3px; background: #fff; color: var(--body);
+  /* Wide enough for 60x32 and for "Size", so every row's stepper lines up. */
+  min-width: 84px;
+}
+/* Where a one-size item would have its size control, so the stepper stays in line. */
+.hz-item-onesize {
+  min-width: 84px; font-size: 12.5px; color: var(--muted); text-align: center;
 }
 
 .hz-step { display: inline-flex; align-items: center; border: 1px solid var(--firm); border-radius: 3px; }
