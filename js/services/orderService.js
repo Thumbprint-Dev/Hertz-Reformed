@@ -49,6 +49,20 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
         //order.PaymentMethod = order.BillingEnabled ? order.PaymentMethod : 'Undetermined';
 	}
 
+	/**
+	 * The order as Four51 has it now, not as this browser last saw it.
+	 *
+	 * `_get` answers from `451Cache.Order.<id>` in localStorage whenever there is a copy,
+	 * and nothing ever expires that copy. An order is cached when it is submitted and when
+	 * it is first opened, so an order Four51 later canceled or completed went on reading as
+	 * Open on its own page, while the order list, which always searches, said Canceled.
+	 * Pages that report an order's status use this; the fresh copy replaces the cached one.
+	 */
+	var _getFresh = function(id, success, suppress) {
+		store.remove('451Cache.Order.' + id);
+		_get(id, success, suppress);
+	};
+
 	var _get = function(id, success, suppress) {
         User.get(function(user) {
             var currentOrder = store.get('451Cache.Order.' + id);
@@ -233,6 +247,7 @@ four51.app.factory('Order', ['$resource', '$rootScope', '$451', 'Security', 'Err
 
 	return {
 		get: _get,
+		getFresh: _getFresh,
 		save: _save,
 		delete: _delete,
 		submit: _submit,

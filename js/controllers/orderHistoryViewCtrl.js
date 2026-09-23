@@ -55,7 +55,7 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 			return result;
 		};
 
-		Order.get($routeParams.id, function(data){
+		Order.getFresh($routeParams.id, function(data){
 			$scope.loadingIndicator = false;
 			$scope.order = data;
 			$scope.order.recent = $scope.isInPath("new");
