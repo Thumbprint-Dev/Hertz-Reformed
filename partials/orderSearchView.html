@@ -54,14 +54,20 @@
       <!-- An order that is still the working cart opens as the cart: it has not been placed. -->
       <a class="hz-ord-row"
          ng-repeat="order in orders | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize"
-         ng-href="{{currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID}}">
+         ng-href="{{order.hzBehalf ? 'order/behalf/' + order.ID : (currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID)}}">
         <span class="hz-ord-row-id">
-          <span class="hz-ord-row-num">Order {{order.ExternalID || ('(unspecified)' | xlat)}}</span>
+          <span class="hz-ord-row-num">{{order.ExternalID ? 'Order ' + order.ExternalID : 'Order'}}</span>
           <span class="hz-ord-row-date">{{(order.DateSubmitted || order.DateCreated) | date:'MMM d, y'}}<span ng-if="order.DateCanceled || order.DateCancelled">, canceled {{(order.DateCanceled || order.DateCancelled) | date:'MMM d, y'}}</span></span>
         </span>
-        <span class="hz-ord-row-who">
-          <span class="hz-ord-row-k">Ordered by</span>
-          {{order.FromUserFirstName}} {{order.FromUserLastName}}
+        <!-- Who, and for whom. An order a Champion placed says so on both sides. -->
+        <span class="hz-ord-row-who" ng-if="order.hzBehalf">
+          <span class="hz-ord-row-k">Ordered for you by</span>
+          {{order.hzPlacedBy.name}} <span class="hz-ord-row-note">Uniform Champion</span>
+        </span>
+        <span class="hz-ord-row-who" ng-if="!order.hzBehalf">
+          <span class="hz-ord-row-k">{{order.hzFor ? 'Ordered on behalf of' : 'Ordered by'}}</span>
+          <span ng-if="order.hzFor">{{order.hzFor.name}} <span class="hz-ord-row-note">Employee ID {{order.hzFor.employeeId}}</span></span>
+          <span ng-if="!order.hzFor">{{order.FromUserFirstName}} {{order.FromUserLastName}}</span>
         </span>
         <span class="hz-ord-row-total" ng-if="!(user.Permissions.contains('HidePricing'))">{{order.Total | culturecurrency}}</span>
         <span class="hz-ord-row-end">

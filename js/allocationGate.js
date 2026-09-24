@@ -251,7 +251,8 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
       submit(order, function(saved) {
         if (Allocation.isEnabled() && orderId) {
           Allocation.checkout(orderId, linesOf(order), Allocation.orderBeneficiary(orderId),
-                              shipAddressOf(saved, order))
+                              shipAddressOf(saved, order),
+                              (saved && saved.ExternalID) || (order && order.ExternalID) || null)
             .catch(function(err) {
               if (window.console && console.warn) {
                 console.warn('allocation checkout failed; reconciliation will correct', err);

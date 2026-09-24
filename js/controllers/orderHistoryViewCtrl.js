@@ -55,6 +55,19 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 			return result;
 		};
 
+		/**
+		 * For a Champion: whose order this was, when they placed it on someone's behalf.
+		 * From our record, since the Four51 order only knows it was the Champion's.
+		 */
+		$scope.behalfFor = null;
+		if (Allocation.isEnabled()) {
+			Allocation.ordersOnBehalf().then(function(res) {
+				angular.forEach((res && res.byMe) || [], function(o) {
+					if (o.four51OrderId === $routeParams.id) $scope.behalfFor = o.beneficiary;
+				});
+			}).catch(function() { $scope.behalfFor = null; });
+		}
+
 		Order.getFresh($routeParams.id, function(data){
 			$scope.loadingIndicator = false;
 			$scope.order = data;

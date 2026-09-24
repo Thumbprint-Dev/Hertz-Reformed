@@ -3946,6 +3946,15 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
 .hz-ord-ship + .hz-ord-ship { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
 
+/* ---- an order a Champion placed for this employee ---- */
+.hz-ord-behalf {
+  display: flex; gap: 12px; align-items: flex-start; margin: 0 0 20px;
+  padding: 14px 18px; border-left: 3px solid var(--yellow); background: var(--sub);
+}
+.hz-ord-behalf svg { flex: 0 0 auto; color: var(--ink); margin-top: 1px; }
+.hz-ord-behalf p { margin: 0; font-size: var(--fs-md); line-height: 1.5; color: var(--body); }
+.hz-ord-behalf b { color: var(--ink); }
+
 /* ---- one order: the side panel ---- */
 .hz-ord-addr { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
 .hz-ord-addr .hz-pg-card-t { margin: 0 0 6px; }
@@ -3989,6 +3998,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   display: block; font-size: var(--fs-label); font-weight: 700; letter-spacing: .09em;
   text-transform: uppercase; color: var(--muted); margin-bottom: 2px;
 }
+.hz-ord-row-note { font-size: var(--fs-sm); color: var(--muted); margin-left: 4px; }
 .hz-ord-row-total { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 .hz-ord-row-end { display: flex; align-items: center; gap: 14px; justify-self: end; }
 

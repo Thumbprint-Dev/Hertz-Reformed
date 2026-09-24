@@ -372,12 +372,23 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
        * Turn this order's reservations into consumption. Called after Four51 accepts a
        * submit — see the note in allocationGate.js on why after rather than before.
        */
-      checkout: function(four51OrderId, lines, forEmployeeId, shipAddress) {
+      checkout: function(four51OrderId, lines, forEmployeeId, shipAddress, orderNumber) {
         var body = { four51OrderId: four51OrderId, lines: lines };
         if (forEmployeeId) body.beneficiaryEmployeeId = forEmployeeId;
         // Where it shipped, so a return label can be printed from the same address.
         if (shipAddress) body.shipAddress = shipAddress;
+        // The number people know it by ("1000"), so the employee a Champion ordered for can
+        // see it, by number, without being able to read the Champion's Four51 order.
+        if (orderNumber) body.orderNumber = String(orderNumber);
         return authed('POST', '/checkout', body);
+      },
+
+      /**
+       * Orders placed on someone's behalf: `forMe` (a Champion ordered for me) and `byMe`
+       * (I ordered for someone). See `GET /me/orders-on-behalf`.
+       */
+      ordersOnBehalf: function() {
+        return authed('GET', '/me/orders-on-behalf', null);
       },
 
       /**

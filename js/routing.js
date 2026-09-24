@@ -44,6 +44,9 @@ four51.app.config(['$routeProvider', '$locationProvider', function($routeProvide
         when('/product/:productInteropID/:variantInteropID/:orderID', {templateUrl: concatProductView, controller: 'ProductCtrl'}).
         when('/product/:productInteropID/:variantInteropID/:lineItemIndex/:orderID/edit', {templateUrl: concatSpecFormView, controller: 'SpecFormCtrl'}).
         when('/order', { templateUrl: 'partials/orderSearchView.html', controller: 'OrderSearchCtrl' }).
+        // An order a Champion placed for this employee: not theirs in Four51, so it is shown
+        // from our record. See orderBehalfCtrl.js.
+        when('/order/behalf/:id', { templateUrl: 'partials/Reporting/orderBehalfView.html', controller: 'OrderBehalfCtrl' }).
         when('/order/:id', { templateUrl: 'partials/Reporting/orderHistoryView.html', controller: 'OrderViewCtrl' }).
         when('/order/new/:id', { templateUrl: 'partials/Reporting/orderHistoryView.html', controller: 'OrderViewCtrl' }).
         when('/favoriteorders', { templateUrl: 'partials/favoriteOrderListView.html', controller: 'FavoriteOrderCtrl' }).

@@ -1,0 +1,122 @@
+<!--
+  An order a Uniform Champion placed on this employee's behalf. Laid out like the order
+  page (orderHistoryView.html), from our own record rather than Four51's, because the order
+  is the Champion's and Four51 will not show it to the employee. See OrderBehalfCtrl.
+-->
+<section class="hz-pg hz-ord">
+
+  <a class="hz-pg-back" href="order">&larr; All orders</a>
+
+  <p class="hz-pg-sub" ng-if="ob.loading">Loading the order&hellip;</p>
+
+  <div class="hz-pg-empty" ng-if="!ob.loading && ob.missing">
+    <p class="hz-pg-empty-t">Order not found</p>
+    <p>This order was not placed for you, or it is no longer available.</p>
+    <a class="hz-pg-btn" href="order">All orders</a>
+  </div>
+
+  <div ng-if="ob.order">
+    <div class="hz-pg-head">
+      <div>
+        <h1 class="hz-pg-title">{{ob.order.orderNumber ? 'Order ' + ob.order.orderNumber : 'Your order'}}</h1>
+        <p class="hz-ord-meta">
+          <span class="hz-pg-pill" ng-if="ob.order.cancelledOn">Canceled</span>
+          <span>Placed {{ob.order.placedOn | hzDate}}</span>
+          <span ng-if="ob.order.cancelledOn">Canceled {{ob.order.cancelledOn | hzDate}}</span>
+          <span>{{ob.units()}} {{ob.units() === 1 ? 'item' : 'items'}}</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- The fact this page exists to state. -->
+    <div class="hz-ord-behalf">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.6"></circle><path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+      </svg>
+      <p><b>Ordered on your behalf by {{ob.order.placedBy.name}}</b>, your Uniform Champion. It
+        was placed against your allocation.</p>
+    </div>
+
+    <div class="hz-pg-grid">
+      <div>
+        <div class="hz-pg-card">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">What was ordered</p>
+            <p class="hz-pg-card-t">{{ob.units()}} {{ob.units() === 1 ? 'item' : 'items'}}</p>
+          </div>
+          <div class="hz-ord-li" ng-repeat="line in ob.order.lines">
+            <span class="hz-ord-thumb" aria-hidden="true">
+              <img ng-if="line.sku | hzPhoto" ng-src="{{line.sku | hzPhoto}}" alt="" />
+            </span>
+            <div class="hz-ord-li-main">
+              <p class="hz-ord-li-name">{{line.sku | hzGarment:line.categoryName}}</p>
+              <p class="hz-ord-li-facts">
+                <span class="hz-ord-size">{{(line.size || (line.sku | hzSize)) ? 'Size ' + (line.size || (line.sku | hzSize)) : 'One size'}}</span>
+                <span class="hz-ord-sku">{{line.sku}}</span>
+              </p>
+            </div>
+            <div class="hz-ord-li-qty">
+              <span class="hz-ord-li-qty-l">Qty</span>
+              <span class="hz-ord-li-qty-n">{{line.quantity}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hz-pg-side">
+        <div class="hz-pg-card">
+          <div class="hz-pg-card-h">
+            <p class="hz-pg-card-t">Order details</p>
+          </div>
+          <div class="hz-pg-card-b">
+            <div class="hz-pg-dl">
+              <div class="hz-pg-dl-row">
+                <span class="hz-pg-dl-k">Placed</span>
+                <span class="hz-pg-dl-v">{{ob.order.placedOn | hzDate}}</span>
+              </div>
+              <div class="hz-pg-dl-row" ng-if="ob.order.cancelledOn">
+                <span class="hz-pg-dl-k">Canceled</span>
+                <span class="hz-pg-dl-v">{{ob.order.cancelledOn | hzDate}}</span>
+              </div>
+              <div class="hz-pg-dl-row">
+                <span class="hz-pg-dl-k">Ordered by</span>
+                <span class="hz-pg-dl-v">{{ob.order.placedBy.name}}</span>
+              </div>
+              <div class="hz-pg-dl-row">
+                <span class="hz-pg-dl-k">Ordered for</span>
+                <span class="hz-pg-dl-v">You</span>
+              </div>
+            </div>
+
+            <div class="hz-ord-addr" ng-if="ob.order.shipTo.street1">
+              <p class="hz-pg-card-t">Ships to</p>
+              <address>
+                <span ng-if="ob.order.shipTo.firstName || ob.order.shipTo.lastName">{{ob.order.shipTo.firstName}} {{ob.order.shipTo.lastName}}<br /></span>
+                <span ng-if="ob.order.shipTo.companyName">{{ob.order.shipTo.companyName}}<br /></span>
+                {{ob.order.shipTo.street1}}<br />
+                <span ng-if="ob.order.shipTo.street2">{{ob.order.shipTo.street2}}<br /></span>
+                {{ob.order.shipTo.city}}<span ng-if="ob.order.shipTo.state">, {{ob.order.shipTo.state}}</span> {{ob.order.shipTo.zip}}
+              </address>
+            </div>
+          </div>
+        </div>
+
+        <div class="hz-pg-card hz-ord-return" ng-if="ob.order.cancelledOn">
+          <div class="hz-pg-card-b">
+            <p class="hz-ord-return-t">This order was canceled</p>
+            <p>Canceled on {{ob.order.cancelledOn | hzDate}}. Nothing was shipped, and the items go back on your allocation to order again.</p>
+          </div>
+        </div>
+
+        <div class="hz-pg-card hz-ord-return" ng-if="!ob.order.cancelledOn && ob.returnsOn">
+          <div class="hz-pg-card-b">
+            <p class="hz-ord-return-t">Something not right?</p>
+            <p>Wrong size, wrong item or damaged on the way: send it back within 30 days of delivery and the allocation comes back to you.</p>
+            <a class="hz-pg-btn" ng-href="returns/new?order={{ob.order.four51OrderId}}">Start a return</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,5 +1,5 @@
-four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCriteria', 'OrderSearch',
-	function ($scope,  $location, OrderSearchCriteria, OrderSearch) {
+four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCriteria', 'OrderSearch', 'Allocation',
+	function ($scope,  $location, OrderSearchCriteria, OrderSearch, Allocation) {
 		$scope.settings = {
 			currentPage: 1,
 			pageSize: 10
@@ -44,12 +44,51 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 			}
 
 			function done() {
+				settle();
+				withOnBehalf();
+			}
+
+			function settle() {
 				all.sort(function(a, b) {
 					return new Date(b.DateSubmitted || b.DateCreated) - new Date(a.DateSubmitted || a.DateCreated);
 				});
 				$scope.allOrders = all;
 				applyFind();
 				$scope.pagedIndicator = false;
+			}
+
+			/**
+			 * Orders placed on someone's behalf, from both sides (Trevor, 24 Sep 2026).
+			 *
+			 * A Champion's on-behalf order is their Four51 order, so Four51 lists it for them
+			 * and never for the employee. Our record knows both: the Champion's rows are marked
+			 * with whose order each was, and the employee gets the order in their list, marked
+			 * as placed for them, opening on a page built from our record because they cannot
+			 * open the Champion's Four51 order.
+			 */
+			function withOnBehalf() {
+				if (!Allocation.isEnabled()) return;
+				Allocation.ordersOnBehalf().then(function(res) {
+					var byMe = {};
+					angular.forEach((res && res.byMe) || [], function(o) { byMe[o.four51OrderId] = o; });
+					angular.forEach(all, function(o) {
+						if (byMe[o.ID]) o.hzFor = byMe[o.ID].beneficiary;
+					});
+					angular.forEach((res && res.forMe) || [], function(o) {
+						if (byId[o.four51OrderId]) return;
+						byId[o.four51OrderId] = true;
+						all.push({
+							ID: o.four51OrderId,
+							ExternalID: o.orderNumber,
+							DateSubmitted: o.submittedAt,
+							StatusText: o.cancelledOn ? 'Canceled' : 'Placed',
+							DateCanceled: o.cancelledOn,
+							hzBehalf: true,
+							hzPlacedBy: o.placedBy
+						});
+					});
+					settle();
+				}).catch(function() { /* Four51's own list still stands */ });
 			}
 
 			next(0);
