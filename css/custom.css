@@ -3005,10 +3005,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
 .hz-cart-info { min-width: 0; }
 .hz-cart-name { font-size: var(--fs-md); font-weight: 700; color: var(--ink); margin: 0 0 3px; }
-.hz-cart-sku {
-  font-family: var(--hz-font); font-size: var(--fs-sm); letter-spacing: .02em;
-  color: var(--muted); margin: 0;
-}
+.hz-cart-size { font-size: var(--fs-sm); color: var(--muted); margin: 0; }
 .hz-cart-spec { font-size: var(--fs-sm); color: var(--body); margin: 4px 0 0; }
 .hz-cart-spec span { color: var(--muted); }
 

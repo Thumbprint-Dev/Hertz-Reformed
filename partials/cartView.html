@@ -49,14 +49,18 @@
         <div class="hz-cart-row" ng-repeat="item in currentOrder.LineItems">
 
           <span class="hz-cart-thumb">
-            <img ng-if="item.Variant.LargeImageUrl || item.Product.SmallImageUrl"
-                 ng-src="{{item.Variant.LargeImageUrl || item.Product.SmallImageUrl}}"
+            <!-- Four51's image when the product has one, otherwise the photo the checkout
+                 summary uses (hzPhoto), so a product with no image in Four51 is not a blank. -->
+            <img ng-if="item.Variant.LargeImageUrl || item.Product.SmallImageUrl || (item.Product.InteropID | hzPhoto)"
+                 ng-src="{{item.Variant.LargeImageUrl || item.Product.SmallImageUrl || (item.Product.InteropID | hzPhoto)}}"
                  alt="" />
           </span>
 
           <div class="hz-cart-info">
             <p class="hz-cart-name">{{item.Product.Name}}</p>
-            <p class="hz-cart-sku">{{item.Product.InteropID}}</p>
+            <!-- The size, not the SKU (Trevor, 24 Sep 2026), worded as the checkout summary
+                 words it. Each size is its own product, so the size is read from the SKU. -->
+            <p class="hz-cart-size">{{(item.Product.InteropID | hzSize) ? 'Size ' + (item.Product.InteropID | hzSize) : 'One size'}}</p>
 
             <!-- Size and anything else the product carries. Sizes are separate products
                  here, so this is whatever the spec form recorded rather than a variant. -->
@@ -98,8 +102,9 @@
           <p class="hz-cart-summary-h">Order summary</p>
 
           <div class="hz-cart-sum-row">
+            <!-- Units, not lines, so it matches the checkout summary: two polos are two items. -->
             <span>Items</span>
-            <span>{{currentOrder.LineItems.length}}</span>
+            <span>{{currentOrder.LineItems | hzUnits}}</span>
           </div>
 
           <!--
