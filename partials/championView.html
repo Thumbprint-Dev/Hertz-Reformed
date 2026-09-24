@@ -18,6 +18,12 @@
       Search by employee ID, name or department. You will order against their allocation,
       not your own.
     </p>
+    <!-- One employee per cart (Trevor, 24 Sep 2026), said before anyone tries. The cart
+         gate enforces it whatever this page shows. -->
+    <p class="hz-team-rule">
+      <b>One person at a time.</b> Each order is for one employee, so it can be tracked to
+      them. Check out one person's order before starting the next.
+    </p>
   </div>
 
   <div class="hz-team-body">
@@ -42,6 +48,19 @@
       </div>
 
       <div ng-show="!champ.loading && !champ.error && champ.isChampion">
+
+        <!-- The cart already holds someone's items: say whose, and how to move on. -->
+        <div class="hz-team-holding" ng-if="champ.holder">
+          <p>
+            <b>Your cart has {{champ.holder.name}}'s order.</b>
+            Check it out or empty the cart before ordering for anyone else.
+          </p>
+          <span class="hz-team-holding-acts">
+            <a class="hz-lp-btn" href="cart">Go to cart</a>
+            <button type="button" class="hz-lp-btn hz-lp-btn--ghost"
+                    ng-click="champ.orderFor({employeeId: champ.holder.employeeId, eligible: true})">Add more for {{champ.holder.name}}</button>
+          </span>
+        </div>
 
         <div class="hz-team-search">
           <label class="hz-sr-only" for="hz-team-q">Search your team</label>
@@ -88,9 +107,14 @@
                  that refuses when pressed. -->
             <span class="hz-team-wait" ng-if="!b.eligible">Not eligible yet</span>
 
+            <!-- While the cart holds someone's order, everyone else waits: their button is
+                 off and says why on hover, and the holder's reads "Continue their order". -->
             <button class="hz-lp-btn" type="button" ng-if="b.eligible"
-                    ng-click="champ.orderFor(b)">
-              Order for them <b aria-hidden="true">&rarr;</b>
+                    ng-click="champ.orderFor(b)" ng-disabled="champ.waiting(b)"
+                    title="{{champ.waiting(b) ? 'Check out ' + champ.holder.name + '\'s order first' : ''}}">
+              <span ng-if="!champ.isHolder(b)">Order for them</span>
+              <span ng-if="champ.isHolder(b)">Continue their order</span>
+              <b aria-hidden="true">&rarr;</b>
             </button>
           </div>
         </div>

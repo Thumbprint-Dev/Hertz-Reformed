@@ -66,6 +66,14 @@
       </div>
     </div>
 
+    <!-- One employee per cart: the cart already holds someone else's order, so this person
+         waits. Said here rather than only as a refusal at Add to cart. -->
+    <div class="hz-cartfor" ng-if="alloc.onBehalf && alloc.cartFor" role="alert">
+      <p><b>Your cart has {{alloc.cartFor.name}}'s order.</b> A Uniform Champion orders for
+        one person at a time. Check out or empty that cart before ordering for someone else.</p>
+      <a class="hz-btn" href="cart">Go to cart</a>
+    </div>
+
     <header class="hz-pick-head">
       <h1 class="hz-pick-title">Choose your uniform</h1>
       <!--
@@ -318,7 +326,7 @@
           -->
           <button class="hz-btn hz-btn--block" type="button"
                   ng-click="alloc.addToCart()"
-                  ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting">
+                  ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting || alloc.cartFor">
             <span ng-if="alloc.submitting">Adding&hellip;</span>
             <span ng-if="!alloc.submitting">Add to cart</span>
           </button>

@@ -34,7 +34,36 @@ four51.app.controller('ChampionCtrl', ['$scope', '$location', 'Allocation',
       shown: [],
       query: '',
       /** How many are hidden by the current search, so the count is never a mystery. */
-      total: 0
+      total: 0,
+      /**
+       * Whose items the Champion's cart already holds, or null. One employee per cart
+       * (Trevor, 24 Sep 2026): while it holds someone's, everyone else waits.
+       */
+      holder: null
+    };
+
+    /** Ask whose the cart is, once the cart itself is known. */
+    function loadHolder() {
+      var order = $scope.currentOrder;
+      if (!order || !order.ID || !(order.LineItems && order.LineItems.length)) {
+        $scope.champ.holder = null;
+        return;
+      }
+      Allocation.cartHolder(order.ID)
+        .then(function(res) { $scope.champ.holder = (res && res.holder) || null; })
+        .catch(function() { $scope.champ.holder = null; });
+    }
+    $scope.$watch(function() {
+      var o = $scope.currentOrder;
+      return o ? o.ID + ':' + ((o.LineItems && o.LineItems.length) || 0) : String(o);
+    }, function() { if ($scope.champ.enabled) loadHolder(); });
+
+    /** Someone else's order is in the cart, so this person has to wait for it. */
+    $scope.champ.waiting = function(b) {
+      return !!($scope.champ.holder && b && b.employeeId !== $scope.champ.holder.employeeId);
+    };
+    $scope.champ.isHolder = function(b) {
+      return !!($scope.champ.holder && b && b.employeeId === $scope.champ.holder.employeeId);
     };
 
     function describe(err) {
@@ -87,7 +116,7 @@ four51.app.controller('ChampionCtrl', ['$scope', '$location', 'Allocation',
      * person's entitlement.
      */
     $scope.champ.orderFor = function(b) {
-      if (!b || !b.eligible) return;
+      if (!b || !b.eligible || $scope.champ.waiting(b)) return;
       $location.path('/allocation').search({ for: b.employeeId });
     };
 

@@ -1,5 +1,29 @@
-four51.app.controller('CartViewCtrl', ['$scope', '$routeParams', '$location', '$451', 'Order', 'OrderConfig', 'User', 'Punchout', '$sce', '$timeout', '$window',
-function ($scope, $routeParams, $location, $451, Order, OrderConfig, User, Punchout, $sce, $timeout, $window) {
+four51.app.controller('CartViewCtrl', ['$scope', '$routeParams', '$location', '$451', 'Order', 'OrderConfig', 'User', 'Punchout', '$sce', '$timeout', '$window', 'Allocation',
+function ($scope, $routeParams, $location, $451, Order, OrderConfig, User, Punchout, $sce, $timeout, $window, Allocation) {
+	/**
+	 * Whose order this cart is, for a Champion ordering on someone's behalf (one employee
+	 * per cart, Trevor 24 Sep 2026). Null for an employee's own cart, where it goes without
+	 * saying.
+	 */
+	$scope.cartFor = null;
+	$scope.$watch(function() {
+		var o = $scope.currentOrder;
+		return o ? o.ID + ':' + ((o.LineItems && o.LineItems.length) || 0) : String(o);
+	}, function() {
+		var o = $scope.currentOrder;
+		if (!o || !o.ID || !(o.LineItems && o.LineItems.length) || !Allocation.isEnabled()) {
+			$scope.cartFor = null;
+			return;
+		}
+		Allocation.cartHolder(o.ID)
+			.then(function(res) {
+				var h = res && res.holder;
+				var me = (Allocation.identity() || {}).employeeId;
+				$scope.cartFor = (h && h.employeeId !== me) ? h : null;
+			})
+			.catch(function() { $scope.cartFor = null; });
+	});
+
 	//Punchout
 	if($scope.PunchoutUser){
 		$scope.punchouturl = $sce.trustAsResourceUrl(Punchout.punchoutSession.PunchOutPostURL);

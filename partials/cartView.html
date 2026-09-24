@@ -32,6 +32,12 @@
 
     <cartmessage></cartmessage>
 
+    <!-- A Champion's cart is one employee's order; say whose. -->
+    <div class="hz-cart-for" ng-if="cartFor">
+      <span class="hz-cart-for-k">Ordering on behalf of</span>
+      <span class="hz-cart-for-v">{{cartFor.name}} <span class="hz-cart-for-id">Employee ID {{cartFor.employeeId}}</span></span>
+    </div>
+
     <div class="hz-cart-empty" ng-if="!currentOrder.LineItems.length">
       <p>There is nothing in your cart yet.</p>
       <a class="hz-cart-btn hz-cart-btn--primary" href="allocation">Choose your uniform</a>

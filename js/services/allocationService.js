@@ -439,6 +439,15 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
       },
 
       /**
+       * Whose items this Four51 cart holds, as { holder: { employeeId, name } | null }.
+       * A Champion orders for one employee at a time; the cart gate refuses a second.
+       */
+      cartHolder: function(four51OrderId) {
+        if (!four51OrderId) return $q.when({ holder: null });
+        return authed('GET', '/champion/cart-holder?order=' + encodeURIComponent(four51OrderId), null);
+      },
+
+      /**
        * Ask the gatekeeper whether this cart may be saved, and **hold the units**.
        *
        * This is the cart path: it reserves, so it belongs with an actual save. Anything

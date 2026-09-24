@@ -64,8 +64,28 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
       onBehalf: false,
       beneficiaryId: null,
       /** The beneficiary's record, loaded only when ordering on behalf. */
-      beneficiary: null
+      beneficiary: null,
+      /**
+       * Someone else whose order is already in the Champion's cart, or null. One employee
+       * per cart: while set, Add to cart is off and the page says why.
+       */
+      cartFor: null
     };
+
+    /** On behalf only: does the cart already hold a different person's order? */
+    function checkCartFor() {
+      if (!FOR) return;
+      whenCartKnown()
+        .then(function(order) {
+          if (!order || !order.ID || !(order.LineItems && order.LineItems.length)) return null;
+          return Allocation.cartHolder(order.ID);
+        })
+        .then(function(res) {
+          var h = res && res.holder;
+          $scope.alloc.cartFor = (h && h.employeeId !== FOR) ? h : null;
+        })
+        .catch(function() { $scope.alloc.cartFor = null; });
+    }
 
     /** Back to the team picker, dropping the beneficiary. */
     $scope.alloc.leaveOnBehalf = function() {
@@ -780,6 +800,7 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
                 .then(function(p) { $scope.alloc.beneficiary = p; })
                 .catch(function() { $scope.alloc.beneficiary = null; });
             }
+            checkCartFor();
             $scope.alloc.brandKey = brandKeyFor(view.brand);
             $scope.alloc.closed = view.seasonalClosed || [];
             $scope.alloc.pools = Allocation.inDisplayOrder(view.pools);

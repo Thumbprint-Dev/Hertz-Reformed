@@ -2751,6 +2751,21 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-team-body .hz-note, .hz-team-body .hz-alert { margin-top: 24px; }
 
 .hz-team-search { display: flex; gap: 10px; margin: 30px 0 0; max-width: 560px; }
+/* One person at a time: the rule, stated as the page opens. The house notice shape. */
+.hz-team-rule {
+  margin: 18px 0 0; max-width: 62ch; padding: 12px 16px;
+  background: var(--surface-alt, #fafafa); border-left: 3px solid var(--yellow);
+  font-size: var(--fs-body); line-height: 1.55; color: var(--ink);
+}
+.hz-team-rule b { font-weight: 700; }
+/* The cart already holds someone's order. */
+.hz-team-holding {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 20px;
+  margin: 26px 0 0; padding: 16px 18px; border: 1px solid var(--rule); border-left: 3px solid var(--yellow);
+  background: #fff;
+}
+.hz-team-holding p { margin: 0; font-size: var(--fs-md); line-height: 1.5; color: var(--ink); max-width: 60ch; }
+.hz-team-holding-acts { display: inline-flex; flex-wrap: wrap; gap: 10px; }
 .hz-team-search input {
   flex: 1 1 auto; min-width: 0;
   font-family: inherit; font-size: var(--fs-md); color: var(--ink);
@@ -2851,6 +2866,14 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
    department, title, group and the date the allocation resets. Two rows so it stays one
    strip at any width rather than a sentence that wraps into a paragraph.
    Yellow is a fill and the type on it is the brand's dark ink, never white. */
+/* One employee per cart: the cart holds someone else's order (Trevor, 24 Sep 2026). */
+.hz-cartfor {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
+  margin: 0 0 20px; padding: 14px 16px; border: 1px solid var(--edge); border-left: 3px solid var(--a);
+  border-radius: 0 6px 6px 0; background: #fff;
+}
+.hz-cartfor p { margin: 0; font-size: var(--fs-body); line-height: 1.5; color: var(--ink); max-width: 64ch; }
+.hz-cartfor b { font-weight: 700; }
 .hz-onbehalf {
   background: #fc0; color: #11172b;
   border-radius: 8px; padding: 12px 16px; margin: 0 0 20px;
@@ -3070,6 +3093,14 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-cart-empty .hz-cart-btn { display: inline-flex; width: auto; }
 
 .hz-cart-alert, .hz-cart-said { margin-top: 18px; font-size: var(--fs-body); }
+/* Whose order a Champion's cart is. */
+.hz-cart-for {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+  margin: 0 0 18px; padding: 12px 16px; border-left: 3px solid var(--yellow); background: var(--sub);
+}
+.hz-cart-for-k { font-size: var(--fs-label); font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.hz-cart-for-v { font-size: var(--fs-md); font-weight: 700; color: var(--ink); }
+.hz-cart-for-id { font-weight: 400; color: var(--muted); font-size: var(--fs-sm); margin-left: 6px; }
 .hz-cart-alert p { color: #a4192d; margin: 0; }
 .hz-cart-said p { color: var(--ink); margin: 0; }
 
