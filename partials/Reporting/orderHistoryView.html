@@ -214,10 +214,12 @@
         <!--
           Save as a favourite, for a repeat order. Not for allocation employees
           (`HidePricing`): a favourite is reordered through Four51's `PUT order/repeat`, which
-          clones an order server-side without passing the allocation gate.
+          clones an order server-side without passing the allocation gate. Not for Uniform
+          Champions either (Trevor, 24 Sep 2026): their orders spend someone else's
+          allocation, so a reorder that skips the gate would spend it unmetered.
         -->
         <div class="hz-pg-card"
-             ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer' && !user.Permissions.contains('HidePricing')">
+             ng-if="order.FromUserID == user.ID && order.Status != 'Unsubmitted' && user.Type !='TempCustomer' && !user.Permissions.contains('HidePricing') && !(hertzChampionUser || dollarChampionUser || thriftyChampionUser)">
           <div class="hz-pg-card-b">
             <loadingindicator ng-show="displayLoadingIndicator" />
             <div class="hz-pg-field">

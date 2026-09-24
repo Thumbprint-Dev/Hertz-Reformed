@@ -3729,10 +3729,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   padding: 9px 14px; cursor: pointer; white-space: nowrap;
 }
 .hz-pg-chip:hover { border-color: var(--ink); color: var(--ink); }
-/* The chosen filter is a yellow fill with the brand's dark grey on it, the same
+/* The chosen filter is a yellow fill with black type on it, the same
    relationship the primary button uses. */
 .hz-pg-chip.is-on {
-  background: var(--yellow); border-color: var(--yellow); color: #434244;
+  background: var(--yellow); border-color: var(--yellow); color: var(--btn-on-yellow, #000);
 }
 .hz-pg-chip-n { font-variant-numeric: tabular-nums; opacity: .7; margin-left: 6px; }
 .hz-pg-chip.is-on .hz-pg-chip-n { opacity: .85; }
@@ -3820,7 +3820,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-pg .pagination > .active > span,
 .hz-pg .pagination > .active > a:hover,
 .hz-pg .pagination > .active > span:hover {
-  background: var(--yellow); border-color: var(--yellow); color: #434244;
+  background: var(--yellow); border-color: var(--yellow); color: var(--btn-on-yellow, #000);
 }
 .hz-pg .pagination > .disabled > a,
 .hz-pg .pagination > .disabled > span { opacity: .4; }
@@ -3978,9 +3978,13 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-ord-find input:focus { border-color: var(--ink); outline: 0; }
 
-/* ---- the list: one order per row, the whole row the link ---- */
+/* ---- the list: one order per row, the whole row the link ----
+   Every row is its own grid, so `auto` tracks sized each row to its own contents and the
+   "Ordered by" column wandered with the width of the status and the total (Trevor,
+   24 Sep 2026). Fixed tracks line every row up whatever it holds; the status pill fills
+   its track so both its edges line up too. */
 .hz-ord-row {
-  display: grid; grid-template-columns: minmax(160px, 1.2fr) minmax(0, 1fr) auto auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 96px 140px;
   gap: 8px 24px; align-items: center;
   padding: 16px 20px; border-top: 1px solid var(--line);
   color: var(--body); text-decoration: none;
@@ -3999,8 +4003,11 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   text-transform: uppercase; color: var(--muted); margin-bottom: 2px;
 }
 .hz-ord-row-note { font-size: var(--fs-sm); color: var(--muted); margin-left: 4px; }
-.hz-ord-row-total { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
-.hz-ord-row-end { display: flex; align-items: center; gap: 14px; justify-self: end; }
+.hz-ord-row-total { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.hz-ord-row-end { display: flex; align-items: center; }
+.hz-ord-row-end .hz-pg-pill { width: 100%; text-align: center; }
+/* No prices shown: no total column, rather than an empty one or the pill slipping into it. */
+.hz-ord-row--noprice { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 140px; }
 
 @media (max-width: 560px) {
   /* A phone: the photo shrinks and the quantity sits under the name rather than beside it. */
@@ -4009,9 +4016,9 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-ord-li-qty { grid-column: 2; text-align: left; display: flex; align-items: baseline; gap: 8px; }
   .hz-ord-li-qty-l, .hz-ord-li-qty-n { display: inline; }
   .hz-ord-li-qty-n { font-size: var(--fs-2xl); }
-  .hz-ord-row { grid-template-columns: minmax(0, 1fr) auto; padding: 14px 16px; }
+  .hz-ord-row, .hz-ord-row--noprice { grid-template-columns: minmax(0, 1fr) 112px; padding: 14px 16px; }
   .hz-ord-row-who { grid-column: 1; grid-row: 2; }
-  .hz-ord-row-total { grid-column: 1; }
+  .hz-ord-row-total { grid-column: 1; text-align: left; }
   .hz-ord-row-end { grid-column: 2; grid-row: 1 / span 2; }
   .hz-ord-find input { max-width: none; }
 }
@@ -4238,7 +4245,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 /* Yellow is a fill; the mark on it is the brand's dark grey. */
 .hz-doc details[open] summary::after {
-  content: '\2212'; background: var(--yellow); border-color: var(--yellow); color: #434244;
+  content: '\2212'; background: var(--yellow); border-color: var(--yellow); color: var(--btn-on-yellow, #000);
 }
 .hz-doc details > p {
   margin: 0; padding: 0 18px 18px; font-size: var(--fs-md); line-height: 1.65; color: var(--body);
@@ -4316,7 +4323,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
     cursor: pointer;
   }
   .hz-faq-switch button + button { border-left: 1px solid var(--edge); }
-  .hz-faq-switch button.is-on { background: var(--yellow); color: #434244; font-weight: 700; }
+  .hz-faq-switch button.is-on { background: var(--yellow); color: var(--btn-on-yellow, #000); font-weight: 700; }
   .hz-faq:not(.hz-faq--returns) .hz-faq-col--returns,
   .hz-faq--returns .hz-faq-col--order { display: none; }
 }

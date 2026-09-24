@@ -52,7 +52,7 @@
       </div>
 
       <!-- An order that is still the working cart opens as the cart: it has not been placed. -->
-      <a class="hz-ord-row"
+      <a class="hz-ord-row" ng-class="{'hz-ord-row--noprice': user.Permissions.contains('HidePricing')}"
          ng-repeat="order in orders | paginate:(settings.currentPage-1) * settings.pageSize | limitTo:settings.pageSize"
          ng-href="{{order.hzBehalf ? 'order/behalf/' + order.ID : (currentOrder.ID == order.ID ? 'cart' : 'order/' + order.ID)}}">
         <span class="hz-ord-row-id">
