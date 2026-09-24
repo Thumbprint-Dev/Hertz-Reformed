@@ -16,27 +16,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!--
-  The two faces the theme actually asks for, which were never loaded.
-
-  `custom.css` sets `'Open Sans', Arial` as the body face and
-  `'Barlow Semi Condensed', 'Arial Narrow'` as `--display`, and the only webfont on the
-  page was Signika, which nothing uses. So every page was rendering Arial, and every
-  heading and numeral was rendering **Arial Narrow** — a genuinely narrow face, which is
-  why the type looked stretched.
-
-  It showed worst on the allocation picker, which is the page that leans on the display
-  face hardest: the title, the remaining count on each of six pools, the rail total and
-  every SKU. Other pages spend it on a title alone, so the same substitution was easier
-  to miss there.
-
-  Weights are the ones the stylesheet uses: 400, 600 and 700 for Open Sans, 600 and 700
-  for the display face. `display=swap` so text paints in the fallback and is re-rendered
-  rather than being invisible while the font arrives.
-
-  Signika is kept because it costs nothing to leave and removing an unused font from a
-  theme file is not what this change is for.
+  One face for the whole site: Open Sans, with sans-serif behind it (24 Sep 2026). The
+  display face (Barlow Semi Condensed) and Signika, which nothing used, are no longer
+  loaded. Weights are the ones custom.css asks for; `display=swap` so text paints in the
+  fallback rather than being invisible while the font arrives.
 -->
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Open+Sans:wght@400;600;700&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/animate.min.css" />
     <!--[if lt IE 9]>
     <div style="position:absolute; top:0; left:0; right:0; bottom:0; background-position:center center; background-size:cover; background-repeat:no-repeat;"></div>
