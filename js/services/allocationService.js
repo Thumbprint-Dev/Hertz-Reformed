@@ -44,8 +44,10 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
     // The session response already carries roles and the employee id. Holding them avoids
     // a second call for something we were just told.
     var _identity = { employeeId: null, roles: [] };
-    // One cancellation check per page session. See `checkCancellations`.
+    // The cancellation check in flight, and when the last one finished. See `checkCancellations`.
     var _cancelCheck = null;
+    var _cancelCheckedAt = 0;
+    var CANCEL_RECHECK_MS = 30 * 1000;
 
     function url(path) {
       return AllocationConfig.baseUrl.replace(/\/$/, '') + path;
@@ -270,7 +272,7 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
         });
     }
 
-    return {
+    var api = {
       /** False until decision 44 and B2 are settled — see AllocationConfig. */
       isEnabled: function() {
         // With the shim set there is no Four51 session to require — that is the situation
@@ -344,19 +346,37 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
       },
 
       /**
-       * Settle any of this user's orders Four51 has cancelled, giving their items back.
+       * Settle any of this user's orders that Four51 now reports as cancelled, so their items
+       * go back to the employee's allocation (orders/cancel.ts on the API).
        *
-       * Sends the user's own Four51 token, once, to a server that reads each open order back
-       * from Four51 with it and credits only what Four51 reports as Canceled — the browser
-       * never claims a cancellation, so there is nothing here to trust. Once per page session:
-       * a cancellation is rare, and the landing page is where this is called from.
+       * Only the person who placed an order can read it from Four51, so a Champion's
+       * cancelled on-behalf order is settled by the Champion's session, never the
+       * employee's. This used to run once per page session: a Champion who already had the
+       * site open when an order was cancelled was not asked again until a full reload, and
+       * the employee's items stayed spent (Trevor, 24 Sep 2026: "if a uniform champion
+       * cancels it needs to reallocate for the user"). It now runs on every page change and
+       * whenever the tab comes back into view (see the hooks at the end of this factory), at
+       * most every 30 seconds unless `force` is passed, and a request in flight is shared.
+       *
+       * When anything came back it broadcasts `allocation:cancellationsSettled`, which the
+       * pages showing an allocation listen for to reload their figures.
        */
-      checkCancellations: function() {
+      checkCancellations: function(force) {
         if (_cancelCheck) return _cancelCheck;
+        if (!force && _cancelCheckedAt && Date.now() - _cancelCheckedAt < CANCEL_RECHECK_MS) {
+          return $q.when({ checked: 0, cancelled: [], throttled: true });
+        }
         var four51Token = Security.auth();
         if (!four51Token) return $q.when({ checked: 0, cancelled: [] });
         _cancelCheck = authed('POST', '/orders/check-cancellations', { four51Token: four51Token })
-          .catch(function(err) {
+          .then(function(res) {
+            _cancelCheck = null;
+            _cancelCheckedAt = Date.now();
+            if (res && res.cancelled && res.cancelled.length) {
+              $rootScope.$broadcast('allocation:cancellationsSettled', res);
+            }
+            return res;
+          }, function(err) {
             _cancelCheck = null;
             return $q.reject(err);
           });
@@ -597,4 +617,25 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
         _identity = { employeeId: null, roles: [] };
       }
     };
+
+    /*
+     * Ask about cancellations whenever a signed-in user changes page, and when the tab comes
+     * back into view, which is where someone lands after cancelling in Four51's admin in
+     * another tab. Throttled inside `checkCancellations`, so this costs one small request
+     * every 30 seconds at most, and nothing for someone signed out.
+     */
+    function cancellationsHook() {
+      if (!api.isEnabled() || !Security.auth()) return;
+      api.checkCancellations().catch(function() { /* asked again on the next page */ });
+    }
+    $rootScope.$on('$routeChangeSuccess', cancellationsHook);
+    try {
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') $rootScope.$evalAsync(cancellationsHook);
+      });
+    } catch (e) {
+      // No document events (a test runner): the page-change hook still runs.
+    }
+
+    return api;
   }]);

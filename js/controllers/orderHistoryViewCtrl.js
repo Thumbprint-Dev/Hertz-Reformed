@@ -77,7 +77,9 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 			// picker ask Four51 about cancellations once a session; asked here too, because this
 			// is the page an employee opens to see that it was canceled.
 			if ($scope.isCanceled() && Allocation.isEnabled()) {
-				Allocation.checkCancellations().catch(function() { /* asked again next session */ });
+				// Forced: Four51 is saying so right now, so ask at once rather than wait out
+				// the throttle. The API settles it only if Four51 confirms it to this user.
+				Allocation.checkCancellations(true).catch(function() { /* asked again on the next page */ });
 			}
 			$scope.hasSpecsOnAnyLineItem = false;
 			for(var i = 0; i < data.LineItems.length ; i++) {

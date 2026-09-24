@@ -144,7 +144,9 @@ four51.app.controller('ChampionCtrl', ['$scope', '$location', 'Allocation',
     // The orders a Champion placed for their team are theirs to see in Four51, so this is
     // where a cancelled on-behalf order gets settled back to the employee (homeCtrl.js).
     // Nothing on this page shows an allocation, so there is nothing to reload.
+    // Asked straight away here, not left to the 30-second throttle: this is the page a
+    // Champion opens to carry on, often just after cancelling an order in Four51.
     if ($scope.champ.enabled) {
-      Allocation.checkCancellations().catch(function() { /* retried next session */ });
+      Allocation.checkCancellations(true).catch(function() { /* asked again on the next page */ });
     }
   }]);

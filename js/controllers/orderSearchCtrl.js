@@ -46,6 +46,16 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 			function done() {
 				settle();
 				withOnBehalf();
+				// A cancelled order in Four51's own list: ask straight away, so its items go
+				// back to whoever it was for. For a Champion's on-behalf order this is the
+				// only session that can, because only the Champion can read it from Four51.
+				// The API settles only what it has not already, and only on Four51's word.
+				var anyCanceled = all.some(function(o) {
+					return /^cancel+ed$/i.test(o.Status || '') || /^cancel+ed$/i.test(o.StatusText || '');
+				});
+				if (anyCanceled && Allocation.isEnabled()) {
+					Allocation.checkCancellations(true).catch(function() { /* asked again on the next page */ });
+				}
 			}
 
 			function settle() {

@@ -866,13 +866,9 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     // because employees often come straight to this page rather than the landing page. Once
     // per page session, and the pools are reloaded only when something came back and
     // nothing has been chosen yet, so a reload never throws away someone's picks.
-    if ($scope.alloc.enabled) {
-      Allocation.checkCancellations()
-        .then(function(res) {
-          if (res && res.cancelled && res.cancelled.length && !$scope.alloc.totalPicked) {
-            $scope.alloc.load();
-          }
-        })
-        .catch(function() { /* retried next session; the pools shown are still right */ });
-    }
+    // The check runs on every page change and when the tab comes back into view
+    // (Allocation.checkCancellations); this reloads when it gave anything back.
+    $scope.$on('allocation:cancellationsSettled', function() {
+      if ($scope.alloc.enabled && !$scope.alloc.totalPicked) $scope.alloc.load();
+    });
   }]);

@@ -196,14 +196,10 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
     // before it so the page never waits on it: when something did come back, the band is
     // loaded again with the restored figures. Champions ask too, because the orders they
     // placed for their team are theirs to see in Four51.
-    if ($scope.home.enabled) {
-      Allocation.checkCancellations()
-        .then(function(res) {
-          if (res && res.cancelled && res.cancelled.length) $scope.home.load();
-        })
-        .catch(function() {
-          // Not this page's failure to report: the allocation it shows is still right as of
-          // the last settlement, and the check runs again next session.
-        });
-    }
+    // The check itself runs on every page change and when the tab comes back into view
+    // (Allocation.checkCancellations); this page reloads its figures when it gave anything
+    // back, whichever page asked.
+    $scope.$on('allocation:cancellationsSettled', function() {
+      if ($scope.home.enabled) $scope.home.load();
+    });
   }]);
