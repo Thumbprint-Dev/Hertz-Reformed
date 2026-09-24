@@ -1,5 +1,5 @@
-four51.app.controller('CheckOutViewCtrl', ['$scope', '$routeParams', '$location', '$filter', '$rootScope', '$451', 'User', 'Order', 'OrderConfig', 'FavoriteOrder', 'AddressList', 'GoogleAnalytics',
-  function ($scope, $routeParams, $location, $filter, $rootScope, $451, User, Order, OrderConfig, FavoriteOrder, AddressList, GoogleAnalytics) {
+four51.app.controller('CheckOutViewCtrl', ['$scope', '$routeParams', '$location', '$filter', '$rootScope', '$451', 'User', 'Order', 'OrderConfig', 'FavoriteOrder', 'AddressList', 'GoogleAnalytics', 'Allocation',
+  function ($scope, $routeParams, $location, $filter, $rootScope, $451, User, Order, OrderConfig, FavoriteOrder, AddressList, GoogleAnalytics, Allocation) {
     $scope.errorSection = '';
 
     /**
@@ -48,9 +48,30 @@ four51.app.controller('CheckOutViewCtrl', ['$scope', '$routeParams', '$location'
       });
     }
 
+    /**
+     * Who a Champion is ordering for, from whose units the cart holds (one employee per
+     * cart). Stated at the top of Order details, and written into the order's Employee
+     * Number field (CG_IntegrationField1), which the Champion used to type by hand and the
+     * Hertz approval team reads. Null for an employee's own order.
+     */
+    $scope.onBehalfOf = null;
+    function loadOnBehalf(order) {
+      if (!order || !order.ID || !Allocation.isEnabled()) return;
+      Allocation.cartHolder(order.ID).then(function(res) {
+        var h = res && res.holder;
+        var me = (Allocation.identity() || {}).employeeId;
+        if (!h || h.employeeId === me) { $scope.onBehalfOf = null; return; }
+        $scope.onBehalfOf = h;
+        angular.forEach(order.OrderFields || [], function(f) {
+          if (f.Name === 'CG_IntegrationField1') f.Value = h.employeeId;
+        });
+      }).catch(function() { $scope.onBehalfOf = null; });
+    }
+
     function startCheckout(order) {
       order.PaymentMethod = 'PurchaseOrder';
       fillMissingShipping(order);
+      loadOnBehalf(order);
 
       $scope.isEditforApproval =
         $routeParams.id != null &&

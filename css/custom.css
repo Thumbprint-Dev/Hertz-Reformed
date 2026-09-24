@@ -3261,7 +3261,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
 /* ---- champion sub-panel ---- */
 .hz-co-sub {
-  border: 1px solid var(--line); border-radius: 6px; padding: 16px;
+  /* No frame of its own any more: it is the body of Order details, laid out like Shipping. */
   display: flex; flex-direction: column; gap: 14px;
 }
 .hz-co-sub-t { margin: 0; font-size: var(--fs-body); font-weight: 700; color: var(--ink); }
@@ -3305,6 +3305,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   border-radius: 0 6px 6px 0; background: #fff;
 }
 .hz-co-ship-pin { flex: 0 0 auto; color: var(--ink); margin-top: 1px; }
+/* Order details, for a Champion: the same card as Shipping, holding the person instead. */
+.hz-co-behalf-name { margin: 0; font-size: var(--fs-lg); font-weight: 700; color: var(--ink); }
+.hz-co-behalf-id { margin: 0; font-size: var(--fs-body); color: var(--muted); }
+.hz-co-sub-q { margin: 4px 0 0; font-size: var(--fs-body); font-weight: 700; color: var(--ink); }
 .hz-co-ship-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .hz-co-ship-h {
   margin: 0; font-size: var(--fs-label); font-weight: 700; letter-spacing: .09em;
