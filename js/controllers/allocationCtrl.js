@@ -626,6 +626,18 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
      * checking out. This button fills the cart; it does not place an order.
      */
     /**
+     * The signed-in person's current Four51 order, null for no cart, undefined until the
+     * user has loaded. Places holds that carry no name (Allocation.splitHolds).
+     */
+    function ownOrderId() {
+      if (!$scope.user) return undefined;
+      return $scope.user.CurrentOrderID || null;
+    }
+    $scope.$watch(function() { return String(ownOrderId()); }, function() {
+      if ($scope.alloc && $scope.alloc.view) $scope.alloc.holds = Allocation.splitHolds($scope.alloc.view, ownOrderId());
+    });
+
+    /**
      * Resolve once the current cart is known: the order, or null for "no cart yet".
      *
      * `Four51Ctrl` fetches the current order asynchronously and only then assigns it —
@@ -825,7 +837,7 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             angular.forEach($scope.alloc.pools, function(p) { held += p.reserved || 0; });
             $scope.alloc.totalReserved = held;
             // Where they are held: see Allocation.splitHolds and the notices in the view.
-            $scope.alloc.holds = Allocation.splitHolds(view);
+            $scope.alloc.holds = Allocation.splitHolds(view, ownOrderId());
 
             // Open the largest pool: the page should show what it does at rest rather
             // than a column of closed rows.

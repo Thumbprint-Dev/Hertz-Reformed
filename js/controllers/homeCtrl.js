@@ -37,6 +37,19 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
 
     // An object, never bare primitives: anything under an `ng-if` gets a child scope, and
     // writing to a bare name there shadows rather than updates.
+    /**
+     * The signed-in person's current Four51 order, null for no cart, undefined until the
+     * user has loaded. Places holds that carry no name (Allocation.splitHolds); recomputed
+     * when it arrives, since the user can load after the allocation.
+     */
+    function ownOrderId() {
+      if (!$scope.user) return undefined;
+      return $scope.user.CurrentOrderID || null;
+    }
+    $scope.$watch(function() { return String(ownOrderId()); }, function() {
+      if ($scope.home && $scope.home.view) $scope.home.holds = Allocation.splitHolds($scope.home.view, ownOrderId());
+    });
+
     $scope.home = {
       enabled: Allocation.isEnabled(),
       loading: false,
@@ -162,7 +175,7 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
             $scope.home.totalReserved = held;
             // And where they are: the employee's own cart, or an order a Uniform Champion is
             // placing for them, which the employee cannot open.
-            $scope.home.holds = Allocation.splitHolds(view);
+            $scope.home.holds = Allocation.splitHolds(view, ownOrderId());
             // Guarded rather than assumed: an employee whose kit grants nothing would
             // otherwise divide by zero and render a NaN-wide bar.
             $scope.home.percentLeft = granted > 0 ? Math.round((remaining / granted) * 100) : 0;

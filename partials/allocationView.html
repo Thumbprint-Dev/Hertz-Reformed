@@ -176,6 +176,22 @@
           </div>
         </div>
 
+        <!-- The same, for a hold saved before the Champion's name was recorded. -->
+        <div class="hz-held" ng-if="!alloc.onBehalf && alloc.holds.elsewhere > 0">
+          <div class="hz-held-text">
+            <p class="hz-held-h">
+              <b>{{alloc.holds.elsewhere}}</b>
+              <span ng-if="alloc.holds.elsewhere === 1">item is</span><span ng-if="alloc.holds.elsewhere !== 1">items are</span>
+              reserved in an order your Uniform Champion is placing for you
+            </p>
+            <p class="hz-held-sub">
+              These items are held against your allocation until that order is placed or
+              its cart is emptied, so the quantities below exclude them. Speak to your
+              Uniform Champion if you were not expecting it.
+            </p>
+          </div>
+        </div>
+
         <!-- A Champion, their own cart for this employee: the one they are filling now. -->
         <div class="hz-held" ng-if="alloc.onBehalf && alloc.holds.me > 0">
           <div class="hz-held-text">

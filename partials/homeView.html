@@ -176,6 +176,13 @@
           reserved in an order {{h.name}}, your Uniform Champion, is placing for you, and
           excluded from the total above.
         </p>
+        <!-- The same, for a hold saved before the Champion's name was recorded. -->
+        <p class="hz-lp-held" ng-if="home.holds.elsewhere > 0">
+          <b>{{home.holds.elsewhere}}</b>
+          <span ng-if="home.holds.elsewhere === 1">item is</span><span ng-if="home.holds.elsewhere !== 1">items are</span>
+          reserved in an order your Uniform Champion is placing for you, and excluded from
+          the total above.
+        </p>
       </div>
 
       <div class="hz-lp-cats">

@@ -462,17 +462,27 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
       /**
        * Where an allocation's held units are, from the entitlement's `holds`.
        *
-       *   self    in the allocation holder's own cart
-       *   me      in the signed-in person's cart, when they are ordering for someone else
-       *   others  in carts other people are filling for them: [{ employeeId, name, units }]
+       *   self      in the allocation holder's own cart
+       *   me        in the signed-in person's cart, when they are ordering for someone else
+       *   others    in carts other people are filling for them: [{ employeeId, name, units }]
+       *   elsewhere in another person's cart whose name was never recorded (below)
        *
        * An employee's units in a Champion's cart used to read as "reserved in your cart",
        * with a link to a cart that was empty (Trevor, 24 Sep 2026). A response without
        * `holds` (an API older than the storefront) counts everything as `self`, which is
        * what the page said before.
+       *
+       * `ownOrderId` is the signed-in person's current Four51 order (`user.CurrentOrderID`,
+       * null for no cart), or `undefined` while the user has not loaded. It places holds
+       * written before the cart gate recorded who filled a cart: those carry no name, so
+       * they are placed by order instead. The signed-in person's own cart is their current
+       * order; any other order holding the units is someone else's. For an employee that
+       * is a Champion's order ("elsewhere"). For a Champion ordering on someone's behalf,
+       * their current order is their own cart ("me") and any other is the employee's
+       * ("self"). Until the user has loaded, an unnamed hold stays `self`.
        */
-      splitHolds: function(view) {
-        var out = { self: 0, me: 0, others: [] };
+      splitHolds: function(view, ownOrderId) {
+        var out = { self: 0, me: 0, others: [], elsewhere: 0 };
         if (!view) return out;
         if (!view.holds) {
           angular.forEach(view.pools || [], function(p) { out.self += p.reserved || 0; });
@@ -481,7 +491,14 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
         var me = (_identity || {}).employeeId;
         var byPlacer = {};
         angular.forEach(view.holds, function(h) {
-          if (!h.placedBy) { out.self += h.units; return; }
+          if (!h.placedBy) {
+            if (ownOrderId === undefined) { out.self += h.units; return; }
+            var mine = !!ownOrderId && h.four51OrderId === ownOrderId;
+            if (view.onBehalf) { if (mine) out.me += h.units; else out.self += h.units; }
+            else if (mine) out.self += h.units;
+            else out.elsewhere += h.units;
+            return;
+          }
           if (me && h.placedBy.employeeId === me) { out.me += h.units; return; }
           var o = byPlacer[h.placedBy.employeeId];
           if (!o) {
