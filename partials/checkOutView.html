@@ -75,13 +75,22 @@
         Champion is not told to ask themselves.
       -->
       <div class="hz-co-help">
-        <p ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">
-          Questions about your uniform? Speak to your Uniform Champion.
-        </p>
-        <p>
-          Trouble checking out? Use the Chat button while signed in, or email
-          <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.
-        </p>
+        <div class="hz-co-help-tile" ng-hide="hertzChampionUser || dollarChampionUser || thriftyChampionUser">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="8" r="3.2"></circle><path d="M3 19a6 6 0 0 1 12 0"></path>
+            <circle cx="17" cy="9" r="2.4"></circle><path d="M15.5 14.2A5 5 0 0 1 21 19"></path>
+          </svg>
+          <p><strong>Questions about your uniform?</strong> Speak to your Uniform Champion.</p>
+        </div>
+        <div class="hz-co-help-tile">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5h16v11H9l-5 4z"></path>
+          </svg>
+          <p><strong>Trouble checking out?</strong> Use the Chat button while signed in, or email
+            <a href="mailto:hertzsupport@thumbprint.com">hertzsupport@thumbprint.com</a>.</p>
+        </div>
       </div>
     </div>
 

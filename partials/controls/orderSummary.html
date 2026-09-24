@@ -11,7 +11,10 @@
   page that failed to load its prices rather than as an order that has none.
 -->
 <div class="hz-co-summary">
-  <p class="hz-co-summary-h">Order summary</p>
+  <div class="hz-co-summary-top">
+    <p class="hz-co-summary-h">Order summary</p>
+    <p class="hz-co-summary-n">{{currentOrder.LineItems.length}} {{currentOrder.LineItems.length === 1 ? 'style' : 'styles'}}</p>
+  </div>
 
   <!--
     What is actually being ordered.
@@ -92,7 +95,7 @@
     -->
     <span ng-if="!currentOrder.ShipAddressID">A shipping address is needed. </span>
     <span ng-if="currentOrder.ShipAddressID && cart_shipping.$invalid">
-      Confirm the shipping address to continue.
+      <i class="hz-co-blocked-dot" aria-hidden="true"></i>Confirm the shipping address to continue.
     </span>
 
     <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
