@@ -61,7 +61,29 @@
  * A promotional mug in the same cart as a polo is not an allocation item and this must not
  * pretend otherwise.
  */
-four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
+four51.app.run(['Order', 'Allocation', '$q', function(Order, Allocation, $q) {
+
+    /**
+     * Whose allocation this cart spends.
+     *
+     * The session remembers it for a Champion's cart (setOrderBeneficiary), but only in the
+     * tab that started it: a new tab, or a cart picked up again later, had no record, and
+     * every save then checked the cart against the Champion's own allocation. Where the tab
+     * does not know, the server does: whose units the cart already holds. Only asked for a
+     * Champion; an employee's own cart is theirs.
+     */
+    function beneficiaryOf(orderId) {
+      var known = Allocation.orderBeneficiary(orderId);
+      if (known || !orderId) return $q.when(known || null);
+      if (!(Allocation.hasRole('champion') || Allocation.hasRole('admin'))) return $q.when(null);
+      return Allocation.cartHolder(orderId).then(function(res) {
+        var h = res && res.holder;
+        var me = (Allocation.identity() || {}).employeeId;
+        if (!h || h.employeeId === me) return null;
+        Allocation.setOrderBeneficiary(orderId, h.employeeId);
+        return h.employeeId;
+      }, function() { return null; });
+    }
 
     var save = Order.save;
     var submit = Order.submit;
@@ -162,7 +184,12 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
             // the response comes back without products attached.
             var newLines = linesOf(saved);
             if (!newLines.length) newLines = linesOf(order);
-            Allocation.validateCart(newId, newLines, Allocation.orderBeneficiary(newId))
+            // Whose cart this is, claimed before anything else can ask: a Champion's first
+            // add used to be metered against their own allocation, because the picker could
+            // only record the beneficiary once this id existed.
+            var who = Allocation.orderBeneficiary(newId) || Allocation.takePendingBeneficiary();
+            if (who) Allocation.setOrderBeneficiary(newId, who);
+            Allocation.validateCart(newId, newLines, who)
               .catch(function(err) {
                 if (window.console && console.warn) {
                   console.warn('new cart saved but not reserved; reconciliation will catch it', err);
@@ -174,7 +201,10 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
       }
 
       var lines = linesOf(order);
-      Allocation.validateCart(orderId, lines, Allocation.orderBeneficiary(orderId))
+      // An existing cart: a pending beneficiary is for a new one, so it is dropped here.
+      Allocation.takePendingBeneficiary();
+      beneficiaryOf(orderId)
+        .then(function(who) { return Allocation.validateCart(orderId, lines, who); })
         .then(function() {
           save(order, success, error);
         })
@@ -202,7 +232,8 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
 
       remove(order, function(result) {
         if (Allocation.isEnabled() && orderId) {
-          Allocation.validateCart(orderId, [], Allocation.orderBeneficiary(orderId))
+          beneficiaryOf(orderId)
+            .then(function(who) { return Allocation.validateCart(orderId, [], who); })
             .catch(function(err) {
               if (window.console && console.warn) {
                 console.warn('allocation release failed; the collector will catch it', err);
@@ -226,7 +257,8 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
     Order.deletelineitem = function(id, lineitemid, success, error) {
       removeLine(id, lineitemid, function(updated) {
         if (Allocation.isEnabled() && id) {
-          Allocation.validateCart(id, linesOf(updated), Allocation.orderBeneficiary(id))
+          beneficiaryOf(id)
+            .then(function(who) { return Allocation.validateCart(id, linesOf(updated), who); })
             .catch(function(err) {
               if (window.console && console.warn) {
                 console.warn('allocation release failed; the collector will catch it', err);
@@ -250,9 +282,14 @@ four51.app.run(['Order', 'Allocation', function(Order, Allocation) {
 
       submit(order, function(saved) {
         if (Allocation.isEnabled() && orderId) {
-          Allocation.checkout(orderId, linesOf(order), Allocation.orderBeneficiary(orderId),
-                              shipAddressOf(saved, order),
-                              (saved && saved.ExternalID) || (order && order.ExternalID) || null)
+          // Whose order it is comes from the cart when the tab has lost it, so an order
+          // checked out from a new tab is not recorded as the Champion's own.
+          beneficiaryOf(orderId)
+            .then(function(who) {
+              return Allocation.checkout(orderId, linesOf(order), who,
+                                         shipAddressOf(saved, order),
+                                         (saved && saved.ExternalID) || (order && order.ExternalID) || null);
+            })
             .catch(function(err) {
               if (window.console && console.warn) {
                 console.warn('allocation checkout failed; reconciliation will correct', err);

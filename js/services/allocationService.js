@@ -34,6 +34,9 @@
 four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationConfig', 'Security', 'User',
   function($q, $rootScope, $timeout, AllocationConfig, Security, User) {
 
+    // The next new cart's beneficiary, held until the gate claims it. See setPendingBeneficiary.
+    var pendingBeneficiary = null;
+
     // In memory on purpose. See the note above.
     var _token = null;
     var _tokenAt = 0;
@@ -411,6 +414,19 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
         } catch (e) {
           return null;
         }
+      },
+
+      /**
+       * Who the next brand-new cart is for. A cart has no id until Four51's first save
+       * returns, so the picker cannot record the beneficiary against it in advance, and the
+       * gate used to meter that first add against the Champion's own allocation. The picker
+       * sets this before saving; the gate takes it (once) when the new id arrives.
+       */
+      setPendingBeneficiary: function(employeeId) { pendingBeneficiary = employeeId || null; },
+      takePendingBeneficiary: function() {
+        var p = pendingBeneficiary;
+        pendingBeneficiary = null;
+        return p;
       },
 
       setOrderBeneficiary: function(four51OrderId, employeeId) {

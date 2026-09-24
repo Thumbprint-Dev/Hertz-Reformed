@@ -731,6 +731,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
           // A champion's on-behalf order is still their Four51 order, so the beneficiary
           // has to be remembered against it for the gate and for checkout.
           if (FOR && order.ID) Allocation.setOrderBeneficiary(order.ID, FOR);
+          // A new cart has no id yet: tell the gate who it is for before the first save.
+          if (FOR && !order.ID) Allocation.setPendingBeneficiary(FOR);
 
           var d = $q.defer();
           Order.save(order, function(saved) { d.resolve(saved); }, function(message) {
