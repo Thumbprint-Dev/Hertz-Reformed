@@ -3,8 +3,7 @@
 
   Written for this storefront rather than restyled. It uses only what the `ordersummary`
   directive already puts on scope — `currentOrder`, `hidePrices`, the coupon functions —
-  plus `submitOrder`, `cancelOrder` and `cancelEdit` from `CheckOutViewCtrl`, so the
-  behaviour is unchanged.
+  so the behaviour is unchanged. Submit and the ways out moved to the foot of the form.
 
   Same decision as the cart: money appears only when there is money. A uniform allocation
   order costs the employee nothing, and four rows of $0.00 above a $0.00 total reads as a
@@ -23,16 +22,19 @@
     actually want to re-check before submitting, and the one that is expensive to get wrong.
   -->
   <ul class="hz-co-items">
-    <!-- The same row as the order page: photo, name, size, quantity. -->
+    <!-- Shopify's line: the photo carrying the quantity as a badge, then the name and
+         size, then the price on the right when there is one. -->
     <li class="hz-co-item" ng-repeat="item in currentOrder.LineItems" ng-hide="item.Kit">
-      <span class="hz-co-item-thumb" aria-hidden="true">
+      <span class="hz-co-item-thumb">
         <img ng-if="item.Product.InteropID | hzPhoto" ng-src="{{item.Product.InteropID | hzPhoto}}" alt="" />
+        <span class="hz-co-item-q"><span class="hz-sr-only">Quantity </span>{{item.Quantity}}</span>
       </span>
       <span class="hz-co-item-text">
         <span class="hz-co-item-n">{{item.Product.Name}}</span>
         <span class="hz-co-item-size">{{(item.Product.InteropID | hzSize) ? 'Size ' + (item.Product.InteropID | hzSize) : 'One size'}}</span>
       </span>
-      <span class="hz-co-item-q">&times;{{item.Quantity}}</span>
+      <span class="hz-co-item-p"
+            ng-if="!(user.Permissions.contains('HidePricing')) && !hidePrices && currentOrder.Total > 0">{{item.LineTotal | culturecurrency}}</span>
     </li>
   </ul>
 
@@ -60,47 +62,6 @@
     </div>
   </div>
 
-  <!--
-    `!currentOrder.ShipAddressID` is part of this condition in the stock theme and was lost
-    when this summary was rewritten. It is not redundant with `cart_shipping.$invalid`: the
-    shipping form can validate while the order still carries no ship address — the address
-    is set on the order by the shipping directive, not by the form control — and submitting
-    then is rejected by Four51 after the click, which reads as checkout being broken rather
-    than as something being missing.
-  -->
-  <button type="button" class="hz-co-btn hz-co-btn--primary"
-          ng-click="submitOrder()"
-          ng-disabled="submitClicked || cart_order.$invalid || cart_shipping.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
-    <span ng-if="!submitClicked">Submit order</span>
-    <span ng-if="submitClicked">Submitting&hellip;</span>
-  </button>
-
-  <!-- Says what is still missing rather than only disabling the button. A disabled control
-       with no explanation is the commonest way a checkout strands someone. -->
-  <p class="hz-co-blocked"
-     ng-if="cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
-    <span ng-if="cart_order.$invalid">Order details are incomplete. </span>
-
-    <!--
-      Two different gaps, and they were saying the same thing.
-
-      "A shipping address is needed" is right when the order carries none. It is actively
-      misleading once one is chosen and only the confirmation tick is outstanding — which is
-      the common case, because the address arrives prefilled from the employee's location
-      and the tick does not. Being told to supply an address that is already on screen sends
-      people looking for a field that is not missing.
-    -->
-    <span ng-if="!currentOrder.ShipAddressID">A shipping address is needed. </span>
-    <!-- Nothing here for an unticked address confirmation (Trevor, 24 Sep 2026): the tick
-         box is on screen beside the address, and Submit stays disabled until it is ticked. -->
-
-    <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
-  </p>
-
-  <a class="hz-co-btn" href="cart">Back to cart</a>
-
-  <button type="button" class="hz-co-cancel"
-          ng-click="currentOrder.Status == 'AwaitingApproval' ? cancelEdit() : cancelOrder()">
-    {{currentOrder.Status == 'AwaitingApproval' ? 'Cancel edit' : 'Cancel order'}}
-  </button>
+  <!-- Submit, Return to cart and Cancel order sit at the foot of the form now
+       (checkOutView.html), as Shopify's do, so this is only what is being ordered. -->
 </div>
