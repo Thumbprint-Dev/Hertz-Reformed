@@ -114,7 +114,33 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
       rt.picks = {};
       rt.refusal = null;
       rt.tried = false;
+      forWhom(order);
     };
+
+    /**
+     * Whose return this is. A Champion's own list includes the orders they placed for
+     * others (`beneficiary` on each); a return against one is raised for that employee, so
+     * the header names them and the request carries their id. Choosing one of the
+     * Champion's own orders again puts it back.
+     */
+    var own = null;
+    function forWhom(order) {
+      var rt = $scope.rt;
+      if (own === null) own = { who: rt.who, onBehalf: rt.onBehalf };
+      var b = order && order.beneficiary;
+      if (!b) {
+        rt.returnFor = null;
+        rt.who = own.who;
+        rt.onBehalf = own.onBehalf;
+        return;
+      }
+      rt.returnFor = b.employeeId;
+      rt.onBehalf = true;
+      rt.who = { firstName: b.name, lastName: '', employeeId: b.employeeId };
+      Allocation.profile(b.employeeId)
+        .then(function(p) { if (rt.returnFor === b.employeeId && p) rt.who = p; })
+        .catch(function() { /* the name from the order stands */ });
+    }
 
     /** Units on the order, which is what "items" means to the person who ordered them. */
     $scope.rt.itemsIn = function(order) {
@@ -192,7 +218,7 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
         // HR record, so a reported return always joins back to a person.
       };
 
-      Allocation.requestReturn(request, FOR)
+      Allocation.requestReturn(request, $scope.rt.returnFor || FOR)
         .then(function(created) {
           var byLine = {};
           angular.forEach(rt.order.lines, function(l) { byLine[l.four51LineId] = l; });

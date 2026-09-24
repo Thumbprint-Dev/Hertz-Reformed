@@ -181,6 +181,7 @@
                 <span class="hz-rt-order-main">
                   <span class="hz-rt-order-id">Order {{o.orderNumber || o.four51OrderId}}</span>
                   <span class="hz-rt-order-meta">
+                    <span ng-if="o.beneficiary">For {{o.beneficiary.name}}</span>
                     <span ng-if="o.placedOn">Placed {{o.placedOn | hzDate}}</span>
                     <span ng-if="o.returnable < 1">Nothing left to return</span>
                   </span>
