@@ -11,10 +11,7 @@
   page that failed to load its prices rather than as an order that has none.
 -->
 <div class="hz-co-summary">
-  <div class="hz-co-summary-top">
-    <p class="hz-co-summary-h">Order summary</p>
-    <p class="hz-co-summary-n">{{currentOrder.LineItems.length}} {{currentOrder.LineItems.length === 1 ? 'style' : 'styles'}}</p>
-  </div>
+  <p class="hz-co-summary-h">Order summary</p>
 
   <!--
     What is actually being ordered.
@@ -81,7 +78,7 @@
   <!-- Says what is still missing rather than only disabling the button. A disabled control
        with no explanation is the commonest way a checkout strands someone. -->
   <p class="hz-co-blocked"
-     ng-if="cart_shipping.$invalid || cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
+     ng-if="cart_order.$invalid || cart_billing.$invalid || !currentOrder.ShipAddressID">
     <span ng-if="cart_order.$invalid">Order details are incomplete. </span>
 
     <!--
@@ -94,9 +91,8 @@
       people looking for a field that is not missing.
     -->
     <span ng-if="!currentOrder.ShipAddressID">A shipping address is needed. </span>
-    <span ng-if="currentOrder.ShipAddressID && cart_shipping.$invalid">
-      <i class="hz-co-blocked-dot" aria-hidden="true"></i>Confirm the shipping address to continue.
-    </span>
+    <!-- Nothing here for an unticked address confirmation (Trevor, 24 Sep 2026): the tick
+         box is on screen beside the address, and Submit stays disabled until it is ticked. -->
 
     <span ng-if="cart_billing.$invalid">Billing details are incomplete.</span>
   </p>

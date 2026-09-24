@@ -3080,8 +3080,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4vw, 42px);
   line-height: 1.02; letter-spacing: -0.008em; color: var(--ink); margin: 0;
 }
-.hz-co-back { font-size: 13.5px; font-weight: 600; color: var(--body); }
-.hz-co-back:hover { color: var(--ink); }
 
 /* Bounded, and centred. At minmax(0,1fr) the form column ran to 984px on a 1440 screen for
    a form holding an address and a checkbox, which reads as an empty page rather than a calm
@@ -3463,17 +3461,10 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   border: 1px solid var(--edge); border-radius: 8px; background: #fff; padding: 22px 24px;
   display: flex; flex-direction: column; gap: 14px;
 }
-.hz-co-summary-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .hz-co-summary .hz-co-btn--primary { margin-top: 12px; }
 .hz-co-summary-h {
   font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
   color: var(--muted); margin: 0 0 4px;
-}
-.hz-co-summary-n { margin: 0; font-size: 12.5px; color: var(--muted); }
-/* What is still needed, marked with a small dot rather than a warning colour. */
-.hz-co-blocked-dot {
-  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--yellow); margin-right: 8px; vertical-align: 1px;
 }
 .hz-co-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: 14.5px; }
 .hz-co-row span:last-child { font-variant-numeric: tabular-nums; color: var(--ink); }

@@ -28,16 +28,18 @@
   change brings back; removing them would be removing functionality.
 -->
 <div class="hz-co-card">
-  <!-- Trevor's layout, 24 Sep 2026: the step says what it asks ("Confirm where it ships"),
-       and the ways to change the address sit on its heading line. -->
+  <!-- The ways to change the address sit on the heading line. An allocation employee
+       (`HidePricing`) ships to their location and never elsewhere (Trevor, 24 Sep 2026), so
+       "Ship somewhere else" and the custom-address form are not offered to them, whatever
+       Four51's CreateShipToAddress permission says. -->
   <div class="hz-co-card-h hz-co-card-h--split" ng-click="showSuccessAlert = false">
-    <h3 class="hz-co-card-t">Confirm where it ships</h3>
+    <h3 class="hz-co-card-t">{{'Shipping' | r | xlat}}</h3>
     <span class="hz-co-ship-acts">
       <button class="hz-co-linkbtn" type="button"
               ng-show="orderShipAddress.ID && !currentOrder.IsMultipleShip() && !changeAddress && !readonlyshipping"
               ng-click="changeAddress = true">Change</button>
       <button class="hz-co-linkbtn" type="button"
-              ng-hide="shipaddressform || !shipaddresses || !user.Permissions.contains('CreateShipToAddress')"
+              ng-hide="shipaddressform || !shipaddresses || !user.Permissions.contains('CreateShipToAddress') || user.Permissions.contains('HidePricing')"
               ng-click="shipaddressform = true">Ship somewhere else</button>
     </span>
   </div>
@@ -70,7 +72,7 @@
         <!-- With no address chosen yet, the way to type one is here; once an address is
              showing, the same action sits beside it as "Ship somewhere else". -->
         <button class="hz-co-linkbtn" type="button"
-                ng-hide="orderShipAddress.ID || (shipaddressform || (!shipaddressform && !shipaddresses) || !user.Permissions.contains('CreateShipToAddress'))"
+                ng-hide="orderShipAddress.ID || user.Permissions.contains('HidePricing') || (shipaddressform || (!shipaddressform && !shipaddresses) || !user.Permissions.contains('CreateShipToAddress'))"
                 ng-click="shipaddressform = true">
           Enter an address
         </button>
