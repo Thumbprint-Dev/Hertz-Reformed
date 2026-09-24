@@ -120,15 +120,15 @@
         nothing on screen accounting for the difference. That reads as items going missing,
         and the natural response is to select three more — which they cannot.
 
-        TWO AUDIENCES, AND THE DIFFERENCE MATTERS.
+        WHOSE CART, AND WHO IS LOOKING.
 
-        A shopper can act: the cart is theirs, so the notice tells them how to release the
-        items and offers the way there. **A Uniform Champion cannot.** A cart belongs to the
-        employee who owns it, and Four51 gives a Champion no access to anyone else's — so
-        offering them a cart link would send them somewhere that shows their own cart, and
-        telling them to remove the items would be asking for something they have no way to
-        do. For them this is a status to relay, not an action, which is why the button is
-        absent from that branch and the release path is named instead.
+        Units are held in whichever cart reserved them, and that decides what the notice can
+        offer. The employee's own cart gets a View cart link. A Champion's cart is theirs, so
+        a Champion ordering for someone sees their own cart with a link, and the employee
+        sees "an order your Uniform Champion is placing for you" with none, because they
+        cannot open it. An employee's own cart, seen by a Champion, is a status to relay:
+        Four51 gives a Champion no access to it, so there is no link and the release path is
+        named instead.
 
         The 24-hour figure is the real one: `release-stale-holds` runs nightly at 02:30 ET
         and releases holds with no activity for `DEFAULT_STALE_HOURS` (24). Keep the wording
@@ -137,33 +137,94 @@
         Shown whenever anything is reserved, not only after adding — arriving the next
         morning to a smaller number is exactly when it needs explaining.
       -->
-      <div class="hz-held" ng-show="!alloc.loading && !alloc.error && alloc.totalReserved > 0">
-        <div class="hz-held-text">
-          <p class="hz-held-h">
-            <b>{{alloc.totalReserved}}</b>
-            <span ng-if="alloc.totalReserved === 1">item is reserved in</span>
-            <span ng-if="alloc.totalReserved !== 1">items are reserved in</span>
-            <span ng-if="!alloc.onBehalf">your cart</span>
-            <span ng-if="alloc.onBehalf">this employee&rsquo;s cart</span>
-          </p>
+      <!-- One notice per place the units are held, from the entitlement's `holds`
+           (Allocation.splitHolds). Since 24 Sep 2026 a Champion's order sits in the
+           Champion's own cart, so "this employee's cart" was wrong for them, and an employee
+           was told units in a Champion's cart were in theirs. -->
+      <div ng-show="!alloc.loading && !alloc.error">
 
-          <p class="hz-held-sub" ng-if="!alloc.onBehalf">
-            These items are held against your allocation until you complete checkout, so the
-            quantities below exclude them. To make them available again, remove them from
-            your cart. A cart left inactive is released automatically after 24 hours.
-          </p>
-
-          <p class="hz-held-sub" ng-if="alloc.onBehalf">
-            These items are held against this employee&rsquo;s allocation until they complete
-            checkout, so the quantities below exclude them. A cart belongs to the employee
-            who owns it and cannot be accessed on their behalf, so they will need to
-            remove the items themselves, or the cart will be released automatically after
-            24 hours of inactivity.
-          </p>
+        <!-- The employee, their own cart. -->
+        <div class="hz-held" ng-if="!alloc.onBehalf && alloc.holds.self > 0">
+          <div class="hz-held-text">
+            <p class="hz-held-h">
+              <b>{{alloc.holds.self}}</b>
+              <span ng-if="alloc.holds.self === 1">item is reserved in your cart</span>
+              <span ng-if="alloc.holds.self !== 1">items are reserved in your cart</span>
+            </p>
+            <p class="hz-held-sub">
+              These items are held against your allocation until you complete checkout, so the
+              quantities below exclude them. To make them available again, remove them from
+              your cart. A cart left inactive is released automatically after 24 hours.
+            </p>
+          </div>
+          <a class="hz-held-go" href="cart">View cart</a>
         </div>
 
-        <!-- Only where there is a cart to go to. See the note above. -->
-        <a class="hz-held-go" href="cart" ng-if="!alloc.onBehalf">View cart</a>
+        <!-- The employee, in an order a Champion is placing for them. Nothing to open. -->
+        <div class="hz-held" ng-if="!alloc.onBehalf" ng-repeat="h in alloc.holds.others">
+          <div class="hz-held-text">
+            <p class="hz-held-h">
+              <b>{{h.units}}</b>
+              <span ng-if="h.units === 1">item is</span><span ng-if="h.units !== 1">items are</span>
+              reserved in an order {{h.name}}, your Uniform Champion, is placing for you
+            </p>
+            <p class="hz-held-sub">
+              These items are held against your allocation until that order is placed or
+              its cart is emptied, so the quantities below exclude them. Speak to
+              {{h.name}} if you were not expecting it.
+            </p>
+          </div>
+        </div>
+
+        <!-- A Champion, their own cart for this employee: the one they are filling now. -->
+        <div class="hz-held" ng-if="alloc.onBehalf && alloc.holds.me > 0">
+          <div class="hz-held-text">
+            <p class="hz-held-h">
+              <b>{{alloc.holds.me}}</b>
+              <span ng-if="alloc.holds.me === 1">item for this employee is in your cart</span>
+              <span ng-if="alloc.holds.me !== 1">items for this employee are in your cart</span>
+            </p>
+            <p class="hz-held-sub">
+              These items are held against this employee&rsquo;s allocation until you check
+              out, so the quantities below exclude them. To make them available again, remove
+              them from your cart.
+            </p>
+          </div>
+          <a class="hz-held-go" href="cart">View cart</a>
+        </div>
+
+        <!-- A Champion, the employee's own cart. Theirs to empty, not the Champion's. -->
+        <div class="hz-held" ng-if="alloc.onBehalf && alloc.holds.self > 0">
+          <div class="hz-held-text">
+            <p class="hz-held-h">
+              <b>{{alloc.holds.self}}</b>
+              <span ng-if="alloc.holds.self === 1">item is reserved in this employee&rsquo;s own cart</span>
+              <span ng-if="alloc.holds.self !== 1">items are reserved in this employee&rsquo;s own cart</span>
+            </p>
+            <p class="hz-held-sub">
+              These items are held against this employee&rsquo;s allocation until they complete
+              checkout, so the quantities below exclude them. A cart belongs to the employee
+              who owns it and cannot be accessed on their behalf, so they will need to
+              remove the items themselves, or the cart will be released automatically after
+              24 hours of inactivity.
+            </p>
+          </div>
+        </div>
+
+        <!-- A Champion, another Champion's order for the same employee. -->
+        <div class="hz-held" ng-if="alloc.onBehalf" ng-repeat="h in alloc.holds.others">
+          <div class="hz-held-text">
+            <p class="hz-held-h">
+              <b>{{h.units}}</b>
+              <span ng-if="h.units === 1">item is</span><span ng-if="h.units !== 1">items are</span>
+              reserved in an order {{h.name}} is placing for this employee
+            </p>
+            <p class="hz-held-sub">
+              These items are held against this employee&rsquo;s allocation until that order
+              is placed or its cart is emptied, so the quantities below exclude them.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div class="hz-pick-grid" ng-show="!alloc.loading && !alloc.error && alloc.view">
@@ -195,11 +256,10 @@
                 <i class="hz-pool-tag hz-pool-tag--may" ng-if="pool.required === false">optional</i>
                 <!-- Makes the row add up. Without it "2 remaining" against a kit the
                      employee knows gives five is just a wrong number; with it, 2 and 3
-                     account for the 5 they expect. Whose cart depends on who is looking —
-                     see the notice above. -->
-                <i class="hz-pool-held" ng-if="pool.reserved > 0">
-                  {{pool.reserved}} reserved in <span ng-if="!alloc.onBehalf">your cart</span><span ng-if="alloc.onBehalf">their cart</span>
-                </i>
+                     account for the 5 they expect. -->
+                <!-- Just "reserved": holds are known per order, not per pool, so which cart
+                     a pool's units sit in is said by the notice above rather than guessed. -->
+                <i class="hz-pool-held" ng-if="pool.reserved > 0">{{pool.reserved}} reserved</i>
               </span>
               <span class="hz-pool-n">{{alloc.leftIn(pool)}}<i>remaining</i></span>
               <span class="hz-chev" aria-hidden="true"></span>

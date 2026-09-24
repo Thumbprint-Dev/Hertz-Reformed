@@ -160,6 +160,9 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
             // landing page is where the headline figure is read, and a figure that has
             // quietly dropped is the one people ask about.
             $scope.home.totalReserved = held;
+            // And where they are: the employee's own cart, or an order a Uniform Champion is
+            // placing for them, which the employee cannot open.
+            $scope.home.holds = Allocation.splitHolds(view);
             // Guarded rather than assumed: an employee whose kit grants nothing would
             // otherwise divide by zero and render a NaN-wide bar.
             $scope.home.percentLeft = granted > 0 ? Math.round((remaining / granted) * 100) : 0;

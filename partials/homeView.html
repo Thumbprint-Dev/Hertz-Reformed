@@ -161,12 +161,20 @@
           filled. It is a plain sentence rather than a badge: a badge reading "3 held"
           raises the question, a sentence answers it.
         -->
-        <!-- Always the shopper's own figure: a Champion never sees this band. -->
-        <p class="hz-lp-held" ng-if="home.totalReserved > 0">
-          <b>{{home.totalReserved}}</b>
-          <span ng-if="home.totalReserved === 1">item is reserved in your cart</span>
-          <span ng-if="home.totalReserved !== 1">items are reserved in your cart</span>
+        <!-- Always the shopper's own figure: a Champion never sees this band. Split by
+             whose cart holds the units: the link is only for the employee's own cart,
+             because a Champion's cart is not one they can open (Trevor, 24 Sep 2026). -->
+        <p class="hz-lp-held" ng-if="home.holds.self > 0">
+          <b>{{home.holds.self}}</b>
+          <span ng-if="home.holds.self === 1">item is reserved in your cart</span>
+          <span ng-if="home.holds.self !== 1">items are reserved in your cart</span>
           and excluded from the total above. <a href="cart">View cart</a>
+        </p>
+        <p class="hz-lp-held" ng-repeat="h in home.holds.others">
+          <b>{{h.units}}</b>
+          <span ng-if="h.units === 1">item is</span><span ng-if="h.units !== 1">items are</span>
+          reserved in an order {{h.name}}, your Uniform Champion, is placing for you, and
+          excluded from the total above.
         </p>
       </div>
 

@@ -824,6 +824,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
             var held = 0;
             angular.forEach($scope.alloc.pools, function(p) { held += p.reserved || 0; });
             $scope.alloc.totalReserved = held;
+            // Where they are held: see Allocation.splitHolds and the notices in the view.
+            $scope.alloc.holds = Allocation.splitHolds(view);
 
             // Open the largest pool: the page should show what it does at rest rather
             // than a column of closed rows.

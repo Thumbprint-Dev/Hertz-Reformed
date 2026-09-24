@@ -459,6 +459,40 @@ four51.app.factory('Allocation', ['$q', '$rootScope', '$timeout', 'AllocationCon
         return known.concat(rest);
       },
 
+      /**
+       * Where an allocation's held units are, from the entitlement's `holds`.
+       *
+       *   self    in the allocation holder's own cart
+       *   me      in the signed-in person's cart, when they are ordering for someone else
+       *   others  in carts other people are filling for them: [{ employeeId, name, units }]
+       *
+       * An employee's units in a Champion's cart used to read as "reserved in your cart",
+       * with a link to a cart that was empty (Trevor, 24 Sep 2026). A response without
+       * `holds` (an API older than the storefront) counts everything as `self`, which is
+       * what the page said before.
+       */
+      splitHolds: function(view) {
+        var out = { self: 0, me: 0, others: [] };
+        if (!view) return out;
+        if (!view.holds) {
+          angular.forEach(view.pools || [], function(p) { out.self += p.reserved || 0; });
+          return out;
+        }
+        var me = (_identity || {}).employeeId;
+        var byPlacer = {};
+        angular.forEach(view.holds, function(h) {
+          if (!h.placedBy) { out.self += h.units; return; }
+          if (me && h.placedBy.employeeId === me) { out.me += h.units; return; }
+          var o = byPlacer[h.placedBy.employeeId];
+          if (!o) {
+            o = byPlacer[h.placedBy.employeeId] = { employeeId: h.placedBy.employeeId, name: h.placedBy.name, units: 0 };
+            out.others.push(o);
+          }
+          o.units += h.units;
+        });
+        return out;
+      },
+
       /** Everyone this Champion may order for. `{ champion: false, beneficiaries: [] }`
        *  for an ordinary employee — not an error. */
       beneficiaries: function() {
