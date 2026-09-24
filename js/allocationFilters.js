@@ -162,3 +162,12 @@ four51.app.filter('hzPhoto', ['hzSkuParts', function(hzSkuParts) {
 four51.app.filter('hzSize', ['hzSkuParts', function(hzSkuParts) {
   return function(id) { return hzSkuParts(id).size; };
 }]);
+
+/** Garments in a list of Four51 line items: five polos on one line are five. */
+four51.app.filter('hzUnits', function() {
+  return function(lineItems) {
+    var n = 0;
+    angular.forEach(lineItems || [], function(li) { n += (li && li.Quantity) || 0; });
+    return n;
+  };
+});

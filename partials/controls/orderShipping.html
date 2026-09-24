@@ -29,10 +29,8 @@
 -->
 <div class="hz-co-card">
   <div class="hz-co-card-h" ng-click="showSuccessAlert = false">
-    <i class="hz-co-step-icon"
-       ng-class="{'fa fa-exclamation-circle is-todo': cart_shipping.$invalid,
-                  'fa fa-check-circle is-done': !cart_shipping.$invalid}"
-       aria-hidden="true"></i>
+    <!-- No status icon: it rendered as a lone bullet beside the heading, and the summary
+         already says in words what is outstanding before Submit. -->
     <h3 class="hz-co-card-t">{{'Shipping' | r | xlat}}</h3>
   </div>
 
@@ -61,10 +59,12 @@
           </button>
         </div>
 
-        <button class="hz-co-linkbtn" type="button" tabindex="-1"
-                ng-hide="(shipaddressform || (!shipaddressform && !shipaddresses) || !user.Permissions.contains('CreateShipToAddress'))"
+        <!-- With no address chosen yet, the way to type one is here; once an address is
+             showing, the same action sits beside it as "Ship somewhere else". -->
+        <button class="hz-co-linkbtn" type="button"
+                ng-hide="orderShipAddress.ID || (shipaddressform || (!shipaddressform && !shipaddresses) || !user.Permissions.contains('CreateShipToAddress'))"
                 ng-click="shipaddressform = true">
-          {{'Custom ' + ('Address' | r) | xlat}}
+          Enter an address
         </button>
 
         <!--
@@ -172,7 +172,7 @@
         <div class="hz-co-ship"
              ng-show="!currentOrder.IsMultipleShip() && orderShipAddress.ID && !showResult && orderShipAddress.AddressName != '_Multiple Shipping Address'">
           <div class="hz-co-ship-top">
-            <p class="hz-co-ship-h">Your order is going to</p>
+            <p class="hz-co-ship-h">Shipping to</p>
             <!-- The way out of a prefilled address, where someone looks for it: next to the
                  address, not as a search field permanently occupying the step above.
 
@@ -181,13 +181,21 @@
                  "Change" there opened a field they cannot type into, so the only shopper who
                  saw the control was the one it could not help. Where a custom address is
                  genuinely allowed, the Custom Address button above is the route. -->
-            <button class="hz-co-linkbtn" type="button"
-                    ng-hide="changeAddress || readonlyshipping"
-                    ng-click="changeAddress = true">Change</button>
+            <span class="hz-co-ship-acts">
+              <button class="hz-co-linkbtn" type="button"
+                      ng-hide="changeAddress || readonlyshipping"
+                      ng-click="changeAddress = true">Change</button>
+              <button class="hz-co-linkbtn" type="button"
+                      ng-hide="shipaddressform || !shipaddresses || !user.Permissions.contains('CreateShipToAddress')"
+                      ng-click="shipaddressform = true">Ship somewhere else</button>
+            </span>
           </div>
 
           <address class="hz-co-ship-a">
-            <span ng-show="orderShipAddress.AddressName">{{orderShipAddress.AddressName}}</span>
+            <!-- The address's own name ("Hertz LAX") is worth a line. A custom address is
+                 often named after its street, which then printed twice. -->
+            <span class="hz-co-ship-name"
+                  ng-show="orderShipAddress.AddressName && (orderShipAddress.AddressName | lowercase) != (orderShipAddress.Street1 | lowercase)">{{orderShipAddress.AddressName}}</span>
             <!--
               One name line.
 
@@ -197,17 +205,16 @@
               reads as a bug in the address rather than as a style. The second copy is gone;
               this line covers both cases.
             -->
-            <span ng-show="orderShipAddress.FirstName || orderShipAddress.LastName">
+            <span class="hz-co-ship-person" ng-show="orderShipAddress.FirstName || orderShipAddress.LastName">
               {{orderShipAddress.FirstName}} {{orderShipAddress.LastName}}
             </span>
             <span ng-show="orderShipAddress.CompanyName">{{orderShipAddress.CompanyName}}</span>
             <span ng-show="orderShipAddress.Street1">{{orderShipAddress.Street1}}</span>
             <span ng-show="orderShipAddress.Street2">{{orderShipAddress.Street2}}</span>
-            <span ng-show="orderShipAddress.City || orderShipAddress.State || order.ShipAddress.Zip">
-              {{orderShipAddress.City}}<span ng-if="orderShipAddress.City && currentOrderShipAddress.State">,</span>
-              {{orderShipAddress.State}} {{orderShipAddress.Zip}}
-            </span>
-            <span ng-show="orderShipAddress.Phone">{{orderShipAddress.Phone}}</span>
+            <!-- The comma used to test `currentOrderShipAddress.State`, a name that does not
+                 exist, so it never printed: "Altamonte Springs FL 32701". -->
+            <span ng-show="orderShipAddress.City || orderShipAddress.State || orderShipAddress.Zip">{{orderShipAddress.City}}<span ng-if="orderShipAddress.City && orderShipAddress.State">,</span> {{orderShipAddress.State}} {{orderShipAddress.Zip}}</span>
+            <span class="hz-co-ship-phone" ng-show="orderShipAddress.Phone">{{orderShipAddress.Phone}}</span>
           </address>
 
           <div class="hz-co-pair"

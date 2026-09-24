@@ -23,10 +23,14 @@
     actually want to re-check before submitting, and the one that is expensive to get wrong.
   -->
   <ul class="hz-co-items">
+    <!-- The same row as the order page: photo, name, size, quantity. -->
     <li class="hz-co-item" ng-repeat="item in currentOrder.LineItems" ng-hide="item.Kit">
+      <span class="hz-co-item-thumb" aria-hidden="true">
+        <img ng-if="item.Product.InteropID | hzPhoto" ng-src="{{item.Product.InteropID | hzPhoto}}" alt="" />
+      </span>
       <span class="hz-co-item-text">
         <span class="hz-co-item-n">{{item.Product.Name}}</span>
-        <span class="hz-co-item-sku">{{item.Product.InteropID}}</span>
+        <span class="hz-co-item-size">{{(item.Product.InteropID | hzSize) ? 'Size ' + (item.Product.InteropID | hzSize) : 'One size'}}</span>
       </span>
       <span class="hz-co-item-q">&times;{{item.Quantity}}</span>
     </li>
@@ -34,7 +38,7 @@
 
   <div class="hz-co-row">
     <span>Items</span>
-    <span>{{currentOrder.LineItems.length}}</span>
+    <span>{{currentOrder.LineItems | hzUnits}}</span>
   </div>
 
   <div ng-if="!(user.Permissions.contains('HidePricing')) && !hidePrices && currentOrder.Total > 0">

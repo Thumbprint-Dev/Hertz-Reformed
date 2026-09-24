@@ -3233,19 +3233,26 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 
 /* Where the order is going: the one fact this step exists to state, so it is set as a
    statement rather than as a boxed field with a micro-label over it. */
-.hz-co-ship { display: flex; flex-direction: column; gap: 10px; }
-.hz-co-ship-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.hz-co-ship { display: flex; flex-direction: column; gap: 14px; }
+/* The address is its own object, framed like every card on the site, with the ways to
+   change it on its heading line rather than floating above the step. */
+.hz-co-ship-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .hz-co-ship-h {
-  margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0;
-  text-transform: none; color: var(--muted);
+  margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
 }
+.hz-co-ship-acts { display: inline-flex; gap: 16px; }
 /* Bigger than the body around it. It is the thing being checked, and someone confirming an
    address should not have to lean in to read it. */
 .hz-co-ship-a {
-  display: flex; flex-direction: column; gap: 3px; font-style: normal;
-  font-size: 17px; line-height: 1.4; color: var(--ink); margin: 0;
+  display: flex; flex-direction: column; gap: 2px; font-style: normal;
+  font-size: 16px; line-height: 1.45; color: var(--ink); margin: 0;
+  padding: 16px 18px; border: 1px solid var(--edge); border-left: 3px solid var(--yellow);
+  border-radius: 0 6px 6px 0; background: #fff;
 }
-.hz-co-ship-a span:first-child { font-weight: 700; }
+.hz-co-ship-name { font-weight: 700; }
+.hz-co-ship-person { font-weight: 600; }
+.hz-co-ship-phone { font-size: 14px; color: var(--muted); margin-top: 4px; }
 
 /* The confirmation gates Submit, so it is built to be seen and easy to hit: full width,
    a real target rather than a 13px tick, and the yellow edge once it is done so the page
@@ -3472,10 +3479,21 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-co-btn--primary[disabled] { background: #EDEFF2; border-color: var(--line); color: var(--muted); cursor: not-allowed; }
 /* The lines being ordered, in the summary. */
 .hz-co-items { list-style: none; margin: 0 0 4px; padding: 0 0 10px; border-bottom: 1px solid var(--line); }
-.hz-co-item { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; }
-.hz-co-item-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
+/* Photo, name and size, quantity: the order page's row at summary size. */
+.hz-co-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.hz-co-item + .hz-co-item { border-top: 1px solid var(--line); }
+.hz-co-item-thumb {
+  flex: 0 0 44px; width: 44px; height: 44px; border-radius: 4px; background: var(--sub);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.hz-co-item-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.hz-co-item-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 auto; }
 .hz-co-item-n { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; }
-.hz-co-item-sku { font-size: 11.5px; color: var(--muted); letter-spacing: .02em; }
+.hz-co-item-size {
+  align-self: flex-start; padding: 1px 7px; border-radius: 2px;
+  background: var(--sub); border: 1px solid var(--edge);
+  font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap;
+}
 /* Tabular figures so the quantities line up down the column. */
 .hz-co-item-q { flex: 0 0 auto; font-size: 14px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 
