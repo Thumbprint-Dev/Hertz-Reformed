@@ -19,8 +19,9 @@
       not your own.
     </p>
     <!-- One employee per cart (Trevor, 24 Sep 2026), said before anyone tries. The cart
-         gate enforces it whatever this page shows. -->
-    <p class="hz-team-rule">
+         gate enforces it whatever this page shows. Only while the cart is free: once it holds
+         someone's order, the banner below says the same thing about that person. -->
+    <p class="hz-team-rule" ng-if="!champ.holder">
       <b>One person at a time.</b> Each order is for one employee, so it can be tracked to
       them. Check out one person's order before starting the next.
     </p>
