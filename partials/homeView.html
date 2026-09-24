@@ -177,8 +177,9 @@
            ng-class="{'is-out': pool.remaining === 0}"
            ng-attr-aria-disabled="{{pool.remaining === 0 ? 'true' : undefined}}">
           <span class="hz-lp-cat-l">{{pool.name | hzPool}}</span>
+          <!-- A pool with nothing left is greyed and reads 0; the words "none left" under the
+               0 said the same thing twice (Trevor, 24 Sep 2026). -->
           <span class="hz-lp-cat-n">{{pool.remaining}}</span>
-          <span class="hz-lp-cat-sub" ng-if="pool.remaining === 0">none left</span>
         </a>
 
         <!-- Seasonal: shown, not hidden, carrying the date it returns. Not a link, and it
