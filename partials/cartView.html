@@ -117,14 +117,12 @@
           </div>
 
           <!--
-            The allotment confirmation. `required` is what keeps `cart.$invalid` true, which
-            is what disables Check Out below — the gate, not a reminder.
+            No "I confirm my full allotment is in my cart" box any more (Trevor, 24 Sep 2026).
+            It was the only thing standing between a partial cart and checkout; since decision
+            53 the API refuses a checkout while any required pool still has units, so a tick
+            that asserted the same thing was one more click that enforced nothing. The name
+            badge acknowledgement above stays: that one is about spelling, not allocation.
           -->
-          <label class="hz-cart-ack hz-cart-ack--summary">
-            <input type="checkbox" required="required" ng-model="confirmTried.value1" name="Confirmed" />
-            <span>I confirm my full allotment is in my cart before checking out.</span>
-          </label>
-
           <button type="button" class="hz-cart-btn hz-cart-btn--primary"
                   ng-click="checkOut()" ng-disabled="cart.$invalid || kitValidation">
             Check out

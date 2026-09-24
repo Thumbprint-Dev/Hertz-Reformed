@@ -2985,7 +2985,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--body); cursor: pointer;
 }
 .hz-cart-ack input { margin: 2px 0 0; flex: 0 0 auto; }
-.hz-cart-ack--summary { margin: 4px 0 14px; }
 
 /* ---- summary ---- */
 .hz-cart-side { position: sticky; top: 16px; }
