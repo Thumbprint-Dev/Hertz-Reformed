@@ -99,6 +99,10 @@ four51.app.controller('ReturnRequestCtrl', ['$scope', '$location', '$q', '$filte
      */
     function numberOrders(orders) {
       angular.forEach(orders, function(o) {
+        // The API sends the number recorded at checkout. Asking Four51 is only for orders
+        // placed before it was recorded, and fails for an order Four51 no longer opens under
+        // its recorded ID (1007HTZSB).
+        if (o.orderNumber) return;
         try {
           Order.get(o.four51OrderId, function(order) {
             if (order && order.ExternalID) o.orderNumber = order.ExternalID;

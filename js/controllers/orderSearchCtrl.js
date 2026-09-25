@@ -79,13 +79,22 @@ four51.app.controller('OrderSearchCtrl', ['$scope', '$location', 'OrderSearchCri
 			function withOnBehalf() {
 				if (!Allocation.isEnabled()) return;
 				Allocation.ordersOnBehalf().then(function(res) {
-					var byMe = {};
-					angular.forEach((res && res.byMe) || [], function(o) { byMe[o.four51OrderId] = o; });
+					// Matched by order ID, and by order number when the ID does not match: the ID
+					// Four51 lists an order under can differ from the one recorded at checkout,
+					// which left a Champion's on-behalf orders reading "Ordered by" (1007HTZSB).
+					// The number ("1007HTZSB") is what both sides know it by and does not change.
+					var byMe = {}, byMeNumber = {}, listedNumbers = {};
+					angular.forEach((res && res.byMe) || [], function(o) {
+						byMe[o.four51OrderId] = o;
+						if (o.orderNumber) byMeNumber[o.orderNumber] = o;
+					});
 					angular.forEach(all, function(o) {
-						if (byMe[o.ID]) o.hzFor = byMe[o.ID].beneficiary;
+						var mine = byMe[o.ID] || (o.ExternalID && byMeNumber[o.ExternalID]);
+						if (mine) o.hzFor = mine.beneficiary;
+						if (o.ExternalID) listedNumbers[o.ExternalID] = true;
 					});
 					angular.forEach((res && res.forMe) || [], function(o) {
-						if (byId[o.four51OrderId]) return;
+						if (byId[o.four51OrderId] || (o.orderNumber && listedNumbers[o.orderNumber])) return;
 						byId[o.four51OrderId] = true;
 						all.push({
 							ID: o.four51OrderId,

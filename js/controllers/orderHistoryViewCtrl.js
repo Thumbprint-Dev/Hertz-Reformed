@@ -60,11 +60,22 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 		 * From our record, since the Four51 order only knows it was the Champion's.
 		 */
 		$scope.behalfFor = null;
+		// Matched by order ID, or by order number once the order has loaded: the ID Four51
+		// opens an order under can differ from the one recorded at checkout (1007HTZSB), and
+		// the number does not change.
+		var placedByMe = [];
+		function matchBehalf() {
+			var number = $scope.order && $scope.order.ExternalID;
+			angular.forEach(placedByMe, function(o) {
+				if (o.four51OrderId === $routeParams.id || (number && o.orderNumber === number)) {
+					$scope.behalfFor = o.beneficiary;
+				}
+			});
+		}
 		if (Allocation.isEnabled()) {
 			Allocation.ordersOnBehalf().then(function(res) {
-				angular.forEach((res && res.byMe) || [], function(o) {
-					if (o.four51OrderId === $routeParams.id) $scope.behalfFor = o.beneficiary;
-				});
+				placedByMe = (res && res.byMe) || [];
+				matchBehalf();
 			}).catch(function() { $scope.behalfFor = null; });
 		}
 
@@ -72,6 +83,7 @@ four51.app.controller('OrderViewCtrl', ['$scope', '$location', '$routeParams', '
 			$scope.loadingIndicator = false;
 			$scope.order = data;
 			$scope.order.recent = $scope.isInPath("new");
+			matchBehalf();
 
 			// A canceled order gives its allocation back (decision 57). The landing page and the
 			// picker ask Four51 about cancellations once a session; asked here too, because this
