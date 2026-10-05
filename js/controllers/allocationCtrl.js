@@ -137,21 +137,41 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     $scope.alloc.sizesFor = sizesFor;
 
     /**
-     * L where the run has one, which is what the picker always started on. Nothing where it
-     * does not: a pant preselected at 28x30 is a size nobody chose, and would be ordered.
+     * Every sized item starts on "Size", with nothing chosen (Trevor, 5 Oct 2026). Tops
+     * used to start on L, which is a size nobody picked and would be ordered as it stood.
      */
-    function defaultSize(product) {
-      var run = sizesFor(product);
-      if (!run.length) return null;
-      return run.indexOf('L') > -1 ? 'L' : null;
+    function defaultSize() {
+      return null;
     }
+
+    /** Product id to whether it comes in sizes, recorded as each row is drawn. */
+    var SIZED = {};
 
     /** A sized product with no size chosen yet cannot be added. */
     $scope.alloc.needsSize = function(product) {
-      if (!sizesFor(product).length) return false;
+      SIZED[product.productId] = sizesFor(product).length > 0;
+      if (!SIZED[product.productId]) return false;
       var row = $scope.alloc.picked[product.productId];
       return !(row && row.size);
     };
+
+    /**
+     * Picked a quantity, then set the size back to "Size". The + button already needs a
+     * size, but clearing it afterwards left the quantity standing and Add to cart enabled,
+     * which would order the base product with no size at all.
+     */
+    $scope.alloc.qtyWithoutSize = function(productId) {
+      var row = $scope.alloc.picked[productId];
+      return !!(row && row.qty > 0 && SIZED[productId] && !row.size);
+    };
+
+    function anyWithoutSize() {
+      var missing = false;
+      angular.forEach($scope.alloc.picked, function(row, productId) {
+        if ($scope.alloc.qtyWithoutSize(productId)) missing = true;
+      });
+      return missing;
+    }
 
     /**
      * Sized Thumbprint id (upper case) to the Cintas id to sell first (decision 54,
@@ -259,7 +279,7 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
 
     $scope.alloc.sizeOf = function(productId) {
       var row = $scope.alloc.picked[productId];
-      return row ? row.size : 'L';
+      return row ? row.size : null;
     };
 
     $scope.alloc.setSize = function(productId, size) {
@@ -272,7 +292,8 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     $scope.alloc.initSize = function(product) {
       var row = $scope.alloc.picked[product.productId];
       if (row && row.size) return;
-      $scope.alloc.setSize(product.productId, defaultSize(product));
+      SIZED[product.productId] = sizesFor(product).length > 0;
+      $scope.alloc.setSize(product.productId, defaultSize());
     };
 
     function retotal() {
@@ -331,12 +352,15 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
     }
     $scope.alloc.recount = recount;
 
+    /** True while any picked item has a quantity but no size: Add to cart waits for it. */
+    $scope.alloc.sizeMissing = anyWithoutSize;
+
     $scope.alloc.add = function(pool, product) {
       if (!$scope.alloc.canAdd(pool)) return;
       if ($scope.alloc.needsSize(product)) return;
       var row = $scope.alloc.picked[product.productId];
       if (row) row.qty += 1;
-      else $scope.alloc.picked[product.productId] = { qty: 1, size: defaultSize(product) };
+      else $scope.alloc.picked[product.productId] = { qty: 1, size: defaultSize() };
       retotal();
     };
 
@@ -677,7 +701,7 @@ four51.app.controller('AllocationCtrl', ['$scope', '$rootScope', '$location', '$
 
     $scope.alloc.addToCart = function() {
       var rows = chosen();
-      if (!rows.length || $scope.alloc.submitting) return;
+      if (!rows.length || $scope.alloc.submitting || $scope.alloc.sizeMissing()) return;
 
       $scope.alloc.submitting = true;
       $scope.alloc.result = null;

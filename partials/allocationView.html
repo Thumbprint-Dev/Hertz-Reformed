@@ -321,6 +321,7 @@
                             ng-model="alloc.picked[product.productId].size"
                             ng-init="alloc.initSize(product)"
                             ng-options="s for s in alloc.sizesFor(product)"
+                            ng-class="{'hz-size-missing': alloc.qtyWithoutSize(product.productId)}"
                             aria-label="Size">
                       <option value="">Size</option>
                     </select>
@@ -402,11 +403,14 @@
           -->
           <button class="hz-btn hz-btn--block" type="button"
                   ng-click="alloc.addToCart()"
-                  ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting || alloc.cartFor">
+                  ng-disabled="!alloc.complete || !alloc.totalPicked || alloc.submitting || alloc.cartFor || alloc.sizeMissing()">
             <span ng-if="alloc.submitting">Adding&hellip;</span>
             <span ng-if="!alloc.submitting">Add to cart</span>
           </button>
-          <p class="hz-rail-note" ng-if="!alloc.submitting && alloc.complete">
+          <p class="hz-rail-note hz-rail-note--size" ng-if="alloc.sizeMissing()">
+            Choose a size for every item you have picked.
+          </p>
+          <p class="hz-rail-note" ng-if="!alloc.submitting && alloc.complete && !alloc.sizeMissing()">
             You can review everything in your cart before checking out.
           </p>
 

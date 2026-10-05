@@ -1936,6 +1936,9 @@ contentmodal2 a:hover{
   /* Wide enough for 60x32 and for "Size", so every row's stepper lines up. */
   min-width: 84px;
 }
+/* A quantity is picked but the size was set back to "Size": Add to cart waits for it. */
+.hz-item-ctrl select.hz-size-missing { border-color: var(--hz-stop-ink, #a4192d); color: var(--hz-stop-ink, #a4192d); }
+.hz-rail .hz-rail-note--size { color: var(--hz-stop-ink, #a4192d); }
 /* Where a one-size item would have its size control, so the stepper stays in line. */
 .hz-item-onesize {
   min-width: 84px; font-size: var(--fs-xs); color: var(--muted); text-align: center;
@@ -2097,6 +2100,8 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
     gap: 8px 14px;
   }
   .hz-rail-h, .hz-rail-list, .hz-rail-note { display: none; }
+  /* The one note the bar keeps on a phone: it is why Add to cart is off. */
+  .hz-rail .hz-rail-note--size { display: block; grid-column: 1 / -1; margin: 0; text-align: left; }
   .hz-rail-total { margin: 0; grid-column: 1; grid-row: 1; }
   .hz-rail-total b { font-size: var(--fs-4xl); }
   .hz-rail > .hz-btn { grid-column: 2; grid-row: 1; width: auto; padding: 12px 20px; }

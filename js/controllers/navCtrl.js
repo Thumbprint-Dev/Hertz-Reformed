@@ -39,6 +39,13 @@ four51.app.controller('NavCtrl', ['$location', '$route', '$scope', '$451', 'User
         $scope.$on('$routeChangeStart', function() { $scope.hdMenuOpen = false; });
 
         $scope.$on('event:orderUpdate', function(event, order) {
-            $scope.cartCount = (order ? ((order.Status == 'Unsubmitted') ? order.LineItems.length : null) : null);
+            // Units, not lines, so the badge matches the cart and checkout: five polos in
+            // one line are five items (Trevor, 5 Oct 2026).
+            var units = null;
+            if (order && order.Status == 'Unsubmitted') {
+                units = 0;
+                angular.forEach(order.LineItems || [], function(li) { units += (+li.Quantity || 0); });
+            }
+            $scope.cartCount = units;
         });
     }]);
