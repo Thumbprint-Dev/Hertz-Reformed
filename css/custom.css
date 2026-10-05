@@ -2110,10 +2110,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   .hz-rail-need-list li { margin: 0; padding: 0; font-size: var(--fs-sm); }
   .hz-rail-need-list b { font-size: var(--fs-body); }
   .hz-rail .hz-result { grid-column: 1 / -1; }
-
-  /* The chat button is fixed 10px off the bottom right, which is where the bar's button
-     is. On this page only, it rides above the bar. */
-  html:has(.hz-rail) #zsiq_float { bottom: 150px !important; }
 }
 @media screen and (max-width: 425px) {
   .hz-pick { margin-left: -2.0833%; margin-right: -2.0833%; }
@@ -2389,6 +2385,7 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
   flex-wrap: wrap; gap: 16px;
 }
 .hz-lp-reset-t { margin: 0; font-size: var(--fs-lg); font-weight: 700; color: var(--black-90); }
+.hz-lp-reset-s { margin: 4px 0 0; font-size: var(--fs-body); color: var(--black-90); }
 
 @media (max-width: 860px) {
   .hz-lp-cats { flex-wrap: wrap; }

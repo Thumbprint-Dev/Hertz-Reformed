@@ -220,9 +220,11 @@
   <!-- ──────────────────────────────────────────────────────────── reset band -->
   <!-- Type on yellow is 90% black, never pure black and never yellow (§3.2). -->
   <div class="hz-lp-reset" ng-if="home.view.cycleEnd">
-    <p class="hz-lp-reset-t">
-      Your allocation year ends {{home.view.cycleEnd | hzDate}}.
-    </p>
+    <!-- hzResetDate: cycleEnd is the last day of the year, so the reset is the day after. -->
+    <div>
+      <p class="hz-lp-reset-t">Your allocation resets on {{home.view.cycleEnd | hzResetDate}}.</p>
+      <p class="hz-lp-reset-s">Order what you need before then. Anything you don't use doesn't carry over.</p>
+    </div>
     <a class="hz-lp-btn hz-lp-btn--onyellow" href="order">Review my orders</a>
   </div>
 
