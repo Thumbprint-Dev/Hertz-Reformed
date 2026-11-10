@@ -110,21 +110,40 @@
     grid is the catalogue's job; this page only needs the two doors.
   -->
   <div class="hz-lp-champ" ng-if="home.isChampion">
-    <div class="hz-lp-cells hz-lp-cells--two">
-      <a class="hz-lp-cell hz-lp-cell--text" ng-href="{{home.onBehalfHref}}">
-        <span class="hz-lp-cell-name">Order on behalf</span>
-        <span class="hz-lp-cell-sub">
+    <!--
+      Each door is one link: icon, name, one line on whose money it spends, and the action.
+      The icons are the site's own outline set on a yellow tile (yellow is a fill, marks on
+      it are black). Order on behalf uses the same person mark as the "ordered on behalf"
+      notices in order history, so the idea looks the same wherever it appears.
+    -->
+    <div class="hz-lp-doors">
+      <a class="hz-lp-door" ng-href="{{home.onBehalfHref}}">
+        <span class="hz-lp-door-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="12" cy="8" r="3.6"></circle><path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+          </svg>
+        </span>
+        <span class="hz-lp-door-name">Order on behalf</span>
+        <span class="hz-lp-door-sub">
           Order uniforms for anyone on your team, against their allocation.
         </span>
-        <span class="hz-lp-cell-go">Start &rarr;</span>
+        <span class="hz-lp-door-go">Start <span class="hz-lp-door-arrow" aria-hidden="true">&rarr;</span></span>
       </a>
 
-      <a class="hz-lp-cell hz-lp-cell--text" ng-href="{{home.alaCarteHref}}">
-        <span class="hz-lp-cell-name">Buy &agrave; la carte</span>
-        <span class="hz-lp-cell-sub">
-          Order outside an allocation, charged to your location.
+      <a class="hz-lp-door" ng-href="{{home.championHref}}">
+        <span class="hz-lp-door-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <path d="M8.5 3.5 4 5.5 2.5 10l3.5 1.3v9.2h12v-9.2l3.5-1.3L20 5.5l-4.5-2"></path>
+            <path d="M8.5 3.5 12 7l3.5-3.5"></path><path d="M12 7v3.5"></path>
+          </svg>
         </span>
-        <span class="hz-lp-cell-go">Browse &rarr;</span>
+        <span class="hz-lp-door-name">Uniform Champion</span>
+        <span class="hz-lp-door-sub">
+          Shop the Uniform Champion category, outside any allocation. Charged to your location.
+        </span>
+        <span class="hz-lp-door-go">Browse <span class="hz-lp-door-arrow" aria-hidden="true">&rarr;</span></span>
       </a>
     </div>
   </div>

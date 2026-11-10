@@ -2357,30 +2357,75 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 }
 .hz-lp-empty { margin: 0; font-size: var(--fs-md); color: var(--black-80); }
 
-/* Rules live on the cells, with the top and left edge on the container: gap + a
-   container background leaves a grey void wherever the last row is partial. */
-.hz-lp-cells {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+/* ---- a champion's two doors ----
+   One link per door: a yellow icon tile, the name, one line on whose money it spends, and
+   the action. Built from the page's own vocabulary rather than as cards: thin rules between
+   doors (top and left edge on the container, so a lone last door never leaves a void), a
+   yellow tile because yellow is a fill and marks on it are black, and the action styled as
+   the site's text link, ink over a 2px yellow underline. No shadow, 2px radius. */
+.hz-lp-doors {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   border-top: 1px solid var(--rule); border-left: 1px solid var(--rule);
 }
-.hz-lp-cells--two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.hz-lp-cell {
+.hz-lp-door {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  padding: clamp(22px, 2.6vw, 34px);
   border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-  padding: 16px; display: flex; flex-direction: column; gap: 10px; color: inherit;
+  background: var(--surface); color: inherit;
+  transition: background-color 120ms ease;
 }
-.hz-lp-cell:hover { background: var(--surface-alt); }
-.hz-lp-cell-art {
-  display: block; aspect-ratio: 4 / 5; max-width: 100%;
-  /* Capped because the cells are empty until Hertz supplies the photography: at
-     full-bleed width a 4:5 box is ~460px tall, and four of those read as a wall of grey
-     rather than a row of products. A real photograph fills the box and the cap stops
-     mattering. */
-  max-height: 300px;
-  background: var(--surface-alt);
+/* The yellow rule a door draws along its top on hover and focus. A pseudo-element, so it
+   sits over the grid's own rule instead of adding to the layout. */
+.hz-lp-door::before {
+  content: ''; position: absolute; top: -1px; left: -1px; right: -1px; height: 3px;
+  background: var(--yellow); transform: scaleX(0); transform-origin: left center;
+  transition: transform 160ms ease;
 }
-.hz-lp-cell-name { font-size: var(--fs-md); font-weight: 700; color: var(--ink); }
-.hz-lp-cell-sub { font-size: var(--fs-sm); line-height: 1.5; color: var(--black-80); }
-.hz-lp-cell--text { padding: 22px; gap: 8px; }
+.hz-lp-door:hover, .hz-lp-door:focus { background: var(--surface-alt); color: inherit; text-decoration: none; }
+.hz-lp-door:hover::before, .hz-lp-door:focus-visible::before { transform: scaleX(1); }
+
+.hz-lp-door-ico {
+  display: grid; place-items: center; flex: 0 0 auto;
+  width: 48px; height: 48px; margin-bottom: 6px;
+  background: var(--yellow); color: var(--ink); border-radius: 2px;
+  transition: background-color 120ms ease;
+}
+.hz-lp-door-ico svg { display: block; }
+.hz-lp-door:hover .hz-lp-door-ico { background: var(--yellow-press); }
+
+.hz-lp-door-name {
+  font-size: var(--fs-xl); font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink);
+}
+.hz-lp-door-sub { font-size: var(--fs-body); line-height: 1.55; color: var(--black-80); max-width: 46ch; }
+
+.hz-lp-door-go {
+  margin-top: auto; display: inline-flex; align-items: center; gap: 8px;
+  padding-top: 8px; padding-bottom: 2px; border-bottom: 2px solid var(--yellow);
+  font-size: var(--fs-body); font-weight: 700; color: var(--ink);
+}
+.hz-lp-door:hover .hz-lp-door-go { border-bottom-color: var(--ink); }
+.hz-lp-door-arrow { display: inline-block; transition: transform 160ms ease; }
+.hz-lp-door:hover .hz-lp-door-arrow { transform: translateX(3px); }
+
+/* Wide enough for two doors side by side: each door becomes a row, icon on the left and
+   the action on the right edge, so a wide door does not end in empty space. */
+@media (min-width: 1000px) {
+  .hz-lp-door {
+    display: grid; align-items: center;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    grid-template-areas: "ico name go" "ico sub go";
+    column-gap: 22px; row-gap: 4px;
+  }
+  .hz-lp-door-ico { grid-area: ico; align-self: start; margin-bottom: 0; }
+  .hz-lp-door-name { grid-area: name; align-self: end; }
+  .hz-lp-door-sub { grid-area: sub; align-self: start; }
+  .hz-lp-door-go { grid-area: go; margin-top: 0; padding-top: 0; white-space: nowrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hz-lp-door, .hz-lp-door::before, .hz-lp-door-ico, .hz-lp-door-arrow { transition: none; }
+}
 
 /* ---- reset band ---- */
 .hz-lp-reset {
@@ -2924,7 +2969,6 @@ table.hz-chart thead th { background: var(--sub); color: var(--ink); font-weight
 .hz-onbehalf-x:focus-visible { outline: 2px solid #11172b; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .hz-onbehalf-x { transition: none; } }
 
-.hz-lp-cell-go { font-size: var(--fs-sm); font-weight: 700; color: var(--ink); margin-top: auto; }
 
 /* =========================================================================
    Cart

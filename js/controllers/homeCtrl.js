@@ -70,7 +70,7 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
       closed: [],
       heroImage: HERO_IMAGE,
       /** Where the two champion entries go. */
-      alaCarteHref: 'catalog',
+      championHref: 'catalog',
       onBehalfHref: 'champion'
     };
 
@@ -83,16 +83,17 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
      * first and opens the uniform picker with `?for=<employeeId>`, which is what carries
      * the beneficiary through the cart gate and into checkout.
      *
-     * À la carte is genuinely a category, because it is a plain catalogue purchase charged
-     * to the location. Set this to its InteropID when Hertz creates it.
+     * The Uniform Champion category (once labelled "Buy à la carte") is genuinely a category,
+     * because it is a plain catalogue purchase charged to the location. Set this to its
+     * InteropID when Hertz creates it.
      *
      * Empty falls back to the catalogue root, NOT to the first category in the tree. That
      * used to be the fallback and it was actively wrong: the first top-level category in
-     * this tenant is `orderob`, so "Buy à la carte" led to Order On Behalf — a category
+     * this tenant is `orderob`, so this door led to Order On Behalf — a category
      * that cannot know whose allocation it spends. The root shows everything the champion
      * may buy, which is the honest answer until the real category exists.
      */
-    var A_LA_CARTE_CATEGORY = '';
+    var CHAMPION_CATEGORY = '';
 
     /**
      * Brand to a CSS-safe key, so the theme can swap hero art and accents per brand.
@@ -180,7 +181,7 @@ four51.app.controller('HomeCtrl', ['$scope', 'Allocation',
             // otherwise divide by zero and render a NaN-wide bar.
             $scope.home.percentLeft = granted > 0 ? Math.round((remaining / granted) * 100) : 0;
           }
-          $scope.home.alaCarteHref = categoryHref(A_LA_CARTE_CATEGORY);
+          $scope.home.championHref = categoryHref(CHAMPION_CATEGORY);
           $scope.home.loading = false;
         })
         .catch(function(err) {
